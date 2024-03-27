@@ -2,6 +2,7 @@ import React from 'react'
 import {Button, Container, Paper, TextField, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useInputValidation} from "6pp";
+import backgroundImage from "../assets/images/chat-background.jpg";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const Login = () => {
   return (
     <div
       style={{
-        backgroundImage: "linear-gradient(rgba(0,0,0,0), rgba(204, 204, 255, 0.7))",
+        backgroundImage: `url(${backgroundImage})`,
       }}
     >
     <Container

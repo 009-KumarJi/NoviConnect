@@ -5,6 +5,8 @@ import {CameraAlt as CameraAltIcon} from "@mui/icons-material";
 import {VisuallyHiddenInput} from "../components/styles/StyledComponents.jsx";
 import {useFileHandler, useInputValidation, useStrongPassword} from "6pp";
 import {usernameValidator} from "../utils/Validators.js";
+import backgroundImage from "../assets/images/chat-background.jpg";
+import paperBackgroundImage from "../assets/images/chat-paper-back.jpg";
 
 const SignUpForm = () => {
   const firstName = useInputValidation("");
@@ -37,7 +39,8 @@ const SignUpForm = () => {
   return (
     <div
       style={{
-        backgroundImage: "linear-gradient(rgba(0,0,0,0), rgba(204, 204, 255, 0.7))",
+        // backgroundImage: "linear-gradient(rgba(0,0,0,0), rgba(204, 204, 255, 0.7))",
+        backgroundImage: `url(${backgroundImage})`,
       }}
     >
       <Container
@@ -51,7 +54,8 @@ const SignUpForm = () => {
           <Typography variant={"h1"} marginBottom={"1rem"} marginTop={"2rem"}>NoviChat</Typography>
           <Paper
             style={{
-              backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",
+              //backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",\
+              backgroundImage: `url(${paperBackgroundImage})`,
             }}
             elevation={3}
             sx={{
