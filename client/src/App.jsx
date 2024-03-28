@@ -1,15 +1,16 @@
 import React, {lazy} from 'react';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import ProtectRoute from "./components/auth/ProtectRoute.jsx";
-import Login from "./pages/Login.jsx";
-import SignUpForm from "./pages/SignUp.jsx";
-import NotFound from "./pages/NotFound.jsx";
-import Home from "./pages/Home.jsx";
-import Chat from "./pages/Chat.jsx";
-import Groups from "./pages/Groups.jsx";
+
+const Login = lazy(() => import("./pages/Login.jsx"));
+const SignUpForm = lazy(() => import("./pages/SignUp.jsx"));
+const NotFound = lazy(() => import("./pages/NotFound.jsx"));
+const Home = lazy(() => import("./pages/Home.jsx"));
+const Chat = lazy(() => import("./pages/Chat.jsx"));
+const Groups = lazy(() => import("./pages/Groups.jsx"));
 
 
-let user = true;
+let user = false;
 
 const App = () => {
   return (

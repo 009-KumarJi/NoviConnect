@@ -32,7 +32,7 @@ const Login = () => {
           flexDirection: "column",
           alignItems: "center"
         }}>
-        <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}>NoviChat</Typography>
+        <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}>NoviConnect</Typography>
         <Paper
           style={{
             backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",
@@ -75,7 +75,7 @@ const Login = () => {
                 Sign In
               </Button>
             </form>
-            <Typography textAlign="center" marginTop={"1rem"}>New to NoviChat?</Typography>
+            <Typography textAlign="center" marginTop={"1rem"}>New to NoviConnect?</Typography>
             <Button
               variant={"text"}
               onClick={goToRegister}

@@ -48,7 +48,7 @@ const SignUpForm = () => {
           alignItems: "center"
         }}
       >
-        <Typography variant={"h1"} marginBottom={"1rem"} marginTop={"2rem"}>NoviChat</Typography>
+        <Typography variant={"h1"} marginBottom={"1rem"} marginTop={"2rem"}>NoviConnect</Typography>
         <Paper
           style={{
             backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",
