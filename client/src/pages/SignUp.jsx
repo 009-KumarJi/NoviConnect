@@ -6,7 +6,7 @@ import {VisuallyHiddenInput} from "../components/styles/StyledComponents.jsx";
 import {useFileHandler, useInputValidation, useStrongPassword} from "6pp";
 import {usernameValidator} from "../utils/Validators.js";
 import backgroundImage from "../assets/images/chat-background.jpg";
-import paperBackgroundImage from "../assets/images/chat-paper-back.jpg";
+
 
 const SignUpForm = () => {
   const firstName = useInputValidation("");
@@ -15,7 +15,6 @@ const SignUpForm = () => {
   const email = useInputValidation("");
   const password = useStrongPassword();
   const dob = useInputValidation("");
-  const navigate = useNavigate();
 
   const handleSubmitSignUp = (event) => {
     event.preventDefault();
@@ -28,9 +27,8 @@ const SignUpForm = () => {
     goToLogin();
   };
   const avatar = useFileHandler("single");
-  const goToLogin = () => {
-    navigate('/login');
-  }
+  const navigate = useNavigate();
+  const goToLogin = () => navigate("/login");
 
   const today = new Date();
   const elevenYearsAgo = new Date(today.getFullYear() - 11, today.getMonth(), today.getDate());
@@ -39,132 +37,134 @@ const SignUpForm = () => {
   return (
     <div
       style={{
-        // backgroundImage: "linear-gradient(rgba(0,0,0,0), rgba(204, 204, 255, 0.7))",
         backgroundImage: `url(${backgroundImage})`,
       }}
     >
       <Container
-          component={"main"} maxWidth="xs" maxHight="100vh"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center"
-          }}
+        component={"main"} maxWidth="xs" maxHight="100vh"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center"
+        }}
       >
-          <Typography variant={"h1"} marginBottom={"1rem"} marginTop={"2rem"}>NoviChat</Typography>
-          <Paper
-            style={{
-              //backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",\
-              backgroundImage: `url(${paperBackgroundImage})`,
-            }}
-            elevation={3}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: 4,
-              marginBottom: '2rem',
-            }}
-          >
-            <form onSubmit={handleSubmitSignUp}>
-              <Stack position={"relative"} width={"10rem"} margin={"auto"}>
-                <Avatar
-                  sx={{
-                    width: "10rem",
-                    height: "10rem",
-                    objectFit: 'contain',
-                  }}
-                  src={avatar.preview}
-                />
-                {avatar.error && (
-                  <Typography m={"1rem"} color="error" variant="caption">
-                    {avatar.error}
-                  </Typography>
-                )}
-                <IconButton
-                  sx={{
-                    position: 'absolute',
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: "rgba(255, 255, 255, 0.5)",
-                    ":hover": {
-                      backgroundColor: "rgba(0, 0, 0, 0.3 )",
-                    },
-                    padding: '0.5rem',
-                    borderRadius: '50%',
-                  }}
-                  component="label"
-                >
-                  <>
-                    <CameraAltIcon/>
-                    <VisuallyHiddenInput type="file" onChange={avatar.changeHandler}/>
-                  </>
-                </IconButton>
-              </Stack>
-              <Box
+        <Typography variant={"h1"} marginBottom={"1rem"} marginTop={"2rem"}>NoviChat</Typography>
+        <Paper
+          style={{
+            backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",
+          }}
+          elevation={3}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: 4,
+            marginBottom: '2rem',
+          }}
+        >
+          <form onSubmit={handleSubmitSignUp}>
+            <Stack position={"relative"} width={"10rem"} margin={"auto"}>
+              <Avatar
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  width: "10rem",
+                  height: "10rem",
+                  objectFit: 'contain',
                 }}
-              >
-                <TextField size="small" sx={{marginRight: "1rem"}} fullWidth required label={"First Name"} type={"text"}
-                           margin={"normal"} variant={"outlined"}
-                           value={firstName.value} onChange={firstName.changeHandler}/>
-                <TextField size="small" fullWidth required label={"Surname"} type={"text"} margin={"normal"}
-                           variant={"outlined"}
-                           value={lastName.value} onChange={lastName.changeHandler}/>
-              </Box>
-              <TextField size="small" fullWidth required label={"Username"} type={"text"} margin={"normal"}
-                         variant={"outlined"}
-                         value={username.value} onChange={username.changeHandler}/>
-              {username.error && (
-                <Typography color="error" variant="caption">
-                  {username.error}
-                </Typography>
-              )}
-              <TextField size="small" fullWidth required label={"Email"} type={"email"} margin={"normal"}
-                         variant={"outlined"}
-                         value={email.value} onChange={email.changeHandler}/>
-              <TextField size="small" fullWidth required label={"Date of Birth"} type={"date"}
-                         margin={"normal"} variant={"outlined"} value={dob.value} onChange={dob.changeHandler}
-                         InputLabelProps={{
-                           shrink: true,
-                         }}
-                         inputProps={{
-                           max: maxDate,
-                         }}
+                src={avatar.preview}
               />
-              <TextField size="small" fullWidth required label={"Password"} type={"password"} margin={"normal"}
-                         variant={"outlined"}
-                         value={password.value} onChange={password.changeHandler}/>
-              {password.error && (
-                <Typography color="error" variant="caption">
-                  {password.error}
+              {avatar.error && (
+                <Typography m={"1rem"} color="error" variant="caption">
+                  {avatar.error}
                 </Typography>
               )}
-              <Button sx={{marginTop: "1rem"}}
-                      variant={"contained"}
-                      color={"primary"}
-                      type={"submit"}
-                      fullWidth={true}
+              <IconButton
+                sx={{
+                  position: 'absolute',
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(255, 255, 255, 0.5)",
+                  ":hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.3 )",
+                  },
+                  padding: '0.5rem',
+                  borderRadius: '50%',
+                }}
+                component="label"
               >
-                Sign Up
-              </Button>
-            </form>
-            <Typography textAlign="center" marginTop={"1rem"}>Already have an account?</Typography>
-            <Button
-              variant={"text"}
-              onClick={goToLogin}
-              fullWidth={true}
+                <>
+                  <CameraAltIcon/>
+                  <VisuallyHiddenInput type="file" onChange={avatar.changeHandler}/>
+                </>
+              </IconButton>
+            </Stack>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
             >
-              Sign In
+              <TextField size="small" sx={{marginRight: "1rem"}} fullWidth required label={"First Name"}
+                         type={"text"}
+                         margin={"normal"} variant={"outlined"}
+                         value={firstName.value} onChange={firstName.changeHandler}/>
+              <TextField size="small" fullWidth required label={"Surname"} type={"text"} margin={"normal"}
+                         variant={"outlined"}
+                         value={lastName.value} onChange={lastName.changeHandler}/>
+            </Box>
+            <TextField size="small" fullWidth required label={"Username"} type={"text"} margin={"normal"}
+                       variant={"outlined"}
+                       value={username.value} onChange={username.changeHandler}/>
+            {username.error && (
+              <Typography color="error" variant="caption">
+                {username.error}
+              </Typography>
+            )}
+            <TextField size="small" fullWidth required label={"Email"} type={"email"} margin={"normal"}
+                       variant={"outlined"}
+                       value={email.value} onChange={email.changeHandler}/>
+            <TextField size="small" fullWidth required label={"Date of Birth"} type={"date"}
+                       margin={"normal"} variant={"outlined"} value={dob.value} onChange={dob.changeHandler}
+                       InputLabelProps={{
+                         shrink: true,
+                       }}
+                       inputProps={{
+                         max: maxDate,
+                       }}
+            />
+            <TextField size="small" fullWidth required label={"Password"} type={"password"}
+                       margin={"normal"}
+                       variant={"outlined"}
+                       value={password.value} onChange={password.changeHandler}/>
+            {password.error && (
+              <Typography color="error" variant="caption">
+                {password.error}
+              </Typography>
+            )}
+            <Button sx={{marginTop: "1rem"}}
+                    variant={"contained"}
+                    color={"primary"}
+                    type={"submit"}
+                    fullWidth={true}
+            >
+              Sign Up
             </Button>
-          </Paper>
-        </Container>
+          </form>
+          <Typography textAlign="center" marginTop={"1rem"}>Already have an account?</Typography>
+          <Button
+            variant={"text"}
+            onClick={goToLogin}
+            fullWidth={true}
+          >
+            Sign In
+          </Button>
+        </Paper>
+      </Container>
     </div>
   );
 };
 
 export default SignUpForm;
+
+// Path: client/src/pages/SignUp.jsx

@@ -3,17 +3,17 @@ import {Button, Container, Paper, TextField, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useInputValidation} from "6pp";
 import backgroundImage from "../assets/images/chat-background.jpg";
-
 const Login = () => {
-  const navigate = useNavigate();
   const handleSubmitSignIn = (event) => {
     event.preventDefault();
     // Add code here to log the user in
   }
 
+  const navigate = useNavigate();
   const goToRegister = () => {
-    navigate('/register');
-  }
+    navigate("/register");
+  };
+
 
   const username = useInputValidation("");
   const password = useInputValidation("");
@@ -24,27 +24,27 @@ const Login = () => {
         backgroundImage: `url(${backgroundImage})`,
       }}
     >
-    <Container
-      component={"main"} maxWidth="xs"
-      sx={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
-      }}>
-      <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}>NoviChat</Typography>
-      <Paper
-        style={{
-          backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",
-        }}
-        elevation={3}
+      <Container
+        component={"main"} maxWidth="xs"
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          padding: 6,
-        }}
-      >
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center"
+        }}>
+        <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}>NoviChat</Typography>
+        <Paper
+          style={{
+            backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",
+          }}
+          elevation={3}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: 6,
+          }}
+        >
           <>
             <form
               onSubmit={handleSubmitSignIn}
@@ -62,8 +62,9 @@ const Login = () => {
                 variant={"outlined"} fullWidth={true}
                 value={username.value} onChange={username.changeHandler}
               />
-              <TextField required={true} label={"Password"} type={"password"} margin={"normal"} variant={"outlined"}
-                         fullWidth={true} value={password.value} onChange={password.changeHandler} />
+              <TextField required={true} label={"Password"} type={"password"} margin={"normal"}
+                         variant={"outlined"}
+                         fullWidth={true} value={password.value} onChange={password.changeHandler}/>
               <Button
                 sx={{marginTop: "1rem"}}
                 variant={"contained"}
@@ -83,9 +84,11 @@ const Login = () => {
               Sign Up
             </Button>
           </>
-      </Paper>
-    </Container>
-      </div>
+        </Paper>
+      </Container>
+    </div>
   )
 }
-export default Login
+export default Login;
+
+// Path: client/src/pages/Login.jsx
