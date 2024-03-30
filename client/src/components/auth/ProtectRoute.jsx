@@ -13,3 +13,6 @@ const ProtectRoute = ({children, user, redirect="/login"}) => {
 }
 
 export default ProtectRoute;
+
+
+// Path: client/src/components/auth/ProtectRoute.jsx

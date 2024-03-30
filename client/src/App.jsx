@@ -9,8 +9,8 @@ const Home = lazy(() => import("./pages/Home.jsx"));
 const Chat = lazy(() => import("./pages/Chat.jsx"));
 const Groups = lazy(() => import("./pages/Groups.jsx"));
 
-
-let user = false;
+// Just a dummy user for testing purposes.
+let user = true;
 
 const App = () => {
   return (
