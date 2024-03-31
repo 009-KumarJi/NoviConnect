@@ -1,6 +1,6 @@
 import React, {lazy, Suspense, useState} from 'react';
-import {AppBar, Box, IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
-import {orange} from "../../constants/color.js";
+import {AppBar, Backdrop, Box, IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
+import backgroundImage from "../../assets/images/chat-paper-back.jpg";
 import {
   Add as AddIcon,
   Group as GroupIcon,
@@ -10,6 +10,7 @@ import {
   Search as SearchIcon
 } from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
+import LayoutLoader from "./Loaders.jsx";
 
 
 const SearchDialog = lazy(() => import("../specific/Search.jsx"));
@@ -48,12 +49,9 @@ const Header = () => {
   return (
     <>
       <Box sx={{flexGrow: 1}} height={"4rem"}>
-        <AppBar
-          position={"static"}
-          sx={{bgcolor: orange}}
-        >
+        <AppBar position="static" sx={{ backgroundImage: `url(${backgroundImage})` }}>
           <Toolbar>
-            <Typography variant={"h6"} sx={{display: {xs: "none", sm: "block"}}}>
+            <Typography color={"rgb(47,95,112)"} variant={"h6"} fontWeight={"bold"} sx={{display: {xs: "none", sm: "block"}}}>
               NoviConnect
             </Typography>
             <Box sx={{display: {xs: "block", sm: "none"}}}>
@@ -75,21 +73,21 @@ const Header = () => {
 
       {
         isSearchDialogOpen && (
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<Backdrop open/>}>
             <SearchDialog/>
           </Suspense>
         )
       }
       {
         isNewGroupDialogOpen && (
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<Backdrop open/>}>
             <NewGroupDialog/>
           </Suspense>
         )
       }
       {
         isNotificationDialogOpen && (
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<Backdrop open/>}>
             <NotificationsDialog/>
           </Suspense>
         )
@@ -107,4 +105,5 @@ const IconMould = ({icon, onClick, title}) => {
     </Tooltip>
   );
 };
+
 export default Header;

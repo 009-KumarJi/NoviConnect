@@ -1,6 +1,7 @@
-import React, {lazy} from 'react';
+import React, {lazy, Suspense} from 'react';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import ProtectRoute from "./components/auth/ProtectRoute.jsx";
+import LayoutLoader from "./components/layout/Loaders.jsx";
 
 const Login = lazy(() => import("./pages/Login.jsx"));
 const SignUpForm = lazy(() => import("./pages/SignUp.jsx"));
@@ -15,20 +16,22 @@ let user = true;
 const App = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        // This is the parent component that will render the child components based on the URL.
-        // Only one child component will be rendered at a time.
-        <Route element={<ProtectRoute user={user}/>}>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/chat/:chatID" element={<Chat/>}/>
-          <Route path="/groups" element={<Groups/>}/>
-        </Route>
-        <Route element={<ProtectRoute user={!user}/>}>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={<SignUpForm/>}/>
-        </Route>
-        <Route path="*" element={<NotFound/>}/>
-      </Routes>
+      <Suspense fallback={<LayoutLoader/>}>
+        <Routes>
+          // This is the parent component that will render the child components based on the URL.
+          // Only one child component will be rendered at a time.
+          <Route element={<ProtectRoute user={user}/>}>
+            <Route path="/" element={<Home/>}/>
+            <Route path="/chat/:chatID" element={<Chat/>}/>
+            <Route path="/groups" element={<Groups/>}/>
+          </Route>
+          <Route element={<ProtectRoute user={!user}/>}>
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/register" element={<SignUpForm/>}/>
+          </Route>
+          <Route path="*" element={<NotFound/>}/>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }
