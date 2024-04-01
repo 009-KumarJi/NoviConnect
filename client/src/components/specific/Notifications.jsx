@@ -10,7 +10,7 @@ const Notifications = () => {
   return (
     <Dialog open={true}>
       <Stack p={{xs: "1rem", sm: "2rem"}} maxWidth={"25rem"}
-             sx={{backgroundImage: `linear-gradient(0deg, ${colorPalette.CP6}, ${colorPalette.CP8})`,}}>
+             sx={{backgroundImage: `linear-gradient(0deg, ${colorPalette().CP6}, ${colorPalette().CP8})`,}}>
         <DialogTitle>Notifications</DialogTitle>
         {
           // Notifications

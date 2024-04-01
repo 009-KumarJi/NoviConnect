@@ -18,7 +18,7 @@ const Search = () => {
   return (
     <Dialog open={true}>
       <Stack p={"2rem"} direction={"column"} width="25rem" sx={{
-        backgroundImage: `linear-gradient(0deg, ${colorPalette.CP6}, ${colorPalette.CP8})`,
+        backgroundImage: `linear-gradient(0deg, ${colorPalette().CP6}, ${colorPalette().CP8})`,
       }}>
         <DialogTitle textAlign={"center"}>Find People</DialogTitle>
         <TextField

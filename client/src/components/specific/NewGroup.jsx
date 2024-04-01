@@ -25,7 +25,7 @@ const NewGroup = () => {
   return (
     <Dialog open={true}>
       <Stack p={{xs: "1rem", sm: "3rem"}} width={"25rem"} spacing="2rem"
-             sx={{backgroundImage: `linear-gradient(0deg, ${colorPalette.CP6}, ${colorPalette.CP8})`,}}>
+             sx={{backgroundImage: `linear-gradient(0deg, ${colorPalette().CP6}, ${colorPalette().CP8})`,}}>
         <DialogTitle variant="h4" textAlign="center">New Group</DialogTitle>
         <TextField label="Group Name" value={groupName.value} onChange={groupName.changeHandler}/>
         <Typography variant="body1">Members</Typography>

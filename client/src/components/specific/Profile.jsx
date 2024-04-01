@@ -39,7 +39,7 @@ const ProfileCard = ({text, Icon, heading}) => (
       {Icon && Icon}
       <Stack>
         <Typography variant={"body1"}>{text}</Typography>
-        <Typography variant={"caption"} color={colorPalette.CP7}>{heading}</Typography>
+        <Typography variant={"caption"} color={colorPalette().CP7}>{heading}</Typography>
       </Stack>
     </Stack>
 );
