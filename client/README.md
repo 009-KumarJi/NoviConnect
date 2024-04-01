@@ -2,11 +2,11 @@
 
 - **Login Page**
 
-  ![Login Page](src/assets/images/pages_snapshots/login.png)
+  <img src="src/assets/images/pages_snapshots/login.png" width="426px" height="240px">
 
 - **Register Page**
 
-    ![Register Page](src/assets/images/pages_snapshots/register.png)
+    <img src="src/assets/images/pages_snapshots/register.png" width="426px" height="240px">
 
 - **Not Found Page**
 
