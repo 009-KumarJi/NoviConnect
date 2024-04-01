@@ -18,8 +18,6 @@ const App = () => {
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader/>}>
         <Routes>
-          // This is the parent component that will render the child components based on the URL.
-          // Only one child component will be rendered at a time.
           <Route element={<ProtectRoute user={user}/>}>
             <Route path="/" element={<Home/>}/>
             <Route path="/chat/:chatID" element={<Chat/>}/>

@@ -3,9 +3,22 @@ import Header from "./Header.jsx";
 import Title from "../shared/Title.jsx";
 import {Grid} from "@mui/material";
 import ChatList from "../specific/ChatList.jsx";
+import {sampleChats} from "../../constants/sampleData.js";
+import {useParams} from "react-router-dom";
+import Profile from "../specific/Profile.jsx";
+import {profileBackground} from "../../constants/color.js";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
+
+    const params = useParams();
+    const chatID = params.chatID;
+    const handleDeleteChat = (_event, _id, groupChat) => {
+      _event.preventDefault();
+      console.log("Delete Chat ID: ", _id, groupChat);
+    }
+
+
     return (
       <>
         <Title/>
@@ -21,7 +34,11 @@ const AppLayout = () => (WrappedComponent) => {
               display: {xs: "none", sm: "block"}
             }}
           >
-            <ChatList chats={[1,2,3,4,5]}/>
+            <ChatList
+              chats={sampleChats}
+              chatID={chatID}
+              handleDeleteChat={handleDeleteChat}
+            />
           </Grid>
 
 
@@ -40,11 +57,11 @@ const AppLayout = () => (WrappedComponent) => {
             sx={{
               display: {xs: "none", md: "block"},
               padding: "2rem",
-              bgcolor: "rgba(116,210,24,0.43)"
+              bgcolor: profileBackground,
             }}
             height={"100%"}
           >
-            Third
+            <Profile />
           </Grid>
         </Grid>
       </>

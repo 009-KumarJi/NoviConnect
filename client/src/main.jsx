@@ -14,7 +14,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <DevSupport ComponentPreviews={ComponentPreviews}
                   useInitialHook={useInitial}
       >
-        <App/>
+        <div onContextMenu={(e) => e.preventDefault()}>
+          <App/>
+        </div>
       </DevSupport>
     </HelmetProvider>
   </React.StrictMode>,
