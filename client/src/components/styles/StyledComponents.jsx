@@ -1,6 +1,6 @@
 import {styled} from "@mui/material";
 import {Link as LinkComponent} from "react-router-dom";
-import {cursorHoveringChatName} from "../../constants/color.js";
+import {colorPalette, cursorHoveringChatName} from "../../constants/color.js";
 
 export const VisuallyHiddenInput = styled('input')({
   border: 0,
@@ -22,4 +22,14 @@ export const Link = styled(LinkComponent)`
   &:hover {
     background-color: ${cursorHoveringChatName};
   }
+`;
+export const InputBox = styled('input')`
+  width: 100%;
+  height: 100%;
+  padding: 0 3rem;
+  border: none;
+  outline: none;
+  border-radius: 1.5rem;
+  box-sizing: border-box;
+  background-color: ${colorPalette(0.2).CP5};
 `;
