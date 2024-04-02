@@ -1,7 +1,7 @@
 export const sampleChats = [
   {
     avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White"],
-    name: "Angela White",
+    name: "Leana Lovings",
     _id: "1",
     groupChat: false,
     members: ["1", "2"],
@@ -78,4 +78,38 @@ export const sampleNotifications = [
     },
     _id: "3",
   },
+];
+export const sampleMessages = [
+  {
+    attachments: [
+      {
+        public_id: "bhbvsd",
+        url: "https://picsum.photos/200/300",
+      },
+    ],
+    content: "Hello, how are you?",
+    _id: "dftgukfabvklfv",
+    sender: {
+      _id: "gafvkcvl",
+      name: "Krishna Kumar",
+    },
+    chat: "chatID",
+    createdAt: "2024-04-01T14:48:00.000Z",
+  },
+  {
+    attachments: [
+      {
+        public_id: "bhbvsdvd",
+        url: "https://picsum.photos/200/300",
+      },
+    ],
+    content: "Fine, how are you?",
+    _id: "dftgukfabvklfvwwvv",
+    sender: {
+      _id: "user._id",
+      name: "Leana Lovings",
+    },
+    chat: "chatID",
+    createdAt: "2024-04-01T14:48:00.000Z",
+  }
 ];

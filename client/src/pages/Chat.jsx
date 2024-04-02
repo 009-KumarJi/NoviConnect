@@ -5,6 +5,13 @@ import {colorPalette, darkPaleBlue} from "../constants/color.js";
 import {AttachFile as AttachFileIcon, Send as SendIcon} from "@mui/icons-material";
 import {InputBox} from "../components/styles/StyledComponents.jsx";
 import FileMenu from "../components/dialogs/FileMenu.jsx";
+import {sampleMessages} from "../constants/sampleData.js";
+import MessageComponent from "../components/shared/MessageComponent.jsx";
+
+const user = {
+  _id: "gafvkcvl",
+  name: "Krishna Kumar",
+}
 
 const Chat = () => {
   const containerRef = useRef(null);
@@ -20,6 +27,14 @@ const Chat = () => {
         height={`90%`}
         bgcolor={colorPalette(0.3).CP7}
       >
+        {
+          sampleMessages.map((message) => {
+              return (
+                <MessageComponent key={message._id} message={message} loggedUser={user}/>
+              )
+            }
+          )
+        }
       </Stack>
 
       {/*Input*/}
@@ -37,11 +52,11 @@ const Chat = () => {
         >
 
           <IconButton
-          sx={{
-            position: "absolute",
-            left: "1.5rem",
-            rotate: "20deg"
-          }}
+            sx={{
+              position: "absolute",
+              left: "1.5rem",
+              rotate: "20deg"
+            }}
           >
             <AttachFileIcon/>
           </IconButton>
@@ -49,16 +64,16 @@ const Chat = () => {
           <InputBox placeholder={"Idhar se bhejo message"}/>
 
           <IconButton type="submit"
-          sx={{
-            rotate: "-25deg",
-            backgroundColor: colorPalette(0.4).CP5,
-            color: "white",
-            marginLeft: "1rem",
-            padding: "0.5rem",
-            "&:hover": {
-              backgroundColor: `${colorPalette(0.8).CP3}`
-            }
-          }}
+                      sx={{
+                        rotate: "-25deg",
+                        backgroundColor: colorPalette(0.4).CP5,
+                        color: "white",
+                        marginLeft: "1rem",
+                        padding: "0.5rem",
+                        "&:hover": {
+                          backgroundColor: `${colorPalette(0.8).CP3}`
+                        }
+                      }}
           >
             <SendIcon/>
           </IconButton>
