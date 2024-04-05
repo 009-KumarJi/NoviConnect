@@ -11,7 +11,7 @@ import {
 } from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
 import LayoutLoader from "./Loaders.jsx";
-import {textDark} from "../../constants/color.js";
+import {colorPalette, textDark} from "../../constants/color.js";
 
 
 const SearchDialog = lazy(() => import("../specific/Search.jsx"));
@@ -50,10 +50,14 @@ const Header = () => {
   return (
     <>
       <Box sx={{flexGrow: 1}} height={"4rem"}>
-        <AppBar position="static" sx={{ backgroundImage: `url(${backgroundImage})` }}>
+        <AppBar position="static" sx={{ backgroundImage: `linear-gradient(90deg, ${colorPalette().CP8}, rgb(65,125,143))` }}>
           <Toolbar>
             <Typography color={textDark} variant={"h6"} fontWeight={"bold"} sx={{display: {xs: "none", sm: "block"}}}>
-              NoviConnect
+              Novi<span style={{
+              color: `${colorPalette(1).CP9}`,
+              backgroundColor: `${textDark}`,
+              paddingRight: "0.2rem"
+            }}>Connect</span>
             </Typography>
             <Box sx={{display: {xs: "block", sm: "none"}}}>
               <IconButton color="inherit" onClick={handleMobile}>

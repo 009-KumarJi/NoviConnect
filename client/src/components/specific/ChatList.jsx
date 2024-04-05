@@ -1,6 +1,7 @@
 import React from 'react';
 import {Stack} from "@mui/material";
 import ChatItem from "../shared/ChatItem.jsx";
+import {colorPalette} from "../../constants/color.js";
 
 const ChatList = (
   {
@@ -17,7 +18,20 @@ const ChatList = (
     handleDeleteChat,
   }) => {
   return (
-    <Stack width={w} direction={"column"}>
+    <Stack width={w} direction={"column"} overflow={"auto"} height={"100%"} paddingTop="0.2rem" sx={{
+
+      "&::-webkit-scrollbar": {
+        width: "0.6rem",
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: `${colorPalette(0.3).CP6}`,
+        borderRadius: "1rem",
+      },
+      "&::-webkit-scrollbar-track": {
+        backgroundColor: "rgba(0,0,0,0)",
+        border: "none",
+      },
+    }}>
       {
         chats?.map((data, index) => {
           const {avatar, _id, name, groupChat, members} = data;

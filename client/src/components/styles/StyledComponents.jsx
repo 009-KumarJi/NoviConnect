@@ -18,7 +18,8 @@ export const Link = styled(LinkComponent)`
   text-decoration: none;
   color: black;
   padding: 1rem;
-
+  margin: 0.1rem 1rem 0.1rem 0.3rem;
+  border-radius: 10rem;
   &:hover {
     background-color: ${cursorHoveringChatName};
   }

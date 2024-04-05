@@ -37,6 +37,7 @@ const ChatItem = (
         backgroundColor: sameSender ? `${darkPaleBlue}` : "unset",
         color: sameSender ? "white" : "unset",
         position: "relative",
+        borderRadius: "10rem"
       }}
       >
         <AvatarCard avatar={avatar}/>
