@@ -4,6 +4,7 @@ export const profileBackground = `rgba(62, 125, 143, 0.9)`;
 export const textDark = `rgb(56,113,132)`;
 export const textDarkA = (transparency) => `rgba(56,113,132, ${transparency})`;
 
+
 const paletteCheck= {
   CP1: `rgba(3, 4, 94, 0.8)`,
   CP2: `rgba(2, 62, 138, 0.8)`,
