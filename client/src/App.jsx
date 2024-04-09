@@ -12,6 +12,10 @@ const Chat = lazy(() => import("./pages/Chat.jsx"));
 const Groups = lazy(() => import("./pages/Groups.jsx"));
 const AdminLogin = lazy(() => import("./pages/KrishnaDen/KrishnaDenLogin.jsx"));
 const Dashboard = lazy(() => import("./pages/KrishnaDen/Dashboard.jsx"));
+const UserManagement = lazy(() => import("./pages/KrishnaDen/UserManagement.jsx"));
+const MessageManagement = lazy(() => import("./pages/KrishnaDen/MessageManagement.jsx"));
+const ChatManagement = lazy(() => import("./pages/KrishnaDen/ChatManagement.jsx"));
+
 
 // Just a dummy user for testing purposes.
 let user = true;
@@ -32,6 +36,9 @@ const App = () => {
           </Route>
           <Route path="/krishnaden" element={<AdminLogin/>}/>
           <Route path="/krishnaden/dashboard" element={<Dashboard/>}/>
+          <Route path="/krishnaden/user-management" element={<UserManagement/>}/>
+          <Route path="/krishnaden/message-management" element={<MessageManagement/>}/>
+          <Route path="/krishnaden/chat-management" element={<ChatManagement/>}/>
           <Route path="*" element={<NotFound/>}/>
         </Routes>
       </Suspense>

@@ -5,17 +5,6 @@ export const textDark = `rgb(56,113,132)`;
 export const textDarkA = (transparency) => `rgba(56,113,132, ${transparency})`;
 
 
-const paletteCheck= {
-  CP1: `rgba(3, 4, 94, 0.8)`,
-  CP2: `rgba(2, 62, 138, 0.8)`,
-  CP3: `rgba(0, 119, 182, 0.8)`,
-  CP4: `rgba(0, 150, 199, 0.8)`,
-  CP5: `rgba(0, 180, 216, 0.8)`,
-  CP6: `rgba(72, 202, 228, 0.8)`,
-  CP7: `rgba(144, 224, 239, 0.8)`,
-  CP8: `rgba(173, 232, 244, 0.8)`,
-  CP9: `rgba(202, 240, 248, 0.8)`,
-};
 export const colorPalette = (transparency = 1) => ({
   CP1: `rgba(3, 4, 94, ${transparency})`,
   CP2: `rgba(2, 62, 138, ${transparency})`,

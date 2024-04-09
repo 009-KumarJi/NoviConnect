@@ -1,12 +1,12 @@
 import React from 'react';
 import AdminLayout from "../../components/layout/AdminLayout.jsx";
 
-const Dashboard = () => {
+const MessageManagement = () => {
   return (
     <AdminLayout>
-      Dashboard
+      Message Management
     </AdminLayout>
   );
 };
 
-export default Dashboard;
+export default MessageManagement;
