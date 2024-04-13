@@ -1,6 +1,7 @@
-import {styled} from "@mui/material";
+import {styled, Paper as PaperComponent} from "@mui/material";
 import {Link as LinkComponent} from "react-router-dom";
 import {colorPalette, cursorHoveringChatName} from "../../constants/color.js";
+
 
 export const VisuallyHiddenInput = styled('input')({
   border: 0,
@@ -33,4 +34,35 @@ export const InputBox = styled('input')`
   border-radius: 1.5rem;
   box-sizing: border-box;
   background-color: ${colorPalette(0.2).CP5};
+`;
+
+export const SearchField = styled('input')`
+  width: 20vmax;
+  padding: 1rem 2rem;
+  border: none;
+  outline: none;
+  border-radius: 1.5rem;
+  background-color: ${colorPalette(0.4).CP4};
+  font-size: 1.1rem;
+  color: ${colorPalette().CP9};
+`;
+
+export const CurvedButton = styled('button')`
+  padding: 1rem 2rem;
+  border: none;
+  outline: none;
+  border-radius: 1.5rem;
+  background-color: ${colorPalette(0.4).CP4};
+  font-size: 1.1rem;
+  color: ${colorPalette().CP9};
+  cursor: pointer;
+  &:hover {
+    background-color: ${colorPalette(0.2).CP5};
+  }
+`;
+
+export const DarkPaper = styled(PaperComponent)`
+  background-color: ${colorPalette(0.4).CP3};
+  color: ${colorPalette().CP9};
+  box-shadow: 0px 3px 2px ${colorPalette(0.5).CP6};
 `;

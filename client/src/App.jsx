@@ -18,7 +18,7 @@ const ChatManagement = lazy(() => import("./pages/KrishnaDen/ChatManagement.jsx"
 
 
 // Just a dummy user for testing purposes.
-let user = true;
+let user = false;
 
 const App = () => {
   return (
@@ -30,7 +30,7 @@ const App = () => {
             <Route path="/chat/:chatID" element={<Chat/>}/>
             <Route path="/groups" element={<Groups/>}/>
           </Route>
-          <Route element={<ProtectRoute user={!user}/>}>
+          <Route element={<ProtectRoute user={true}/>}>
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<SignUpForm/>}/>
           </Route>

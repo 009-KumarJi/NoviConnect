@@ -1,7 +1,7 @@
 import React, {useRef} from 'react'
 import AppLayout from "../components/layout/AppLayout.jsx";
 import {IconButton, Stack} from "@mui/material";
-import {colorPalette, darkPaleBlue} from "../constants/color.js";
+import {colorPalette} from "../constants/color.js";
 import {AttachFile as AttachFileIcon, Send as SendIcon} from "@mui/icons-material";
 import {InputBox} from "../components/styles/StyledComponents.jsx";
 import FileMenu from "../components/dialogs/FileMenu.jsx";
