@@ -38,7 +38,7 @@
   
 - **Admin Dashboard**
 
-    <img src="src/assets/images/pages_snapshots/Dashboard.png" width="426px" height="240px">
+    <img src="src/assets/images/pages_snapshots/DashBoard.png" width="426px" height="240px">
 
 - **Admin Manage Users**
     
