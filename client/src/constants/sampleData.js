@@ -320,5 +320,526 @@ export const sampleDashboardData = {
       groups: 5,
       joinedAt: "2024-04-08T17:00:00.000Z",
     },
-  ]
+  ],
+  chats: [
+    {
+      _id: "1",
+      avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Charlie&backgroundColor=ffdfbf"],
+      name: "Charlie's Angels",
+      totalMembers: 3,
+      members: [
+        {
+          _id: "1",
+          avatar: "https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White&backgroundColor=ffdfbf",
+        },
+        {
+          _id: "2",
+          avatar: "https://api.dicebear.com/8.x/adventurer/svg?seed=Riley_Reid&backgroundColor=ffdfbf",
+        },
+        {
+          _id: "3",
+          avatar: "https://api.dicebear.com/8.x/adventurer/svg?seed=Jenna_Jameson&backgroundColor=ffdfbf",
+        },
+      ],
+      totalMessages: 10,
+      creator: {
+        name: "Charlie",
+        avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Charlie&backgroundColor=ffdfbf"],
+      },
+    },
+    {
+      _id: "2",
+      avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=John&backgroundColor=ffdfbf"],
+      name: "John's Gang",
+      totalMembers: 5,
+      members: [
+        {
+          _id: "1",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White"],
+        },
+        {
+          _id: "2",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Riley_Reid"],
+        },
+        {
+          _id: "3",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jenna_Jameson"],
+        },
+        {
+          _id: "4",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Lisa_Ann"],
+        },
+        {
+          _id: "5",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Sasha_Grey"],
+        },
+
+      ],
+      totalMessages: 20,
+      creator: {
+        name: "John",
+        avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=John"],
+      },
+    },
+    {
+      _id: "3",
+      avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jane"],
+      name: "Jane's Family",
+      totalMembers: 7,
+      members: [
+        {
+          _id: "1",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White"],
+        },
+        {
+          _id: "2",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Riley_Reid"],
+        },
+        {
+          _id: "3",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jenna_Jameson"],
+        },
+        {
+          _id: "4",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Lisa_Ann"],
+        },
+        {
+          _id: "5",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Sasha_Grey"],
+        },
+        {
+          _id: "6",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Mia_Khalifa"],
+        },
+        {
+          _id: "7",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Abella_Danger"],
+        },
+      ],
+      totalMessages: 30,
+      creator: {
+        name: "Jane",
+        avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jane"],
+      },
+    },
+    {
+      _id: "4",
+      avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jenny"],
+      name: "Jenny's Friends",
+      totalMembers: 9,
+      members: [
+        {
+          _id: "1",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White"],
+        },
+        {
+          _id: "2",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Riley_Reid"],
+        },
+        {
+          _id: "3",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jenna_Jameson"],
+        },
+        {
+          _id: "4",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Lisa_Ann"],
+        },
+        {
+          _id: "5",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Sasha_Grey"],
+        },
+        {
+          _id: "6",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Mia_Khalifa"],
+        },
+        {
+          _id: "7",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Abella_Danger"],
+        },
+        {
+          _id: "8",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Madison_Ivy"],
+        },
+        {
+          _id: "9",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Kendra_Sunderland"],
+        },
+      ],
+      totalMessages: 40,
+      creator: {
+        name: "Jenny",
+        avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jenny"],
+      },
+    },
+    {
+      _id: "5",
+      avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Julia"],
+      name: "Julia's Group",
+      totalMembers: 11,
+      members: [
+        {
+          _id: "1",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White"],
+        },
+        {
+          _id: "2",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Riley_Reid"],
+        },
+        {
+          _id: "3",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jenna_Jameson"],
+        },
+        {
+          _id: "4",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Lisa_Ann"],
+        },
+        {
+          _id: "5",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Sasha_Grey"],
+        },
+        {
+          _id: "6",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Mia_Khalifa"],
+        },
+        {
+          _id: "7",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Abella_Danger"],
+        },
+        {
+          _id: "8",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Madison_Ivy"],
+        },
+        {
+          _id: "9",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Kendra_Sunderland"],
+        },
+        {
+          _id: "10",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jesse_Jane"],
+        },
+        {
+          _id: "11",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jesse_Jane"],
+        },
+
+      ],
+      totalMessages: 50,
+      creator: {
+        name: "Julia",
+        avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Julia"],
+      },
+    },
+    {
+      _id: "6",
+      avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jack"],
+      name: "Jack's Team",
+      totalMembers: 13,
+      members: [
+        {
+          _id: "1",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White"],
+        },
+        {
+          _id: "2",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Riley_Reid"],
+        },
+        {
+          _id: "3",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jenna_Jameson"],
+        },
+        {
+          _id: "4",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Lisa_Ann"],
+        },
+        {
+          _id: "5",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Sasha_Grey"],
+        },
+        {
+          _id: "6",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Mia_Khalifa"],
+        },
+        {
+          _id: "7",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Abella_Danger"],
+        },
+        {
+          _id: "8",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Madison_Ivy"],
+        },
+        {
+          _id: "9",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Kendra_Sunderland"],
+        },
+        {
+          _id: "10",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jesse_Jane"],
+        },
+        {
+          _id: "11",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jesse_Jane"],
+        },
+        {
+          _id: "12",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jesse_Jane"],
+        },
+        {
+          _id: "13",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jesse_Jane"],
+        },
+      ],
+      totalMessages: 60,
+      creator: {
+        name: "Jack",
+        avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jack"],
+      },
+    },
+    {
+      _id: "7",
+      avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jill"],
+      name: "Jill's Squad",
+      totalMembers: 13,
+      members: [
+        {
+          _id: "1",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White"],
+        },
+        {
+          _id: "2",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Riley_Reid"],
+        },
+        {
+          _id: "3",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jenna_Jameson"],
+        },
+        {
+          _id: "4",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Lisa_Ann"],
+        },
+        {
+          _id: "5",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Sasha_Grey"],
+        },
+        {
+          _id: "6",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Mia_Khalifa"],
+        },
+        {
+          _id: "7",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Abella_Danger"],
+        },
+        {
+          _id: "8",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Madison_Ivy"],
+        },
+        {
+          _id: "9",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Kendra_Sunderland"],
+        },
+        {
+          _id: "10",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jesse_Jane"],
+        },
+        {
+          _id: "11",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jesse_Jane"],
+        },
+        {
+          _id: "12",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jesse_Jane"],
+        },
+        {
+          _id: "13",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jesse_Jane"],
+        },
+      ],
+      totalMessages: 70,
+      creator: {
+        name: "Jill",
+        avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jill"],
+      },
+    },
+    {
+      _id: "8",
+      avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=James"],
+      name: "James' Friends",
+      totalMembers: 9,
+      members: [
+        {
+          _id: "1",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White"],
+        },
+        {
+          _id: "2",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Riley_Reid"],
+        },
+        {
+          _id: "3",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jenna_Jameson"],
+        },
+        {
+          _id: "4",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Lisa_Ann"],
+        },
+        {
+          _id: "5",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Sasha_Grey"],
+        },
+        {
+          _id: "6",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Mia_Khalifa"],
+        },
+        {
+          _id: "7",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Abella_Danger"],
+        },
+        {
+          _id: "8",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Madison_Ivy"],
+        },
+        {
+          _id: "9",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Kendra_Sunderland"],
+        },
+      ],
+      totalMessages: 80,
+      creator: {
+        name: "James",
+        avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=James"],
+      },
+    },
+    {
+      _id: "9",
+      avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jasmine"],
+      name: "Jasmine's Group",
+      totalMembers: 9,
+      members: [
+        {
+          _id: "1",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White"],
+        },
+        {
+          _id: "2",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Riley_Reid"],
+        },
+        {
+          _id: "3",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jenna_Jameson"],
+        },
+        {
+          _id: "4",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Lisa_Ann"],
+        },
+        {
+          _id: "5",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Sasha_Grey"],
+        },
+        {
+          _id: "6",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Mia_Khalifa"],
+        },
+        {
+          _id: "7",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Abella_Danger"],
+        },
+        {
+          _id: "8",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Madison_Ivy"],
+        },
+        {
+          _id: "9",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Kendra_Sunderland"],
+        },
+      ],
+      totalMessages: 90,
+      creator: {
+        name: "Jasmine",
+        avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jasmine"],
+      },
+    },
+    {
+      _id: "10",
+      avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jade"],
+      name: "Jade's Team",
+      totalMembers: 4,
+      members: [
+        {
+          _id: "1",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Angela_White"],
+        },
+        {
+          _id: "2",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Riley_Reid"],
+        },
+        {
+          _id: "3",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Jenna_Jameson"],
+        },
+        {
+          _id: "4",
+          avatar: ["https://api.dicebear.com/8.x/adventurer/svg?seed=Lisa_Ann"],
+        },
+      ],
+      totalMessages: 100,
+      creator: {
+        name: "Jade",
+        avatar: ["https://api.dicebear.com/8.x/open-peeps/svg?seed=Jade"],
+      },
+    },
+  ],
+  messages: [
+    {
+      _id: "ucabvbao",
+      attachments: [],
+      groupChat: false,
+      content: "Hello, how are you?",
+      sender: {
+        avatar: "https://api.dicebear.com/8.x/bottts/svg?seed=Tigger&backgroundType=gradientLinear&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4",
+        name: "Krishna",
+      },
+      chat: "chatID",
+      createdAt: "2024-04-01T14:48:00.000Z",
+    },
+    {
+      _id: "ucabviavba",
+      attachments: [],
+      groupChat: false,
+      content: "Fine, how are you?",
+      sender: {
+        avatar: "https://api.dicebear.com/8.x/bottts/svg?seed=Tigger&backgroundType=gradientLinear&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4",
+        name: "Krishna",
+      },
+      chat: "chatID",
+      createdAt: "2024-04-01T14:48:00.000Z",
+    },
+    {
+      _id: "ucabviavbao",
+      attachments: [],
+      groupChat: false,
+      content: "Hello, how are you?",
+      sender: {
+        avatar: "https://api.dicebear.com/8.x/bottts/svg?seed=Tigger&backgroundType=gradientLinear&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4",
+        name: "Krishna",
+      },
+      chat: "chatID",
+      createdAt: "2024-04-01T14:48:00.000Z",
+    },
+    {
+      _id: "ucabviavbavbao",
+      attachments: [
+        {
+          public_id: "bhbvsd",
+          url: "https://api.dicebear.com/8.x/bottts/svg?seed=Chester&backgroundType=gradientLinear&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4",
+        },
+      ],
+      groupChat: false,
+      content: "",
+      sender: {
+        avatar: "https://api.dicebear.com/8.x/bottts/svg?seed=Tigger&backgroundType=gradientLinear&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4",
+        name: "Krishna",
+      },
+      chat: "chatID",
+      createdAt: "2024-04-01T14:48:00.000Z",
+    },
+  ],
 };

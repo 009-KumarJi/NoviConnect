@@ -26,7 +26,7 @@ const Search = () => {
           value={search.value}
           onChange={search.changeHandler}
           variant={"outlined"}
-          size={"small"}
+          size="small"
           InputProps={{
             startAdornment: (
               <InputAdornment position={"start"}>

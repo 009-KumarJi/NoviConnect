@@ -4,7 +4,7 @@ import {useInputValidation} from "6pp";
 import {colorPalette} from "../../constants/color.js";
 import {Navigate} from "react-router-dom";
 
-const isAdmin = false;
+const isAdmin = true;
 
 const KrishnaDenLogin = () => {
   const secretKey = useInputValidation("");
