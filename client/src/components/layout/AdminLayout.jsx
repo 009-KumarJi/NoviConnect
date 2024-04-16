@@ -52,7 +52,7 @@ const SideBar = ({width = '100vw', drawer = false}) => {
     spacing={"3rem"}
   >
     <Typography variant={"h3"}>NoviConnect</Typography>
-    <Stack spacing={"1rem"} >
+    <Stack spacing={"1rem"}>
       {
         adminTabs.map((tab) => (
           <Link key={tab.path} to={tab.path} sx={{
@@ -90,7 +90,7 @@ const SideBar = ({width = '100vw', drawer = false}) => {
 }
 
 const AdminLayout = ({children}) => {
-  if(!isAdmin) return <Navigate to={'/krishnaden'}/>;
+  if (!isAdmin) return <Navigate to={'/krishnaden'}/>;
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleMobile = () => setIsSidebarOpen((prevState) => !prevState);
