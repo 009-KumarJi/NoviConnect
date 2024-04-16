@@ -1,6 +1,5 @@
 import React, {lazy, Suspense, useState} from 'react';
 import {AppBar, Backdrop, Box, IconButton, Toolbar, Tooltip, Typography} from "@mui/material";
-import backgroundImage from "../../assets/images/chat-paper-back.jpg";
 import {
   Add as AddIcon,
   Group as GroupIcon,
@@ -10,7 +9,6 @@ import {
   Search as SearchIcon
 } from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
-import LayoutLoader from "./Loaders.jsx";
 import {colorPalette, textDark} from "../../constants/color.js";
 
 
@@ -50,7 +48,8 @@ const Header = () => {
   return (
     <>
       <Box sx={{flexGrow: 1}} height={"4rem"}>
-        <AppBar position="static" sx={{ backgroundImage: `linear-gradient(90deg, ${colorPalette().CP8}, rgb(65,125,143))` }}>
+        <AppBar position="static"
+                sx={{backgroundImage: `linear-gradient(90deg, ${colorPalette().CP8}, rgb(65,125,143))`}}>
           <Toolbar>
             <Typography color={textDark} variant={"h6"} fontWeight={"bold"} sx={{display: {xs: "none", sm: "block"}}}>
               Novi<span style={{

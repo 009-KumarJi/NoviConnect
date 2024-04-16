@@ -44,8 +44,8 @@ const Groups = () => {
 
   useEffect(() => {
     if (chatID) {
-      setGroupName(`Lund ${chatID}`);
-      setGroupNameUpdatedValue(`Lund ${chatID}`);
+      setGroupName(`Group ${chatID}`);
+      setGroupNameUpdatedValue(`Group ${chatID}`);
     }
     return () => {
       setGroupName("");

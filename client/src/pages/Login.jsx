@@ -2,7 +2,8 @@ import React from 'react'
 import {Button, Container, Paper, TextField, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useInputValidation} from "6pp";
-import backgroundImage from "../assets/images/chat-background.jpg";
+import {colorPalette} from "../constants/color.js";
+
 const Login = () => {
   const handleSubmitSignIn = (event) => {
     event.preventDefault();
@@ -21,7 +22,7 @@ const Login = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: `radial-gradient(circle, rgba(0,212,255,1) 35%, rgba(62,125,143,0.6167717086834734) 100%)`,
       }}
     >
       <Container
@@ -32,7 +33,8 @@ const Login = () => {
           flexDirection: "column",
           alignItems: "center"
         }}>
-        <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}>NoviConnect</Typography>
+        <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}
+                    color={colorPalette(1).CP2}>NoviConnect</Typography>
         <Paper
           style={{
             backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",
