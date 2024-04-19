@@ -15,6 +15,7 @@ const SignUpForm = () => {
   const email = useInputValidation("");
   const password = useStrongPassword();
   const dob = useInputValidation("");
+  const bio = useInputValidation("");
 
   const handleSubmitSignUp = (event) => {
     event.preventDefault();
@@ -38,7 +39,7 @@ const SignUpForm = () => {
     <div
       style={{
         backgroundImage: `radial-gradient(circle, rgba(0,212,255,1) 35%, rgba(62,125,143,0.6167717086834734) 100%)`,
-        height: "100vh",
+        height: "100%",
       }}
     >
       <Container
@@ -46,7 +47,8 @@ const SignUpForm = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center"
+          alignItems: "center",
+
         }}
       >
         <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}
@@ -145,6 +147,19 @@ const SignUpForm = () => {
                 {password.error}
               </Typography>
             )}
+            <TextField
+              size="small"
+              fullWidth
+              label={"Bio"}
+              type={"text"}
+              margin={"normal"}
+              variant={"outlined"}
+              value={bio.value}
+              onChange={bio.changeHandler}
+              multiline
+              required={true}
+              rows={4}
+            />
             <Button sx={{marginTop: "1rem"}}
                     variant={"contained"}
                     color={"primary"}
