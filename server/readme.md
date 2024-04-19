@@ -1,18 +1,27 @@
-# Backend Information
+# Backend Architecture
 
-## Backend Structure
-- **server.js**: The main file of the backend. It contains the server configuration and the routes.
-- **routes/**: Contains the routes of the backend.
-- **models/**: Contains the models of the backend.
-  - **/user.model.js**: Contains the user Schema.
-  - **/chat.model.js**: Contains the chat Schema.
-  - **/message.model.js**: Contains the message Schema.
-  - **/request.model.js**: Contains the Request Schema.
-- **controllers/**: Contains the controllers of the backend.
-  - **/user.controller.js**: Contains the user controller like login, register, etc.  
-- **middlewares/**: Contains the middlewares of the backend.
-  - **/multer.middleware.js**: Contains the multer middleware for file upload. It is used for uploading the files.
-- **seeders/**: Contains the seeders of the backend.
-- **utils/**: Contains the utility functions of the backend.
-  - **/features.js**: Contains the mongoDB connection function.
-- **constants/**: Contains the constants of the backend.
+## Structure and Components
+
+- **`server.js`**: The main entry point of the backend. It sets up the server configuration and defines the application routes.
+
+- **`routes/`**: This directory houses all the route definitions for the backend.
+  - **`user.routes.js`**: Contains the routes for user-related operations such as login and registration.
+
+- **`models/`**: This directory contains the data models for the application. Each file corresponds to a specific model:
+  - **`user.model.js`**: Defines the User schema.
+  - **`chat.model.js`**: Defines the Chat schema.
+  - **`message.model.js`**: Defines the Message schema.
+  - **`request.model.js`**: Defines the Request schema.
+
+- **`controllers/`**: This directory contains the controller logic for handling specific routes. For example:
+  - **`user.controller.js`**: Handles user-related operations such as login and registration.
+
+- **`middlewares/`**: This directory contains middleware functions that process incoming requests before they reach the route handlers. For instance:
+  - **`multer.middleware.js`**: A middleware for handling file uploads.
+
+- **`seeders/`**: This directory contains scripts for seeding the database with initial data.
+
+- **`utils/`**: This directory contains utility functions that are used across the application. For example:
+  - **`features.js`**: Includes a function for establishing a connection to the MongoDB database.
+
+- **`constants/`**: This directory contains constant values that are used throughout the backend.
