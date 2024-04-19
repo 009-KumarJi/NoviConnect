@@ -24,6 +24,7 @@
   - [`error.middleware.js`](./middlewares/error.middleware.js): A middleware for handling errors that occur during request processing.
 
 - `seeders/`: This directory contains scripts for seeding the database with initial testing data.
+  - [`user.seeder.js`](./seeders/user.seeder.js): Seeds the database with creating new dummy users.
 
 - `utils/`: This directory contains utility functions that are used across the application. 
   - [`features.js`](./utils/features.js): Includes a function for: 
