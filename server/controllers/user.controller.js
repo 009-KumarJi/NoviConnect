@@ -1,5 +1,8 @@
 import {User} from "../models/user.model.js";
-import {connectDB, sendToken} from "../utils/features.js";
+import {sendToken} from "../utils/features.js";
+import {compare} from "bcrypt";
+import {TryCatch} from "../middlewares/error.middleware.js";
+import {ErrorHandler} from "../utils/utility.js";
 
 const newUser = async (req, res) => {
 
@@ -21,9 +24,20 @@ const newUser = async (req, res) => {
   sendToken(res, user, 201, "User created successfully!");
 };
 
-const login = (req, res) => {
-  connectDB();
-  res.send("Login");
+const login = TryCatch(async (req, res, next) => {
+  const {username, password} = req.body;
+
+  const user = await User.findOne({username}).select("+password");
+  if (!user) return next(new ErrorHandler("Invalid credentials", 401));
+
+  const isPasswordCorrect = await compare(password, user.password);
+  if (!isPasswordCorrect) return next(new ErrorHandler("Invalid credentials", 401));
+
+  sendToken(res, user, 200, `Welcome back, ${user.name}!`);
+});
+
+// TODO: Implement the getMyProfile function
+const getMyProfile = async (req, res) => {
 };
 
 

@@ -2,6 +2,7 @@ import express from 'express';
 import userRoutes from "./routes/user.routes.js";
 import dotenv from 'dotenv';
 import {connectDB} from "./utils/features.js";
+import {errorMiddleware} from "./middlewares/error.middleware.js";
 
 dotenv.config({path: "./.env"});
 
@@ -18,6 +19,8 @@ app.use("/user", userRoutes);
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
+
+app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

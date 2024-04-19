@@ -22,6 +22,11 @@
 - **`seeders/`**: This directory contains scripts for seeding the database with initial data.
 
 - **`utils/`**: This directory contains utility functions that are used across the application. 
-  - **`features.js`**: Includes a function for establishing a connection to the MongoDB database.
+  - **`features.js`**: Includes a function for: 
+    - establishing a connection to the MongoDB database.
+    - creating token for user authentication and saving it in a cookie.
+  - **`utility.js`**: Includes utility function for Custom Error Handling.
 
 - **`constants/`**: This directory contains constant values that are used throughout the backend.
+
+- **`.env`**: Contains environment variables such as the database connection string, JWT secret key, etc.
