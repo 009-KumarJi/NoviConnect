@@ -19,7 +19,6 @@ const connectDB = (uri) => {
       throw new Error(err);
     });
 }
-
 const sendToken = (res, user, code, message) => {
   const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
   return res
@@ -30,5 +29,8 @@ const sendToken = (res, user, code, message) => {
     message,
   });
 };
+const emmitEvent = (req, event, users, data) => {
+  console.log("Emitting event: ", event);
+};
 
-export {connectDB, sendToken, cookieOptions};
+export {connectDB, sendToken, cookieOptions, emmitEvent};

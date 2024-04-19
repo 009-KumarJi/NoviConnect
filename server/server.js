@@ -2,9 +2,12 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from "cookie-parser";
 
-import userRoutes from "./routes/user.routes.js";
 import {connectDB} from "./utils/features.js";
 import {errorMiddleware} from "./middlewares/error.middleware.js";
+
+import userRoutes from "./routes/user.routes.js";
+import chatRoutes from "./routes/chat.routes.js";
+import {createUsers} from "./seeders/user.seeder.js";
 
 dotenv.config({path: "./.env"});
 
@@ -19,6 +22,7 @@ app.use(cookieParser()); // Parse cookies attached to the client request
 
 // User routes
 app.use("/user", userRoutes);
+app.use("/chat", chatRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

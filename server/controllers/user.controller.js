@@ -56,5 +56,14 @@ const logout = TryCatch(async (req, res) => {
   });
 });
 
+const searchUser = TryCatch(async (req, res) => {
+  const {name} = req.query;
+  // const users = await User.find({name: {$regex: name, $options: "i"}}).select("name username avatar");
+  return res.status(200).json({
+    success: true,
+    message: `Users found with name: ${name}`,
+  });
+});
 
-export {login, newUser, getMyProfile, logout};
+
+export {login, newUser, getMyProfile, logout, searchUser};
