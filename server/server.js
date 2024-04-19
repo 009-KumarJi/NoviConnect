@@ -10,6 +10,8 @@ const port = process.env.PORT || 3000;
 
 connectDB(process.env.MONGO_URI);
 
+// Using middleware to parse the body of the request
+app.use(express.json());
 
 app.use("/user", userRoutes);
 
