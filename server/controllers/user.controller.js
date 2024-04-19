@@ -1,5 +1,6 @@
 // TODO: Create a new user and save it to the database and save in cookie
 import {User} from "../models/user.model.js";
+import {connectDB} from "../utils/features.js";
 
 const newUser = async (req, res) => {
   const avatar = {
@@ -18,7 +19,8 @@ const newUser = async (req, res) => {
 };
 
 const login = (req, res) => {
-  res.send("Hello World");
+  connectDB();
+  res.send("Login");
 };
 
 
