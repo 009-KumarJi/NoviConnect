@@ -18,6 +18,8 @@
 
 - `middlewares/`: This directory contains middleware functions that process incoming requests before they reach the route handlers.
   - [`multer.middleware.js`](./middlewares/multer.middleware.js): A middleware for handling file uploads.
+  - [`auth.middleware.js`](./middlewares/auth.middleware.js): A middleware for ensuring that only authenticated users can access certain routes.
+  - [`error.middleware.js`](./middlewares/error.middleware.js): A middleware for handling errors that occur during request processing.
 
 - `seeders/`: This directory contains scripts for seeding the database with initial data.
 
@@ -25,6 +27,7 @@
   - [`features.js`](./utils/features.js): Includes a function for: 
     - establishing a connection to the MongoDB database.
     - creating token for user authentication and saving it in a cookie.
+    - Cookie Options config
   - [`utility.js`](./utils/utility.js): Includes utility function for Custom Error Handling.
 
 - `constants/`: This directory contains constant values that are used throughout the backend.

@@ -1,5 +1,5 @@
 import {User} from "../models/user.model.js";
-import {sendToken} from "../utils/features.js";
+import {cookieOptions, sendToken} from "../utils/features.js";
 import {compare} from "bcrypt";
 import {TryCatch} from "../middlewares/error.middleware.js";
 import {ErrorHandler} from "../utils/utility.js";
@@ -33,12 +33,28 @@ const login = TryCatch(async (req, res, next) => {
   const isPasswordCorrect = await compare(password, user.password);
   if (!isPasswordCorrect) return next(new ErrorHandler("Invalid credentials", 401));
 
-  sendToken(res, user, 200, `Welcome back, ${user.name}!`);
+  sendToken(res, user, 200, `User Login Successful for ${user.name}!`);
 });
 
-// TODO: Implement the getMyProfile function
-const getMyProfile = async (req, res) => {
-};
+const getMyProfile = TryCatch(async (req, res) => {
+
+  const user = await User.findById(req.userId).select("-password");
+
+  res.status(200).json({
+    success: true,
+    message: "User profile fetched successfully",
+    user,
+  });
+});
+
+const logout = TryCatch(async (req, res) => {
+  return res.status(200)
+    .cookie("nc-token", "", {...cookieOptions, maxAge: 0})
+    .json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
 
 
-export {login, newUser};
+export {login, newUser, getMyProfile, logout};
