@@ -2,9 +2,10 @@ import {TryCatch} from "../middlewares/error.middleware.js";
 import {ErrorHandler} from "../utils/utility.js";
 import {Chat} from "../models/chat.model.js";
 import {emmitEvent} from "../utils/features.js";
-import {ALERT, REFETCH_CHATS} from "../constants/events.constant.js";
+import {ALERT, NEW_ATTACHMENT, NEW_MESSAGE_ALERT, REFETCH_CHATS} from "../constants/events.constant.js";
 import {getOtherMember} from "../lib/chat.helper.js";
 import {User} from "../models/user.model.js";
+import {Message} from "../models/message.model.js";
 
 const newGroupChat = TryCatch(async (req, res, next) => {
   const {name, members} = req.body;
@@ -149,5 +150,54 @@ const leaveGroupChat = TryCatch(async (req, res, next) => {
     message: "You Left group chat successfully",
   });
 });
+const sendAttachments = TryCatch(async (req, res, next) => {
+  const {ChatId} = req.body;
 
-export {newGroupChat, getMyChats, getMyGroups, addMembers, removeMember, leaveGroupChat};
+  const [chat, currUser] = await Promise.all([
+    Chat.findById(ChatId),
+    User.findById(req.userId, "name"),
+  ]);
+  if (!chat) return next(new ErrorHandler("Chat not found", 404));
+  if (!chat.members.includes(req.userId)) return next(new ErrorHandler("You are not a member of this chat", 422));
+
+  const files = req.files || [];
+  if (!files.length) return next(new ErrorHandler("Please provide attachments", 422));
+
+  // Upload files to cloudinary
+  // dummy attachments for now
+  const attachments = [];
+
+  const messageForDB = {
+    content: "",
+    attachments,
+    sender: currUser._id,
+    chat: ChatId,
+  };
+  const messageForRealTime = {
+    ...messageForDB,
+    sender: {
+      _id: currUser._id,
+      name: currUser.name,
+    },
+  };
+  const message = await Message.create(messageForDB);
+
+
+  emmitEvent(req, NEW_ATTACHMENT, chat.members, {message: messageForRealTime, ChatId});
+  emmitEvent(req, NEW_MESSAGE_ALERT, chat.members, {ChatId});
+
+  return res.status(200).json({
+    success: true,
+    message,
+  });
+});
+
+export {
+  newGroupChat,
+  getMyChats,
+  getMyGroups,
+  addMembers,
+  removeMember,
+  leaveGroupChat,
+  sendAttachments,
+};

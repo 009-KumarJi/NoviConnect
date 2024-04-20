@@ -6,7 +6,8 @@ import {
   getMyGroups,
   addMembers,
   removeMember,
-  leaveGroupChat
+  leaveGroupChat,
+  sendAttachments
 } from "../controllers/chat.controller.js";
 import {attachmentMulter} from "../middlewares/multer.middleware.js";
 
@@ -25,6 +26,7 @@ app.put("/removeMember", removeMember);
 // TODO: 1. Send Attachments 2. Get Messages 3. Get Chat Details 4. Rename Chat 5. Delete Chat
 
 app.delete("/leave/:ChatId", leaveGroupChat);
+app.post("/message", attachmentMulter, sendAttachments);
 
 
 export default app;

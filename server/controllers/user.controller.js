@@ -23,7 +23,6 @@ const newUser = async (req, res) => {
   });
   sendToken(res, user, 201, "User created successfully!");
 };
-
 const login = TryCatch(async (req, res, next) => {
   const {username, password} = req.body;
 
@@ -35,7 +34,6 @@ const login = TryCatch(async (req, res, next) => {
 
   sendToken(res, user, 200, `User Login Successful for ${user.name}!`);
 });
-
 const getMyProfile = TryCatch(async (req, res) => {
 
   const user = await User.findById(req.userId).select("-password");
@@ -46,7 +44,6 @@ const getMyProfile = TryCatch(async (req, res) => {
     user,
   });
 });
-
 const logout = TryCatch(async (req, res) => {
   return res.status(200)
     .cookie("nc-token", "", {...cookieOptions, maxAge: 0})
@@ -55,7 +52,6 @@ const logout = TryCatch(async (req, res) => {
     message: "Logged out successfully",
   });
 });
-
 const searchUser = TryCatch(async (req, res) => {
   const {name} = req.query;
   // const users = await User.find({name: {$regex: name, $options: "i"}}).select("name username avatar");
