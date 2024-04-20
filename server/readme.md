@@ -29,8 +29,10 @@
 - `utils/`: This directory contains utility functions that are used across the application. 
   - [`features.js`](./utils/features.js): Includes a function for: 
     - establishing a connection to the MongoDB database.
-    - creating token for user authentication and saving it in a cookie.
-    - Cookie Options config
+    - generating a JWT token for a user and setting it in a cookie.
+    - sets the configuration for cookies.
+    - logs a message to the console indicating that a specific event is being emitted.
+    - delete files from Cloudinary.
   - [`utility.js`](./utils/utility.js): Includes utility function for Custom Error Handling.
 
 - `constants/`: This directory contains constant values that are used throughout the backend.
