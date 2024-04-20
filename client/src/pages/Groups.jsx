@@ -20,7 +20,7 @@ const AddMemberDialog = lazy(() => import("../components/dialogs/AddMemberDialog
 
 const Groups = () => {
   const navigate = useNavigate();
-  const chatID = useSearchParams()[0].get("group");
+  const ChatId = useSearchParams()[0].get("group");
   const isAddMember = false;
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -43,16 +43,16 @@ const Groups = () => {
   };
 
   useEffect(() => {
-    if (chatID) {
-      setGroupName(`Group ${chatID}`);
-      setGroupNameUpdatedValue(`Group ${chatID}`);
+    if (ChatId) {
+      setGroupName(`Group ${ChatId}`);
+      setGroupNameUpdatedValue(`Group ${ChatId}`);
     }
     return () => {
       setGroupName("");
       setGroupNameUpdatedValue("");
       setIsEdit(false);
     }
-  }, [chatID]);
+  }, [ChatId]);
 
 
   const IconBtns = <>
@@ -126,7 +126,7 @@ const Groups = () => {
         item={true} sm={4}
         sx={{display: {xs: "none", sm: "block"}}}
       >
-        <GroupsList myGroups={sampleChats} chatID={chatID}/>
+        <GroupsList myGroups={sampleChats} ChatId={ChatId}/>
       </Grid>
       <Grid item={true} xs={12} sm={8} sx={{
         display: "flex",
@@ -204,13 +204,13 @@ const Groups = () => {
 
       <Drawer open={isMobileOpen} onClose={handleMobileClose} anchor={"right"}
               sx={{display: {xs: "block", sm: "none"}, backgroundColor: `${colorPalette(0.2).CP3}`}}>
-        <GroupsList width="50vw" myGroups={sampleChats} chatID={chatID}/>
+        <GroupsList width="50vw" myGroups={sampleChats} ChatId={ChatId}/>
       </Drawer>
     </Grid>
   )
 }
 
-const GroupsList = ({width = "100%", myGroups = [], chatID}) => (
+const GroupsList = ({width = "100%", myGroups = [], ChatId}) => (
   <Stack width={width} bgcolor={colorPalette(0.4).CP3} height={"100vh"} overflow={"auto"} sx={{
     "&::-webkit-scrollbar": {
       width: "0.6rem",
@@ -226,17 +226,17 @@ const GroupsList = ({width = "100%", myGroups = [], chatID}) => (
   }}>
     {
       (myGroups.length > 0)
-        ? myGroups.map((group) => <GroupListItem group={group} chatID={chatID} key={group._id}/>)
+        ? myGroups.map((group) => <GroupListItem group={group} ChatId={ChatId} key={group._id}/>)
         : <Typography textAlign="center" padding="1rem">No groups available</Typography>
     }
   </Stack>
 );
 
-const GroupListItem = memo(({group, chatID}) => {
+const GroupListItem = memo(({group, ChatId}) => {
   const {name, avatar, _id} = group;
-  return <Link to={`?group=${_id}`} onClick={(e) => (chatID === _id) && e.preventDefault()}>
+  return <Link to={`?group=${_id}`} onClick={(e) => (ChatId === _id) && e.preventDefault()}>
     <Stack direction="row" spacing="1rem" alignItems="center" sx={{
-      color: (_id===chatID) ? `${colorPalette(1).CP4}` : "unset",
+      color: (_id===ChatId) ? `${colorPalette(1).CP4}` : "unset",
 
     }}>
       <AvatarCard avatar={avatar}/>

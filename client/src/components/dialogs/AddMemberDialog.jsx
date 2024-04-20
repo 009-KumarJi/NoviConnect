@@ -3,7 +3,7 @@ import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typogr
 import {sampleUsers} from "../../constants/sampleData.js";
 import UserItem from "../shared/UserItem.jsx";
 
-const AddMemberDialog = ({addMember, isLoadingAddMember, chatID}) => {
+const AddMemberDialog = ({addMember, isLoadingAddMember, ChatId}) => {
   const [members, setMembers] = useState(sampleUsers);
   const [selectedMembers, setSelectedMembers] = useState([]);
 

@@ -6,7 +6,7 @@
 
 - `routes/`: This directory houses all the route definitions for the backend.
   - [`user.routes.js`](./routes/user.routes.js): Contains the routes for user-related operations such as login, registration, getMyProfile, searchUsers, etc.
-  - [`chat.routes.js`](./routes/chat.routes.js): Contains the routes for chat-related operations such as createChat, getMyChats, getChat, etc.
+  - [`chat.routes.js`](./routes/chat.routes.js): Contains the routes for chat-related operations such as newGroupChat, getMyChats, getChat, etc.
 
 - `models/`: This directory contains the data models for the application. Each file corresponds to a specific model:
   - [`user.model.js`](./models/user.model.js): Defines the User schema.
@@ -34,5 +34,8 @@
   - [`utility.js`](./utils/utility.js): Includes utility function for Custom Error Handling.
 
 - `constants/`: This directory contains constant values that are used throughout the backend.
+
+- `lib/`: This directory contains helper functions that are used across the application.
+  - [`chat.helper.js`](./lib/chat.helper.js): Contains helper functions for chat-related operations such as getting members of a chat excluding the current user, etc.
 
 - **`.env`**: Contains environment variables such as the database connection string, JWT secret key, etc.

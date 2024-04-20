@@ -7,11 +7,11 @@ const ChatList = (
   {
     w = "100%",
     chats = [],
-    chatID,
+    ChatId,
     onlineUsers = [],
     newMessagesAlert = [
       {
-        chatID: "",
+        ChatId: "",
         count: 0,
       }
     ],
@@ -36,7 +36,7 @@ const ChatList = (
         chats?.map((data, index) => {
           const {avatar, _id, name, groupChat, members} = data;
           const newMessageAlert = newMessagesAlert.find(
-            ({chatID}) => chatID === _id
+            ({ChatId}) => ChatId === _id
           );
           const isOnline = members?.some(
             (member) => onlineUsers.includes(_id)
@@ -51,7 +51,7 @@ const ChatList = (
               _id={_id}
               key={_id}
               groupChat={groupChat}
-              sameSender={chatID === _id}
+              sameSender={ChatId === _id}
               handleDeleteChat={handleDeleteChat}
             />
           );

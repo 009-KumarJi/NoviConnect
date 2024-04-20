@@ -198,7 +198,7 @@ export const sampleMessages = [
       _id: "gafvkcvl",
       name: "Krishna Kumar",
     },
-    chat: "chatID",
+    chat: "ChatId",
     createdAt: "2024-04-01T14:48:00.000Z",
   },
   {
@@ -214,7 +214,7 @@ export const sampleMessages = [
       _id: "user._id",
       name: "John Smith",
     },
-    chat: "chatID",
+    chat: "ChatId",
     createdAt: "2024-04-01T14:48:00.000Z",
   }
 ];
@@ -797,7 +797,7 @@ export const sampleDashboardData = {
         avatar: "https://api.dicebear.com/8.x/bottts/svg?seed=Tigger&backgroundType=gradientLinear&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4",
         name: "Krishna",
       },
-      chat: "chatID",
+      chat: "ChatId",
       createdAt: "2024-04-01T14:48:00.000Z",
     },
     {
@@ -809,7 +809,7 @@ export const sampleDashboardData = {
         avatar: "https://api.dicebear.com/8.x/bottts/svg?seed=Tigger&backgroundType=gradientLinear&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4",
         name: "Krishna",
       },
-      chat: "chatID",
+      chat: "ChatId",
       createdAt: "2024-04-01T14:48:00.000Z",
     },
     {
@@ -821,7 +821,7 @@ export const sampleDashboardData = {
         avatar: "https://api.dicebear.com/8.x/bottts/svg?seed=Tigger&backgroundType=gradientLinear&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4",
         name: "Krishna",
       },
-      chat: "chatID",
+      chat: "ChatId",
       createdAt: "2024-04-01T14:48:00.000Z",
     },
     {
@@ -838,7 +838,7 @@ export const sampleDashboardData = {
         avatar: "https://api.dicebear.com/8.x/bottts/svg?seed=Tigger&backgroundType=gradientLinear&backgroundColor=ffdfbf,ffd5dc,d1d4f9,c0aede,b6e3f4",
         name: "Krishna",
       },
-      chat: "chatID",
+      chat: "ChatId",
       createdAt: "2024-04-01T14:48:00.000Z",
     },
   ],
