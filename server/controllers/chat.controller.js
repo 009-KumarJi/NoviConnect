@@ -191,6 +191,30 @@ const sendAttachments = TryCatch(async (req, res, next) => {
     message,
   });
 });
+const getChatDetails = TryCatch(async (req, res, next) => {
+  if (req.query.populate === "true") {
+    const chat = await Chat
+      .findById(req.params.ChatId) // finds the chat with the id
+      .populate("members", "name avatar") // populates the members field with name and avatar
+      .lean(); // converts the mongoose document to plain JS object to allow modification without affecting the database
+
+    if (!chat) return next(new ErrorHandler("Chat not found", 404));
+    chat.members = chat.members.map(({_id, name, avatar}) => ({_id, name, avatar: avatar.url}));
+    return res.status(200).json({
+      success: true,
+      chat,
+    });
+  } else {
+    const chat = await Chat.findById(req.params.ChatId);
+    if (!chat) return next(new ErrorHandler("Chat not found", 404));
+    return res.status(200).json({
+      success: true,
+      chat,
+    });
+  }
+});
+const renameChat = TryCatch(async (req, res, next) => {});
+const deleteChat = TryCatch(async (req, res, next) => {});
 
 export {
   newGroupChat,
@@ -200,4 +224,7 @@ export {
   removeMember,
   leaveGroupChat,
   sendAttachments,
+  getChatDetails,
+  renameChat,
+  deleteChat,
 };
