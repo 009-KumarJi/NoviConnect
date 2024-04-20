@@ -23,9 +23,6 @@
   - [`auth.middleware.js`](./middlewares/auth.middleware.js): A middleware for ensuring that only authenticated users can access certain routes.
   - [`error.middleware.js`](./middlewares/error.middleware.js): A middleware for handling errors that occur during request processing.
 
-- `seeders/`: This directory contains scripts for seeding the database with initial testing data.
-  - [`user.seeder.js`](./seeders/user.seeder.js): Seeds the database with creating new dummy users.
-
 - `utils/`: This directory contains utility functions that are used across the application. 
   - [`features.js`](./utils/features.js): Includes a function for: 
     - establishing a connection to the MongoDB database.
@@ -40,4 +37,8 @@
 - `lib/`: This directory contains helper functions that are used across the application.
   - [`chat.helper.js`](./lib/chat.helper.js): Contains helper functions for chat-related operations such as getting members of a chat excluding the current user, etc.
 
+- `seeders/`: This directory contains scripts for seeding the database with initial testing data.
+  - [`user.seeder.js`](./seeders/user.seeder.js): Seeds the database with creating new dummy users.
+  - [`chat.seeder.js`](./seeders/chat.seeder.js): Seeds the database with creating new dummy chats and messages.
+  
 - **`.env`**: Contains environment variables such as the database connection string, JWT secret key, etc.

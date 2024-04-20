@@ -163,7 +163,7 @@ const sendAttachments = TryCatch(async (req, res, next) => {
   const files = req.files || [];
   if (!files.length) return next(new ErrorHandler("Please provide attachments", 422));
 
-  // Upload files to cloudinary
+  // TODO: Upload files to cloudinary
   // dummy attachments for now
   const attachments = [];
 
@@ -263,6 +263,33 @@ const deleteChat = TryCatch(async (req, res, next) => {
     message: "Group chat deleted successfully",
   });
 });
+const getMessages = TryCatch(async (req, res, next) => {
+  const {ChatId} = req.params;
+  const resultPerPage = 20;
+  const {page = 1} = req.query;
+  const skip = (page - 1) * resultPerPage;
+
+  const [messages, totalMessagesCount] = await Promise.all([
+    Message
+      .find({chat: ChatId}) // finds all messages with the chat id
+      .sort("-createdAt") // sorts the messages in descending order of creation date
+      .limit(resultPerPage) // limits the number of messages to be returned
+      .skip(skip) // skips the number of messages
+      .populate("sender", "name") // populates the sender field with name
+      .lean(), // converts the mongoose document to plain JS object
+    Message.countDocuments({chat: ChatId}), // counts the number of messages with the chat id
+  ]);
+
+  const totalPages = Math.ceil(totalMessagesCount / resultPerPage);
+  if (page>totalPages) return next(new ErrorHandler("Page Not Found", 404))
+
+  return res.status(200).json({
+    success: true,
+    messages: messages.reverse(),
+    totalPages,
+  });
+
+});
 
 export {
   newGroupChat,
@@ -275,4 +302,5 @@ export {
   getChatDetails,
   renameGroupChat,
   deleteChat,
+  getMessages,
 };
