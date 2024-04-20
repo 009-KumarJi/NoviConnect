@@ -213,7 +213,27 @@ const getChatDetails = TryCatch(async (req, res, next) => {
     });
   }
 });
-const renameChat = TryCatch(async (req, res, next) => {});
+const renameGroupChat = TryCatch(async (req, res, next) => {
+  const ChatId = req.params.ChatId;
+  const {name} = req.body;
+
+  const chat = await Chat.findById(ChatId);
+
+  if (!chat) return next(new ErrorHandler("Chat not found", 404));
+  if (chat.creator.toString() !== req.userId.toString()) return next(new ErrorHandler("You are not authorized to perform this action", 403));
+  if (!chat.groupChat) return next(new ErrorHandler("This is not a group chat", 422));
+
+  chat.name = name;
+  await chat.save();
+
+  emmitEvent(req, ALERT, chat.members, `Group chat renamed to ${name}`);
+  emmitEvent(req, REFETCH_CHATS, chat.members);
+
+  return res.status(200).json({
+    success: true,
+    message: "Group chat renamed successfully",
+  });
+});
 const deleteChat = TryCatch(async (req, res, next) => {});
 
 export {
@@ -225,6 +245,6 @@ export {
   leaveGroupChat,
   sendAttachments,
   getChatDetails,
-  renameChat,
+  renameGroupChat,
   deleteChat,
 };

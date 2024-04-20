@@ -7,7 +7,7 @@ import {
   addMembers,
   removeMember,
   leaveGroupChat,
-  sendAttachments, getChatDetails, renameChat, deleteChat
+  sendAttachments, getChatDetails, renameGroupChat, deleteChat
 } from "../controllers/chat.controller.js";
 import {attachmentMulter} from "../middlewares/multer.middleware.js";
 
@@ -31,7 +31,7 @@ app.post("/message", attachmentMulter, sendAttachments);
 
 app.route("/:ChatId")
   .get(getChatDetails)
-  .put(renameChat)
+  .put(renameGroupChat)
   .delete(deleteChat);
 
 
