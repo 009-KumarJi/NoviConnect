@@ -1,44 +1,41 @@
 # Backend Architecture
 
-## Structure and Components
+This document outlines the structure and key components of the backend application.
 
-- [`server.js`](./server.js): The main entry point of the backend. It sets up the server configuration and defines the application routes.
+## Project Structure
 
-- `routes/`: This directory houses all the route definitions for the backend.
-  - [`user.routes.js`](./routes/user.routes.js): Contains the routes for user-related operations such as login, registration, getMyProfile, searchUsers, etc.
-  - [`chat.routes.js`](./routes/chat.routes.js): Contains the routes for chat-related operations such as newGroupChat, getMyChats, getChat, etc.
+| Directory                     | Description                                                 | Files                                                                                                                              |
+|-------------------------------|-------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| [routes/](./routes)           | Contains route definitions for the backend                  | [user.routes.js](#user-routes), [chat.routes.js](#chat-routes)                                                                     |
+| [models/](./models)           | Contains data models for the application                    | [user.model.js](#user-model), [chat.model.js](#chat-model), [message.model.js](#message-model), [request.model.js](#request-model) |
+| [controllers/](./controllers) | Contains controller logic for handling routes               | [user.controller.js](#user-controller), [chat.controller.js](#chat-controller)                                                     |
+| [middlewares/](./middlewares) | Contains middleware functions for request processing        | [multer.middleware.js](#multer-middleware), [auth.middleware.js](#auth-middleware), [error.middleware.js](#error-middleware)       |
+| [utils/](./utils)             | Contains utility functions used across the application      | [features.js](#features-utility), [utility.js](#utility-utility), [validators.js](#validators-utility)                             |
+| [constants/](./constants)     | Contains constant values used throughout the backend        | [events.constants.js](#events-constants-js)                                                                                           |
+| [lib/](./lib)                 | Contains helper functions used across the application       | [chat.helper.js](#chat-helper)                                                                                                     |
+| [seeders/](./seeders)         | Contains scripts for seeding the database with initial data | [user.seeder.js](#user-seeder), [chat.seeder.js](#chat-seeder)                                                                     |
 
-- `models/`: This directory contains the data models for the application. Each file corresponds to a specific model:
-  - [`user.model.js`](./models/user.model.js): Defines the User schema.
-  - [`chat.model.js`](./models/chat.model.js): Defines the Chat schema.
-  - [`message.model.js`](./models/message.model.js): Defines the Message schema.
-  - [`request.model.js`](./models/request.model.js): Defines the Request schema.
+## File Descriptions
 
-- `controllers/`: This directory contains the controller logic for handling specific routes. 
-  - [`user.controller.js`](./controllers/user.controller.js): Handles user-related operations such as login and registration.
-  - [`chat.controller.js`](./controllers/chat.controller.js): Handles chat-related operations such as createChat, getMyChats, getChat, etc.
+| File Name                                                                                | Description                                                                                                                                |
+|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| <a id="user-routes">[user.routes.js](./routes/user.routes.js)</a>                        | Contains routes for user-related operations such as login, registration, getMyProfile, searchUsers, etc.                                   |
+| <a id="chat-routes">[chat.routes.js](./routes/chat.routes.js)</a>                        | Contains routes for chat-related operations such as newGroupChat, getMyChats, getChat, etc.                                                |
+| <a id="user-model">[user.model.js](./models/user.model.js)</a>                           | Defines the User schema.                                                                                                                   |
+| <a id="chat-model">[chat.model.js](./models/chat.model.js)</a>                           | Defines the Chat schema.                                                                                                                   |
+| <a id="message-model">[message.model.js](./models/message.model.js)</a>                  | Defines the Message schema.                                                                                                                |
+| <a id="request-model">[request.model.js](./models/request.model.js)</a>                  | Defines the Request schema.                                                                                                                |
+| <a id="user-controller">[user.controller.js](./controllers/user.controller.js)</a>       | Handles user-related operations such as login and registration.                                                                            |
+| <a id="chat-controller">[chat.controller.js](./controllers/chat.controller.js)</a>       | Handles chat-related operations such as createChat, getMyChats, getChat, etc.                                                              |
+| <a id="multer-middleware">[multer.middleware.js](./middlewares/multer.middleware.js)</a> | Middleware for handling file uploads.                                                                                                      |
+| <a id="auth-middleware">[auth.middleware.js](./middlewares/auth.middleware.js)</a>       | Middleware for ensuring only authenticated users can access certain routes.                                                                |
+| <a id="error-middleware">[error.middleware.js](./middlewares/error.middleware.js)</a>    | Middleware for handling errors during request processing.                                                                                  |
+| <a id="features-utility">[features.js](./utils/features.js)</a>                          | Includes functions for database connection, JWT token generation, cookie configuration, logging events, and file deletion from Cloudinary. |
+| <a id="utility-utility">[utility.js](./utils/utility.js)</a>                             | Includes utility function for Custom Error Handling.                                                                                       |
+| <a id="validators-utility">[validators.js](./utils/validators.js)</a>                    | Includes utility function for validating user input.                                                                                       |
+| <a id="events-constants-js">[events.constants.js](./constants/events.constant.js)</a>   | Contains event names for socket.io communications.                                                                                         |
+| <a id="chat-helper">[chat.helper.js](./lib/chat.helper.js)</a>                           | Contains helper functions for chat-related operations such as getting members of a chat excluding the current user, etc.                   |
+| <a id="user-seeder">[user.seeder.js](./seeders/user.seeder.js)</a>                       | Seeds the database with creating new dummy users. **Note: Remove this file in production.**                                                |
+| <a id="chat-seeder">[chat.seeder.js](./seeders/chat.seeder.js)</a>                       | Seeds the database with creating new dummy chats and messages. **Note: Remove this file in production.**                                   |
 
-- `middlewares/`: This directory contains middleware functions that process incoming requests before they reach the route handlers.
-  - [`multer.middleware.js`](./middlewares/multer.middleware.js): A middleware for handling file uploads.
-  - [`auth.middleware.js`](./middlewares/auth.middleware.js): A middleware for ensuring that only authenticated users can access certain routes.
-  - [`error.middleware.js`](./middlewares/error.middleware.js): A middleware for handling errors that occur during request processing.
 
-- `utils/`: This directory contains utility functions that are used across the application. 
-  - [`features.js`](./utils/features.js): Includes a function for: 
-    - establishing a connection to the MongoDB database.
-    - generating a JWT token for a user and setting it in a cookie.
-    - sets the configuration for cookies.
-    - logs a message to the console indicating that a specific event is being emitted.
-    - delete files from Cloudinary.
-  - [`utility.js`](./utils/utility.js): Includes utility function for Custom Error Handling.
-
-- `constants/`: This directory contains constant values that are used throughout the backend.
-
-- `lib/`: This directory contains helper functions that are used across the application.
-  - [`chat.helper.js`](./lib/chat.helper.js): Contains helper functions for chat-related operations such as getting members of a chat excluding the current user, etc.
-
-- `seeders/`: This directory contains scripts for seeding the database with initial testing data.
-  - [`user.seeder.js`](./seeders/user.seeder.js): Seeds the database with creating new dummy users.
-  - [`chat.seeder.js`](./seeders/chat.seeder.js): Seeds the database with creating new dummy chats and messages.
-  
-- **`.env`**: Contains environment variables such as the database connection string, JWT secret key, etc.
