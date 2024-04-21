@@ -11,7 +11,7 @@ A MERN Chat App using ReactJS, Express, NodeJS, MongoDB, and Socket.IO.
 - **`Authentication`**: JWT
 - **`Styling`**: Material-UI
 
-## Backend Architecture(./server/readme.md)
+## [Backend Architecture](./server/readme.md)
 ## [Frontend Snapshots](./client)
 ## Features
 
