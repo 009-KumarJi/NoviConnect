@@ -4,15 +4,16 @@ A MERN Chat App using ReactJS, Express, NodeJS, MongoDB, and Socket.IO.
 
 ## Tech Stack
 
-- **`Frontend`**: ReactJS
-- **`Backend`**: NodeJS, Express
-- **`Database`**: MongoDB
-- **`Real-time Communication`**: Socket.IO
-- **`Authentication`**: JWT
-- **`Styling`**: Material-UI
+- **Frontend**: ReactJS
+- **Backend**: NodeJS, Express
+- **Database**: MongoDB
+- **Real-time Communication**: Socket.IO
+- **Authentication**: JWT
+- **Styling**: Material-UI
 
-## [Backend Architecture](./server/readme.md)
-## [Frontend Snapshots](./client)
+## [`Backend Architecture`](./server/readme.md)
+## [`Frontend Snapshots`](./client/readme.md)
+
 ## Features
 
 The main features to add in the Chat App are:
