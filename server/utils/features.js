@@ -38,3 +38,5 @@ const deleteFilesFromCloudinary = async (publicIds) => {
 
 
 export {connectDB, sendToken, cookieOptions, emitEvent, deleteFilesFromCloudinary};
+
+// Path: server/utils/features.js

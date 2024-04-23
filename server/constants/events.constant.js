@@ -4,3 +4,5 @@ const NEW_ATTACHMENT = 'NEW_ATTACHMENT';
 const NEW_MESSAGE_ALERT = 'NEW_MESSAGE_ALERT';
 
 export { ALERT, REFETCH_CHATS, NEW_ATTACHMENT, NEW_MESSAGE_ALERT };
+
+// Path: server/constants/events.constant.js

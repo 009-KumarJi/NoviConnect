@@ -29,3 +29,5 @@ const messageSchema = new Schema({
 });
 
 export const Message = mongoose.models.Message || model("Message", messageSchema);
+
+// Path: server/models/message.model.js

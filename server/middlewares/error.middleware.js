@@ -18,3 +18,5 @@ const TryCatch = (passedFunction) => async (req, res, next) => {
 };
 
 export {errorMiddleware, TryCatch};
+
+// Path: server/middlewares/error.middleware.js

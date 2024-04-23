@@ -22,3 +22,5 @@ const chatSchema = new Schema({
 });
 
 export const Chat = mongoose.models.Chat || model("Chat", chatSchema);
+
+// Path: server/models/chat.model.js

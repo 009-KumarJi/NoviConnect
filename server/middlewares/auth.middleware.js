@@ -15,3 +15,5 @@ const isAuthenticated = (req, res, next) => {
 };
 
 export {isAuthenticated};
+
+// Path: server/middlewares/auth.middleware.js

@@ -10,3 +10,5 @@ const singleAvatar = multerUpload.single('avatar');
 const attachmentMulter = multerUpload.array('files', 5);
 
 export {singleAvatar, attachmentMulter};
+
+// Path: server/middlewares/multer.middleware.js

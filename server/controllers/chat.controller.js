@@ -10,7 +10,6 @@ import {Message} from "../models/message.model.js";
 const newGroupChat = TryCatch(async (req, res, next) => {
   const {name, members} = req.body;
   if (members.includes(req.userId)) return next(new ErrorHandler("You are already a member", 422));
-  if (members.length < 2) return next(new ErrorHandler("Please provide at least 3 members", 422));
   const allMembers = [...members, req.userId];
 
   await Chat.create({
@@ -67,8 +66,6 @@ const getMyGroups = TryCatch(async (req, res, next) => {
 });
 const addMembers = TryCatch(async (req, res, next) => {
   const {members, ChatId} = req.body;
-
-  if (!members || !members.length) return next(new ErrorHandler("Please provide members", 422));
 
   const chat = await Chat.findById(ChatId);
 
@@ -304,3 +301,5 @@ export {
   deleteChat,
   getMessages,
 };
+
+// Path: server/controllers/chat.controller.js

@@ -21,3 +21,5 @@ const requestSchema = new Schema({
 });
 
 export const Request = mongoose.models.Request || model("Request", requestSchema);
+
+// Path: server/models/request.model.js

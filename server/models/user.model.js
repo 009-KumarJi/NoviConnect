@@ -47,3 +47,5 @@ userSchema.pre("save", async function (next) {
 });
 
 export const User = mongoose.models.User || model("User", userSchema);
+
+// Path: server/models/user.model.js

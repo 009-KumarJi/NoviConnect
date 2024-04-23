@@ -17,11 +17,13 @@ const port = process.env.PORT || 3000;
 
 connectDB(process.env.MONGO_URI);
 
-// Seeders
+/******************************/
+/* Seeders */
 // createUsers(10);
 // createSingleChats(10);
 // createGroupChats(10);
 // createMessagesInChat("6623db915726efaced082f10", 50);
+/******************************/
 
 // Using middlewares here
 app.use(express.json()); // Parse JSON bodies (as sent by API clients)

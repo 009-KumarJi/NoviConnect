@@ -1,41 +1,51 @@
 import express from "express";
 import {isAuthenticated} from "../middlewares/auth.middleware.js";
 import {
-  newGroupChat,
+  addMembers,
+  deleteChat,
+  getChatDetails,
+  getMessages,
   getMyChats,
   getMyGroups,
-  addMembers,
-  removeMember,
   leaveGroupChat,
-  sendAttachments, getChatDetails, renameGroupChat, deleteChat, getMessages
+  newGroupChat,
+  removeMember,
+  renameGroupChat,
+  sendAttachments
 } from "../controllers/chat.controller.js";
 import {attachmentMulter} from "../middlewares/multer.middleware.js";
+import {
+  addMembersValidator,
+  chatIdValidator,
+  newGroupChatValidator,
+  removeMemberValidator, renameGroupValidator,
+  sendAttachmentsValidator,
+  validateHandler
+} from "../utils/validators.js";
 
-//Route for this file: https://localhost:3000/chat/
+//Prefix Route for this file: https://localhost:3000/chat/
 const app = express.Router();
 
 // This middleware mandates login before accessing other routes.
 app.use(isAuthenticated);
 
-app.post("/new-group", newGroupChat);
+// Chat routes
+app.post("/new-group", newGroupChatValidator(), validateHandler, newGroupChat);
 app.get("/my-chats", getMyChats);
 app.get("/my/groups", getMyGroups);
-app.put("/addMembers", addMembers);
-app.put("/removeMember", removeMember);
+app.put("/addMembers", addMembersValidator(), validateHandler, addMembers);
+app.put("/removeMember", removeMemberValidator(), validateHandler, removeMember);
 
-app.delete("/leave/:ChatId", leaveGroupChat);
+app.delete("/leave/:ChatId", chatIdValidator(), validateHandler, leaveGroupChat);
 
-app.post("/message", attachmentMulter, sendAttachments);
-app.get("/message/:ChatId", getMessages);
-
+app.post("/message", attachmentMulter, sendAttachmentsValidator(), validateHandler, sendAttachments);
+app.get("/message/:ChatId", chatIdValidator(), validateHandler, getMessages);
 
 app.route("/:ChatId")
-  .get(getChatDetails)
-  .put(renameGroupChat)
-  .delete(deleteChat);
-
-
-
-
+  .get(chatIdValidator(), validateHandler, getChatDetails)
+  .put(renameGroupValidator(), validateHandler, renameGroupChat)
+  .delete(chatIdValidator(), validateHandler, deleteChat);
 
 export default app;
+
+// Path: server/routes/chat.routes.js
