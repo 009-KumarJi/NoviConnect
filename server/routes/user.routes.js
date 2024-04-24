@@ -1,8 +1,22 @@
 import express from "express";
-import {getMyProfile, login, logout, newUser, searchUser} from "../controllers/user.controller.js";
+import {
+  acceptFriendRequest,
+  getMyProfile,
+  login,
+  logout,
+  newUser,
+  searchUser,
+  sendFriendRequest
+} from "../controllers/user.controller.js";
 import {singleAvatar} from "../middlewares/multer.middleware.js";
 import {isAuthenticated} from "../middlewares/auth.middleware.js";
-import {loginValidator, registerValidator, validateHandler} from "../utils/validators.js";
+import {
+  acceptRequestValidator,
+  loginValidator,
+  registerValidator,
+  sendRequestValidator,
+  validateHandler
+} from "../utils/validators.js";
 
 
 // Prefix Route for this file: 'https://localhost:3000/user/
@@ -17,6 +31,8 @@ app.use(isAuthenticated); // This middleware mandates login before accessing rou
 app.get("/profile", getMyProfile);
 app.get("/logout", logout);
 app.get("/search", searchUser);
+app.put("/send-request", sendRequestValidator(), validateHandler, sendFriendRequest);
+app.put("/accept-request", acceptRequestValidator(), validateHandler, acceptFriendRequest);
 
 export default app;
 

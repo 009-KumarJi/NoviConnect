@@ -50,6 +50,16 @@ const renameGroupValidator = () => [
   param("ChatId", "ChatId not found in request!").notEmpty(),
   body("name", "Enter a name for GC!").notEmpty()
 ];
+const sendRequestValidator = () => [
+  body("ReceiverId", "ReceiverId for request not found in HTTP request!").notEmpty()
+];
+const acceptRequestValidator = () => [
+  body("requestId", "requestId for request not found in HTTP request!").notEmpty(),
+  body("status")
+    .notEmpty().withMessage("Status for request not found in HTTP request!")
+    .isBoolean().withMessage("Status must be a boolean value!")
+];
+
 export {
   validateHandler,
   registerValidator,
@@ -59,7 +69,9 @@ export {
   removeMemberValidator,
   sendAttachmentsValidator,
   chatIdValidator,
-  renameGroupValidator
+  renameGroupValidator,
+  sendRequestValidator,
+  acceptRequestValidator
 };
 
 // Path: server/utils/validators.js

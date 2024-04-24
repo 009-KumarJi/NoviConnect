@@ -1,9 +1,11 @@
 import {User} from "../models/user.model.js";
-import {cookieOptions, sendToken} from "../utils/features.js";
+import {cookieOptions, emitEvent, sendToken} from "../utils/features.js";
 import {compare} from "bcrypt";
 import {TryCatch} from "../middlewares/error.middleware.js";
 import {ErrorHandler} from "../utils/utility.js";
 import {Chat} from "../models/chat.model.js";
+import {Request} from "../models/request.model.js";
+import {NEW_REQUEST, REFETCH_CHATS} from "../constants/events.constant.js";
 
 const newUser = async (req, res) => {
 
@@ -80,8 +82,68 @@ const searchUser = TryCatch(async (req, res) => {
     users,
   });
 });
+const sendFriendRequest = TryCatch(async (req, res, next) => {
+  const {ReceiverId} = req.body;
+
+  const request = await Request.findOne({
+    $or: [   // Check if request already exists. or operator is used to check both sender and receiver
+      {sender: req.userId, receiver: ReceiverId},
+      {sender: ReceiverId, receiver: req.userId},
+    ]
+  });
+  if (request) return next(new ErrorHandler("Request already sent", 400));
+
+  await Request.create({
+    receiver: ReceiverId,
+    sender: req.userId,
+    status: "pending"
+  });
+
+  emitEvent(ReceiverId, NEW_REQUEST, [ReceiverId]);
+
+  return res.status(200).json({
+    success: true,
+    message: "Friend request sent successfully",
+  });
+});
+const acceptFriendRequest = TryCatch(async (req, res, next) => {
+  const {requestId, status} = req.body;
+  const request = await Request.findById(requestId)
+    .populate("sender", "name")
+    .populate("receiver", "name");
+  console.log(request);
+
+  if (!request) return next(new ErrorHandler("Request not found", 404));
+  if (request.receiver.toString() !== req.userId.toString()) return next(new ErrorHandler("You're unauthorized to handle this request", 401));
+
+  if (!status) {
+    await request.deleteOne();
+    return res.status(200).json({
+      success: true,
+      message: "Request rejected! Aww, that's sad!",
+    });
+  }
+
+  const members = [request.sender._id, request.receiver._id];
+
+  await Promise.all([
+    Chat.create({
+      members,
+      name: `${request.sender.name}-${request.receiver.name}`,
+    }),
+    request.deleteOne(),
+  ]);
+
+  emitEvent(req, REFETCH_CHATS, members);
+
+  return res.status(200).json({
+    success: true,
+    message: `You're now friends with ${request.sender.name}!`,
+    senderId: request.sender._id,
+  });
+});
 
 
-export {login, newUser, getMyProfile, logout, searchUser};
+export {login, newUser, getMyProfile, logout, searchUser, sendFriendRequest, acceptFriendRequest};
 
 // Path: server/controllers/user.controller.js
