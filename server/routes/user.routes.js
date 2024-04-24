@@ -1,6 +1,8 @@
 import express from "express";
 import {
-  acceptFriendRequest, getMyNotifications,
+  acceptFriendRequest,
+  getMyFriends,
+  getMyNotifications,
   getMyProfile,
   login,
   logout,
@@ -21,6 +23,12 @@ import {
 
 // Prefix Route for this file: 'https://localhost:3000/user/
 const app = express.Router(); // `express.Router()` creates a modular, mountable route handler for Express applications.
+
+
+app.use((req, res, next) => {
+  console.log(`Route received: ${req.method} ${req.path}`);
+  next();
+});
 
 app.post("/new-login", singleAvatar, registerValidator(), validateHandler, newUser);
 app.post("/login", loginValidator(), validateHandler, login);

@@ -6,6 +6,7 @@ import {ErrorHandler} from "../utils/utility.js";
 import {Chat} from "../models/chat.model.js";
 import {Request} from "../models/request.model.js";
 import {NEW_REQUEST, REFETCH_CHATS} from "../constants/events.constant.js";
+import {getOtherMember} from "../lib/chat.helper.js";
 
 const newUser = async (req, res, next) => {
 
@@ -150,6 +151,11 @@ const getMyNotifications = TryCatch(async (req, res) => {
     status: "pending",
   }).populate("sender", "name avatar");
 
+  if (!requests) return res.status(200).json({
+    success: true,
+    allRequests: [],
+  });
+
   //Transforming 'requests' to only include _id, name, and avatar
   const allRequests = requests.map(({_id, sender}) => ({
     _id,
@@ -165,6 +171,38 @@ const getMyNotifications = TryCatch(async (req, res) => {
     allRequests,
   });
 });
+const getMyFriends = TryCatch(async (req, res, next) => {
+  const ChatId = req.query.ChatId;
+  const chats = await Chat.find({
+    groupChat: false,
+    members: req.userId,
+  }).populate("members", "name avatar");
+
+  const friends = chats.map(({members}) => {
+    const otherUser = getOtherMember(members, req.userId);
+    return {
+      _id: otherUser._id,
+      name: otherUser.name,
+      avatar: otherUser.avatar.url,
+    };
+  });
+
+  if (ChatId) {
+    const chat = await Chat.findById(ChatId);
+    if (!chat) return next(new ErrorHandler("Chat not found", 404));
+    const availableFriends = friends.filter(({_id}) => !chat.members.includes(_id));
+    return res.status(200).json({
+      success: true,
+      friends: availableFriends,
+    });
+  } else {
+    return res.status(200).json({
+      success: true,
+      friends,
+    });
+  }
+
+});
 
 export {
   login,
@@ -174,7 +212,8 @@ export {
   searchUser,
   sendFriendRequest,
   acceptFriendRequest,
-  getMyNotifications
+  getMyNotifications,
+  getMyFriends,
 };
 
 // Path: server/controllers/user.controller.js
