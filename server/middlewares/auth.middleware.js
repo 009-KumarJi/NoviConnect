@@ -1,4 +1,3 @@
-import {TryCatch} from "./error.middleware.js";
 import {ErrorHandler} from "../utils/utility.js";
 import jwt from "jsonwebtoken";
 
@@ -13,7 +12,19 @@ const isAuthenticated = (req, res, next) => {
 
   next();
 };
+const areYouAdmin = (req, res, next) => {
+  const token = req.cookies["krishna-hero"];
 
-export {isAuthenticated};
+  if (!token) return next(new ErrorHandler("Unauthorized access for this route!", 401));
+
+  const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (decodedData !== process.env.ADMIN_SECRET_KEY) return next(new ErrorHandler("Hmm! Very Smart! But you're unauthorized to access this route!", 401));
+
+
+  next();
+};
+
+export {isAuthenticated, areYouAdmin};
 
 // Path: server/middlewares/auth.middleware.js

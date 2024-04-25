@@ -23,7 +23,7 @@ import {
   validateHandler
 } from "../utils/validators.js";
 
-//Prefix Route for this file: https://localhost:3000/chat/
+//Prefix Route for this file: http://localhost:3000/chat/
 const app = express.Router();
 
 // This middleware mandates login before accessing other routes.

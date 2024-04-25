@@ -7,8 +7,7 @@ import {errorMiddleware} from "./middlewares/error.middleware.js";
 
 import userRoutes from "./routes/user.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
-import {createUsers} from "./seeders/user.seeder.js";
-import {createGroupChats, createMessagesInChat, createSingleChats} from "./seeders/chat.seeder.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 dotenv.config({path: "./.env"});
 
@@ -32,6 +31,7 @@ app.use(cookieParser()); // Parse cookies attached to the client request
 // User routes
 app.use("/user", userRoutes);
 app.use("/chat", chatRoutes);
+app.use("/krishna-den", adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

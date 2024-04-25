@@ -8,6 +8,9 @@ const validateHandler = (req, res, next) => {
   if (errors.isEmpty()) return next();
   next(new ErrorHandler(errorMessage, 400));
 };
+const adminLoginValidator = () => [
+  body("secret_key", "Enter Secret Key!").notEmpty(),
+];
 const registerValidator = () => [
   body("name", "Enter name!").notEmpty(),
   body("username", "Enter username!").notEmpty(),
@@ -15,7 +18,6 @@ const registerValidator = () => [
   body("dob", "Enter date of birth!").notEmpty(),
   body("bio", "Enter bio!").notEmpty(),
   body("email", "Enter email address!").isEmail(),
-  check("avatar", "Upload Avatar!").notEmpty()
 ];
 const loginValidator = () => [
   body("username", "Enter username!").notEmpty(),
@@ -71,7 +73,8 @@ export {
   chatIdValidator,
   renameGroupValidator,
   sendRequestValidator,
-  acceptRequestValidator
+  acceptRequestValidator,
+  adminLoginValidator,
 };
 
 // Path: server/utils/validators.js
