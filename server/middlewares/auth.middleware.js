@@ -1,5 +1,6 @@
 import {ErrorHandler} from "../utils/utility.js";
 import jwt from "jsonwebtoken";
+import {adminKey} from "../server.js";
 
 const isAuthenticated = (req, res, next) => {
   const token = req.cookies["nc-token"];
@@ -19,7 +20,7 @@ const areYouAdmin = (req, res, next) => {
 
   const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
-  if (decodedData !== process.env.ADMIN_SECRET_KEY) return next(new ErrorHandler("Hmm! Very Smart! But you're unauthorized to access this route!", 401));
+  if (decodedData !== adminKey) return next(new ErrorHandler("Hmm! Very Smart! But you're unauthorized to access this route!", 401));
 
 
   next();

@@ -13,16 +13,10 @@ dotenv.config({path: "./.env"});
 
 const app = express();
 const port = process.env.PORT || 3000;
+const envMode = process.env.NODE_ENV || "PRODUCTION";
+const adminKey = process.env.ADMIN_SECRET_KEY;
 
 connectDB(process.env.MONGO_URI);
-
-/******************************/
-/* Seeders */
-// createUsers(10);
-// createSingleChats(10);
-// createGroupChats(10);
-// createMessagesInChat("6623db915726efaced082f10", 50);
-/******************************/
 
 // Using middlewares here
 app.use(express.json()); // Parse JSON bodies (as sent by API clients)
@@ -38,9 +32,19 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port} in ${envMode} mode.`);
 });
 
 app.use(errorMiddleware);
 
+export {envMode, adminKey};
+
 // Path: server/server.js
+
+/******************************/
+/* Seeders */
+// createUsers(10);
+// createSingleChats(10);
+// createGroupChats(10);
+// createMessagesInChat("6623db915726efaced082f10", 50);
+/******************************/

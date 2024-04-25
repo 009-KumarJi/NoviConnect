@@ -5,11 +5,11 @@ import {Message} from "../models/message.model.js";
 import {ErrorHandler} from "../utils/utility.js";
 import jwt from "jsonwebtoken";
 import {cookieOptions} from "../utils/features.js";
+import {adminKey} from "../server.js";
 
 const adminLogin = TryCatch(async (req, res, next) => {
   const {secret_key} = req.body;
-  const correctKey = process.env.ADMIN_SECRET_KEY;
-  if (secret_key !== correctKey) return next(new ErrorHandler("Get Out! You're not authorized to access this route.", 401))
+  if (secret_key !== adminKey) return next(new ErrorHandler("Get Out! You're not authorized to access this route.", 401))
 
   const token = jwt.sign(secret_key, process.env.JWT_SECRET);
 
