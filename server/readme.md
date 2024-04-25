@@ -3,13 +3,13 @@
 This document outlines the structure and key components of the backend application.
 
 ## Table of Contents
-- [Project Structure](#project-structure)
+- [Directory Descriptions](#directory-descriptions)
 - [File Descriptions](#file-descriptions)
 
-## Project Structure
+## Directory Descriptions
 
 | Directory                  | Description                                                                                           | Files                                                                                                                                                                                                                                                               |
-|----------------------------|-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:---------------------------|-------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [`server.js`](./server.js) | Main entry point of the backend application                                                           | Its a file only.                                                                                                                                                                                                                                                    |
 | `routes/`                  | Contains route definitions for the backend                                                            | <ul><li><a href="#user-routes">user.routes.js</a></li><li><a href="#chat-routes">chat.routes.js</a></li><li><a href="#admin-routes">admin.routes.js</a></li></ul>                                                                                                   |
 | `models/`                  | Contains data models for the application                                                              | <ul><li><a href="#user-model">user.model.js</a></li><li><a href="#chat-model">chat.model.js</a></li><li><a href="#message-model">message.model.js</a></li><li><a href="#request-model">request.model.js</a></li></ul>                                               |
