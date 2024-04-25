@@ -8,7 +8,7 @@ import {Request} from "../models/request.model.js";
 import {NEW_REQUEST, REFETCH_CHATS} from "../constants/events.constant.js";
 import {getOtherMember} from "../lib/chat.helper.js";
 
-const newUser = async (req, res, next) => {
+const newUser = TryCatch(async (req, res, next) => {
 
   const {name, username, password, bio, email, dob} = req.body;
 
@@ -26,7 +26,7 @@ const newUser = async (req, res, next) => {
     avatar
   });
   sendToken(res, user, 201, "User created successfully!");
-};
+});
 const login = TryCatch(async (req, res, next) => {
   const {username, password} = req.body;
 

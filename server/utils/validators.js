@@ -1,4 +1,4 @@
-import {body, check, param, validationResult} from "express-validator";
+import {body, param, validationResult} from "express-validator";
 import {ErrorHandler} from "./utility.js";
 
 const validateHandler = (req, res, next) => {
@@ -41,9 +41,6 @@ const removeMemberValidator = () => [
 ];
 const sendAttachmentsValidator = () => [
   body("ChatId", "ChatId not found in request!").notEmpty(),
-  check("files")
-    .notEmpty().withMessage("Upload attachments!")
-    .isArray({min: 1, max: 5}).withMessage("Upload at least 1 attachment! and Max 5 attachments allowed!"),
 ];
 const chatIdValidator = () => [
   param("ChatId", "ChatId not found in request!").notEmpty(),

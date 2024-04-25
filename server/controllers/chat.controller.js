@@ -27,7 +27,7 @@ const newGroupChat = TryCatch(async (req, res, next) => {
     message: "Group chat created successfully",
   });
 });
-const getMyChats = TryCatch(async (req, res, next) => {
+const getMyChats = TryCatch(async (req, res) => {
   const chats = await Chat
     .find({members: req.userId})
     .populate("members", "name username avatar");
@@ -48,7 +48,7 @@ const getMyChats = TryCatch(async (req, res, next) => {
     chats: transformedChats,
   });
 });
-const getMyGroups = TryCatch(async (req, res, next) => {
+const getMyGroups = TryCatch(async (req, res) => {
   const chats = await Chat
     .find({members: req.userId, groupChat: true})
     .populate("members", "name avatar");
@@ -150,6 +150,11 @@ const leaveGroupChat = TryCatch(async (req, res, next) => {
 const sendAttachments = TryCatch(async (req, res, next) => {
   const {ChatId} = req.body;
 
+  const files = req.files || [];
+
+  if (files.length < 1) return next(new ErrorHandler("Please provide attachments!", 422));
+  if (files.length > 5) return next(new ErrorHandler("You can upload a maximum of 5 files!", 422));
+
   const [chat, currUser] = await Promise.all([
     Chat.findById(ChatId),
     User.findById(req.userId, "name"),
@@ -157,7 +162,6 @@ const sendAttachments = TryCatch(async (req, res, next) => {
   if (!chat) return next(new ErrorHandler("Chat not found", 404));
   if (!chat.members.includes(req.userId)) return next(new ErrorHandler("You are not a member of this chat", 422));
 
-  const files = req.files || [];
   if (!files.length) return next(new ErrorHandler("Please provide attachments", 422));
 
   // TODO: Upload files to cloudinary
@@ -278,7 +282,7 @@ const getMessages = TryCatch(async (req, res, next) => {
   ]);
 
   const totalPages = Math.ceil(totalMessagesCount / resultPerPage);
-  if (page>totalPages) return next(new ErrorHandler("Page Not Found", 404))
+  if (page > totalPages) return next(new ErrorHandler("Page Not Found", 404))
 
   return res.status(200).json({
     success: true,
