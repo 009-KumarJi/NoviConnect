@@ -40,13 +40,15 @@ app.use("/krishna-den", adminRoutes);
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
-const user = {
-  _id: "1234567890",
-  name: "Krishna"
-};
+
+io.use((socket, next) =>{});
+
 io.on("connection", (socket) => {
   console.log(`socketId: ${socket.id} connected!`);
-
+  const user = {
+    _id: "1234567890",
+    name: "Krishna"
+  };
   socket.on(NEW_MESSAGE, async ({ChatId, members, message}) => {
 
 
