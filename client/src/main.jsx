@@ -7,12 +7,13 @@ import {DevSupport} from "@react-buddy/ide-toolbox";
 import {ComponentPreviews, useInitial} from "./dev/index.js";
 import {ThemeProvider} from "@mui/material";
 import {Provider} from "react-redux";
+import {store} from "./redux/store.js";
 
 let theme = responsiveFontSizes(createTheme());
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Provider store={}>
+    <Provider store={store}>
       <HelmetProvider> {/* HelmetProvider is used to manage the document head */}
         <CssBaseline/>
         <DevSupport ComponentPreviews={ComponentPreviews}

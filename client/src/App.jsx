@@ -2,6 +2,7 @@ import React, {lazy, Suspense} from 'react';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import ProtectRoute from "./components/auth/ProtectRoute.jsx";
 import LayoutLoader from "./components/layout/Loaders.jsx";
+import {useSelector} from "react-redux";
 
 
 const Login = lazy(() => import("./pages/Login.jsx"));
@@ -21,6 +22,7 @@ const ChatManagement = lazy(() => import("./pages/KrishnaDen/ChatManagement.jsx"
 let user = false;
 
 const App = () => {
+  const {} = useSelector(state => state.auth);
   return (
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader/>}>
