@@ -1,19 +1,21 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import {v4 as uuid} from "uuid";
+import {Server} from "socket.io";
+import {createServer} from "http";
+import {v2 as cloudinary} from "cloudinary";
 
 import {connectDB} from "./utils/features.js";
 import {errorMiddleware} from "./middlewares/error.middleware.js";
-
 import userRoutes from "./routes/user.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
-import {Server} from "socket.io";
-import {createServer} from "http";
 import {NEW_MESSAGE, NEW_MESSAGE_ALERT} from "./constants/events.constant.js";
-import {v4 as uuid} from "uuid";
 import {getSockets} from "./lib/socketio.helper.js";
 import {Message} from "./models/message.model.js";
+import {sout} from "./utils/utility.js";
 
 dotenv.config({path: "./.env"});
 
@@ -27,15 +29,31 @@ const envMode = process.env.NODE_ENV || "PRODUCTION";
 const adminKey = process.env.ADMIN_SECRET_KEY;
 
 connectDB(process.env.MONGO_URI);
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 // Using middlewares here
 app.use(express.json()); // Parse JSON bodies (as sent by API clients)
 app.use(cookieParser()); // Parse cookies attached to the client request
+app.use(cors({
+  origin: [process.env.CLIENT_URLS.split(',')], // Allow the client to make requests to this server
+  credentials: true // Allow the session cookie to be sent to and from the client
+}));
+
+sout("client point: ", process.env.CLIENT_URLS.split(',')[0]);
+
+app.use((req, res, next) => {
+  sout(`Route being hit: ${req.method} ${req.path}`);
+  next();
+});
 
 // User routes
-app.use("/user", userRoutes);
-app.use("/chat", chatRoutes);
-app.use("/krishna-den", adminRoutes);
+app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/chat", chatRoutes);
+app.use("/api/v1/krishna-den", adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -44,7 +62,7 @@ app.get("/", (req, res) => {
 io.use((socket, next) =>{});
 
 io.on("connection", (socket) => {
-  console.log(`socketId: ${socket.id} connected!`);
+  sout(`socketId: ${socket.id} connected!`);
   const user = {
     _id: "1234567890",
     name: "Krishna"
@@ -90,7 +108,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     activeUserSocketIds.delete(user._id);
-    console.log(`socketId: ${socket.id} disconnected!`);
+    sout(`socketId: ${socket.id} disconnected!`);
   });
 });
 

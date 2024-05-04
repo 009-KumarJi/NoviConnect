@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import {v2 as cloudinary} from "cloudinary";
+import {v4 as uuid} from "uuid";
+import {sout} from "./utility.js";
+import {getBase64} from "../lib/cloudinary.helper.js";
 
 const cookieOptions = {
   maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
@@ -25,18 +29,48 @@ const sendToken = (res, user, code, message) => {
     .status(code)
     .cookie("nc-token", token, cookieOptions)
     .json({
-    success: true,
-    message,
-  });
+      success: true,
+      message,
+    });
 };
 const emitEvent = (req, event, users, data) => {
   console.log("Emitting event: ", event);
+};
+const uploadFilesToCloudinary = async (files = []) => {
+  sout("Uploading files to cloudinary...");
+  const uploadPromises = files.map((file) => { // mapping over the files array
+    return new Promise((resolve, reject) => { // creating a new promise for each file
+      cloudinary.uploader.upload( // uploading the file to cloudinary
+        getBase64(file), // getting the base64 data of the file
+        { // options for the upload
+          resource_type: "auto",
+          public_id: `${uuid()}`,
+        },
+        (error, result) => { // callback function for the upload
+          if (error) return reject(error); // if there is an error, reject the promise
+          resolve(result); // if the upload is successful, resolve the promise
+        });
+    });
+  });
+
+  try {
+    const results = await Promise.all(uploadPromises); // waiting for all the promises to resolve
+    sout("Files uploaded successfully!"); // logging a success message
+    return results.map((result) => { // formatting the results
+      return {
+        public_id: result.public_id,
+        secure_url: result.secure_url,
+      };
+    }); // returning the formatted results
+  } catch (error) {
+    throw new Error("Oopsy-poopsy... Something got fused in upload process...");
+  }
 };
 const deleteFilesFromCloudinary = async (publicIds) => {
   console.log("Deleting files from cloudinary...");
 };
 
 
-export {connectDB, sendToken, cookieOptions, emitEvent, deleteFilesFromCloudinary};
+export {connectDB, sendToken, cookieOptions, emitEvent, deleteFilesFromCloudinary, uploadFilesToCloudinary};
 
 // Path: server/utils/features.js

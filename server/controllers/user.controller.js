@@ -1,5 +1,5 @@
 import {User} from "../models/user.model.js";
-import {cookieOptions, emitEvent, sendToken} from "../utils/features.js";
+import {cookieOptions, emitEvent, sendToken, uploadFilesToCloudinary} from "../utils/features.js";
 import {compare} from "bcrypt";
 import {TryCatch} from "../middlewares/error.middleware.js";
 import {ErrorHandler} from "../utils/utility.js";
@@ -11,11 +11,15 @@ import {getOtherMember} from "../lib/chat.helper.js";
 const newUser = TryCatch(async (req, res, next) => {
 
   const {name, username, password, bio, email, dob} = req.body;
+  const file = req.file;
+
+  const results = await uploadFilesToCloudinary([file]);
 
   const avatar = {
-    public_id: "123456",
-    url: "https://api.dicebear.com/8.x/open-peeps/svg?seed=Midnight&backgroundType=gradientLinear&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf",
+    public_id: results[0].public_id,
+    url: results[0].secure_url,
   }
+
   const user = await User.create({
     name,
     username,

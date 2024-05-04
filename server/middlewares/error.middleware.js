@@ -1,7 +1,7 @@
 import {envMode} from "../server.js";
 
 const errorMiddleware = (err, req, res, next) => {
-  console.log(err);
+  envMode==="DEVELOPMENT" && console.log(err);
   err.message ||= "Internal server err";
   err.statusCode ||= 500;
   if (err.code === 11000) {
