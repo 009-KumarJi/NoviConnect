@@ -1,7 +1,7 @@
 import React from 'react';
 import {Box, Button, Container, Paper, TextField, Typography} from "@mui/material";
 import {useInputValidation} from "6pp";
-import {colorPalette} from "../../constants/color.js";
+import {colorPalette} from "../../constants/color.constant.js";
 import {Navigate} from "react-router-dom";
 
 const isAdmin = false;

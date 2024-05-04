@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import {Avatar, Button, Dialog, DialogTitle , ListItem, Stack, Typography} from "@mui/material";
-import {colorPalette} from "../../constants/color.js";
+import {colorPalette} from "../../constants/color.constant.js";
 import {sampleNotifications} from "../../constants/sampleData.js";
 
 const Notifications = () => {

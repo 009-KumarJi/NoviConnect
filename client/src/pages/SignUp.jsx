@@ -5,7 +5,12 @@ import {CameraAlt as CameraAltIcon} from "@mui/icons-material";
 import {VisuallyHiddenInput} from "../components/styles/StyledComponents.jsx";
 import {useFileHandler, useInputValidation, useStrongPassword} from "6pp";
 import {usernameValidator} from "../utils/Validators.js";
-import {colorPalette} from "../constants/color.js";
+import {colorPalette} from "../constants/color.constant.js";
+import axios from "axios";
+import toast from "react-hot-toast";
+import {server} from "../constants/config.constant.js";
+import {useDispatch} from "react-redux";
+import {userExists} from "../redux/reducers/auth.js";
 
 
 const SignUpForm = () => {
@@ -16,15 +21,37 @@ const SignUpForm = () => {
   const password = useStrongPassword();
   const dob = useInputValidation("");
   const bio = useInputValidation("");
+  const dispatch = useDispatch();
 
-  const handleSubmitSignUp = (event) => {
+  const handleSubmitSignUp = async (event) => {
     event.preventDefault();
 
     if (!firstName.value || !lastName.value || !username.value || !email.value || !password.value || !dob.value) {
       alert('Please fill all required fields.');
       return;
     }
+    const formData = new FormData();
+    formData.append("avatar", avatar.file);
+    formData.append("name", `${firstName.value} ${lastName.value}`);
+    formData.append("username", username.value);
+    formData.append("email", email.value);
+    formData.append("password", password);
+    formData.append("dob", dob.value);
+    formData.append("bio", bio.value);
 
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }
+    }
+    try{
+      const {data} = await axios.post(`${server}/api/v1/user/new-login`, formData, config);
+      dispatch(userExists());
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    }
     goToLogin();
   };
   const avatar = useFileHandler("single");

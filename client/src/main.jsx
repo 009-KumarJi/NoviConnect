@@ -7,7 +7,7 @@ import {DevSupport} from "@react-buddy/ide-toolbox";
 import {ComponentPreviews, useInitial} from "./dev/index.js";
 import {ThemeProvider} from "@mui/material";
 import {Provider} from "react-redux";
-import {store} from "./redux/store.js";
+import store from "./redux/store.js";
 
 let theme = responsiveFontSizes(createTheme());
 

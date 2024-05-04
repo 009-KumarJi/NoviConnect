@@ -6,7 +6,7 @@ import {
   CalendarMonth as CalenderIcon,
 } from "@mui/icons-material";
 import moment from "moment";
-import {colorPalette} from "../../constants/color.js";
+import {colorPalette} from "../../constants/color.constant.js";
 
 const Profile = () => {
   return (

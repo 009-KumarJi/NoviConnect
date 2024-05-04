@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminLayout from "../../components/layout/AdminLayout.jsx";
 import {Box, Container, Stack, Typography} from "@mui/material";
-import {colorPalette} from "../../constants/color.js";
+import {colorPalette} from "../../constants/color.constant.js";
 import {
   AdminPanelSettings as AdminPanelSettingsIcon,
   Groups3 as GroupIcon,

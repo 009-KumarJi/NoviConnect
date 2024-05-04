@@ -1,6 +1,6 @@
 import React, {lazy, memo, Suspense, useEffect, useState} from 'react'
 import {Backdrop, Box, Button, Drawer, Grid, IconButton, Stack, TextField, Typography} from "@mui/material";
-import {colorPalette, darkPaleBlue, textDark} from "../constants/color.js";
+import {colorPalette, darkPaleBlue, textDark} from "../constants/color.constant.js";
 import {
   Add as AddIcon,
   Delete as DeleteIcon,

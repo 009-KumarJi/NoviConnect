@@ -9,7 +9,7 @@ import nFImg5 from '../assets/images/not-found/not-found-4.jpg';
 import nFImg6 from '../assets/images/not-found/not-found-5.jpg';
 import nFImg7 from '../assets/images/not-found/not-found-6.jpg';
 import nFImg8 from '../assets/images/not-found/not-found-7.jpg';
-import {colorPalette} from "../constants/color.js";
+import {colorPalette} from "../constants/color.constant.js";
 
 const NotFound = () => {
   const images = [nFImg1, nFImg2, nFImg3, nFImg4, nFImg5, nFImg6, nFImg7, nFImg8];

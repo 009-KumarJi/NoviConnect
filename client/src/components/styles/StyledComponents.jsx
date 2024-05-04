@@ -1,6 +1,6 @@
 import {styled, Paper as PaperComponent} from "@mui/material";
 import {Link as LinkComponent} from "react-router-dom";
-import {colorPalette, cursorHoveringChatName} from "../../constants/color.js";
+import {colorPalette, cursorHoveringChatName} from "../../constants/color.constant.js";
 
 
 export const VisuallyHiddenInput = styled('input')({

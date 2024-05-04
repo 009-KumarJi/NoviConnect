@@ -2,7 +2,7 @@ import React from 'react';
 import {Container, Typography} from "@mui/material";
 import {DataGrid} from "@mui/x-data-grid";
 import {DarkPaper} from "../styles/StyledComponents.jsx";
-import {colorPalette} from "../../constants/color.js";
+import {colorPalette} from "../../constants/color.constant.js";
 
 const Table = ({rows, columns, heading, rowHeight = 52}) => {
   return (

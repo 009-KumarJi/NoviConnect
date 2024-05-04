@@ -9,7 +9,7 @@ import {
   Search as SearchIcon
 } from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
-import {colorPalette, textDark} from "../../constants/color.js";
+import {colorPalette, textDark} from "../../constants/color.constant.js";
 
 
 const SearchDialog = lazy(() => import("../specific/Search.jsx"));

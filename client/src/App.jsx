@@ -1,8 +1,12 @@
-import React, {lazy, Suspense} from 'react';
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import React, {lazy, Suspense, useEffect} from 'react';
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import ProtectRoute from "./components/auth/ProtectRoute.jsx";
 import LayoutLoader from "./components/layout/Loaders.jsx";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import axios from "axios";
+import {server} from "./constants/config.constant.js";
+import {userDoesNotExist} from "./redux/reducers/auth.js";
+import {Toaster} from "react-hot-toast";
 
 
 const Login = lazy(() => import("./pages/Login.jsx"));
@@ -18,12 +22,19 @@ const MessageManagement = lazy(() => import("./pages/KrishnaDen/MessageManagemen
 const ChatManagement = lazy(() => import("./pages/KrishnaDen/ChatManagement.jsx"));
 
 
-// Just a dummy user for testing purposes.
-let user = false;
-
 const App = () => {
-  const {} = useSelector(state => state.auth);
-  return (
+
+  const {user, isLoading} = useSelector(state => state.auth);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    axios
+      .get(`${server}/api/v1/user/me`)
+      .then(res => console.log(res))
+      .catch(err => dispatch(userDoesNotExist()));
+
+  }, [dispatch]);
+  return isLoading ? <LayoutLoader/> : (
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader/>}>
         <Routes>
@@ -44,6 +55,7 @@ const App = () => {
           <Route path="*" element={<NotFound/>}/>
         </Routes>
       </Suspense>
+      <Toaster position={"bottom-right"}/>
     </BrowserRouter>
   )
 }

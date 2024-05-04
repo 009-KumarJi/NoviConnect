@@ -5,13 +5,9 @@ import {TryCatch} from "./error.middleware.js";
 
 const isAuthenticated = TryCatch((req, res, next) => {
   const token = req.cookies["nc-token"];
-
   if (!token) return next(new ErrorHandler("Unauthorized access for this route!", 401));
-
   const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-
   req.userId = decodedData.id;
-
   next();
 });
 const areYouAdmin = (req, res, next) => {

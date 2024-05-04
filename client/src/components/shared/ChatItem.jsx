@@ -2,7 +2,7 @@ import React, {memo} from 'react';
 import {Link} from "../styles/StyledComponents.jsx";
 import {Box, Stack, Typography} from "@mui/material";
 import AvatarCard from "./AvatarCard.jsx";
-import {darkPaleBlue} from "../../constants/color.js";
+import {darkPaleBlue} from "../../constants/color.constant.js";
 
 const ChatItem = (
   {

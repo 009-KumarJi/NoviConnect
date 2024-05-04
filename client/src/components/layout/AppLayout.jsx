@@ -6,7 +6,7 @@ import ChatList from "../specific/ChatList.jsx";
 import {sampleChats} from "../../constants/sampleData.js";
 import {useParams} from "react-router-dom";
 import Profile from "../specific/Profile.jsx";
-import {profileBackground} from "../../constants/color.js";
+import {profileBackground} from "../../constants/color.constant.js";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {

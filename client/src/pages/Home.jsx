@@ -1,7 +1,7 @@
 import React from 'react'
 import AppLayout from "../components/layout/AppLayout.jsx";
 import {Box, Typography} from "@mui/material";
-import {colorPalette, textDark, textDarkA} from "../constants/color.js";
+import {colorPalette, textDark, textDarkA} from "../constants/color.constant.js";
 
 const Home = () => {
   return (

@@ -2,12 +2,35 @@ import React from 'react'
 import {Button, Container, Paper, TextField, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useInputValidation} from "6pp";
-import {colorPalette} from "../constants/color.js";
+import {colorPalette} from "../constants/color.constant.js";
+import axios from "axios";
+import {server} from "../constants/config.constant.js";
+import {userExists} from "../redux/reducers/auth.js";
+import {useDispatch} from "react-redux";
+import toast from "react-hot-toast";
 
 const Login = () => {
-  const handleSubmitSignIn = (event) => {
+  const dispatch = useDispatch();
+  const handleSubmitSignIn = async (event) => {
     event.preventDefault();
-    // Add code here to log the user in
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      }
+    };
+    try {
+      const {data} = await axios.post(`${server}/api/v1/user/login`, {
+          username: username.value,
+          password: password.value,
+        },
+        config
+      );
+      dispatch(userExists());
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    }
   }
 
   const navigate = useNavigate();

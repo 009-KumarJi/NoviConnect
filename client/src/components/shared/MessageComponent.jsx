@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import {Box, Typography} from "@mui/material";
-import {colorPalette} from "../../constants/color.js";
+import {colorPalette} from "../../constants/color.constant.js";
 import moment from "moment";
 import {fileFormat} from "../../lib/features.js";
 import RenderAttachment from "./RenderAttachment.jsx";

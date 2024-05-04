@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Box, Drawer, Grid, IconButton, Stack, Typography} from "@mui/material";
-import {colorPalette} from "../../constants/color.js";
+import {colorPalette} from "../../constants/color.constant.js";
 import {
   Close as MenuCloseIcon,
   Dashboard as DashboardIcon,

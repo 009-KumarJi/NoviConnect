@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Dialog, DialogTitle, InputAdornment, List, ListItem, ListItemText, Stack, TextField} from "@mui/material";
 import {useInputValidation} from "6pp";
 import {Search as SearchIcon} from "@mui/icons-material";
-import {colorPalette} from "../../constants/color.js";
+import {colorPalette} from "../../constants/color.constant.js";
 import UserItem from "../shared/UserItem.jsx";
 import {sampleUsers} from "../../constants/sampleData.js";
 

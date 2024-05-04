@@ -1,7 +1,7 @@
 import React from 'react';
 import {Stack} from "@mui/material";
 import ChatItem from "../shared/ChatItem.jsx";
-import {colorPalette} from "../../constants/color.js";
+import {colorPalette} from "../../constants/color.constant.js";
 
 const ChatList = (
   {

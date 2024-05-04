@@ -11,7 +11,7 @@ import {
   ArcElement,
   Legend,
 } from "chart.js";
-import {graphGreen, graphPurple} from "../../constants/color.js";
+import {graphGreen, graphPurple} from "../../constants/color.constant.js";
 import {getLast7Days} from "../../lib/features.js";
 import zIndex from "@mui/material/styles/zIndex.js";
 

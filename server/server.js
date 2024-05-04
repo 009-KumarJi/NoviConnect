@@ -39,12 +39,11 @@ cloudinary.config({
 app.use(express.json()); // Parse JSON bodies (as sent by API clients)
 app.use(cookieParser()); // Parse cookies attached to the client request
 app.use(cors({
-  origin: [process.env.CLIENT_URLS.split(',')], // Allow the client to make requests to this server
+  origin: [process.env.CLIENT_URLS.split(','), "http://localhost:5173"], // Allow the client to make requests to this server
   credentials: true // Allow the session cookie to be sent to and from the client
 }));
 
 sout("client point: ", process.env.CLIENT_URLS.split(',')[0]);
-
 app.use((req, res, next) => {
   sout(`Route being hit: ${req.method} ${req.path}`);
   next();

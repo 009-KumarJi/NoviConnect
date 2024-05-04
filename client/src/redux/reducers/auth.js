@@ -2,8 +2,8 @@ import {createSlice} from "@reduxjs/toolkit";
 
 const initialState = {
   user: null,
-  isAdmin: false,
   isLoading: true,
+  isAdmin: false,
 }
 
 const authSlice = createSlice({
