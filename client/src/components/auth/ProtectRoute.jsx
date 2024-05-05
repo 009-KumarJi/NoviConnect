@@ -9,7 +9,7 @@ const ProtectRoute = ({children, user, redirect="/login"}) => {
 
     // If the user is logged in, render the child components.
     // Otherwise, render the Outlet component.
-    return children? children : <Outlet />;
+    return children ? children : <Outlet />;
 }
 
 export default ProtectRoute;

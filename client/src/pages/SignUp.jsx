@@ -35,7 +35,7 @@ const SignUpForm = () => {
     formData.append("name", `${firstName.value} ${lastName.value}`);
     formData.append("username", username.value);
     formData.append("email", email.value);
-    formData.append("password", password);
+    formData.append("password", password.value);
     formData.append("dob", dob.value);
     formData.append("bio", bio.value);
 
@@ -45,14 +45,14 @@ const SignUpForm = () => {
         "Content-Type": "multipart/form-data",
       }
     }
-    try{
+    try {
       const {data} = await axios.post(`${server}/api/v1/user/new-login`, formData, config);
       dispatch(userExists());
       toast.success(data.message);
+      goToLogin();
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     }
-    goToLogin();
   };
   const avatar = useFileHandler("single");
   const navigate = useNavigate();
@@ -70,12 +70,11 @@ const SignUpForm = () => {
       }}
     >
       <Container
-        component={"main"} maxWidth="xs" maxHight="100vh"
+        component={"main"} maxWidth="xs"
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-
         }}
       >
         <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}

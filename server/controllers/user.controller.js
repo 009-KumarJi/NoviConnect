@@ -2,7 +2,7 @@ import {User} from "../models/user.model.js";
 import {cookieOptions, emitEvent, sendToken, uploadFilesToCloudinary} from "../utils/features.js";
 import {compare} from "bcrypt";
 import {TryCatch} from "../middlewares/error.middleware.js";
-import {ErrorHandler} from "../utils/utility.js";
+import {ErrorHandler, sout} from "../utils/utility.js";
 import {Chat} from "../models/chat.model.js";
 import {Request} from "../models/request.model.js";
 import {NEW_REQUEST, REFETCH_CHATS} from "../constants/events.constant.js";
@@ -12,14 +12,16 @@ const newUser = TryCatch(async (req, res, next) => {
 
   const {name, username, password, bio, email, dob} = req.body;
   const file = req.file;
+  sout("file: ", file);
 
   const results = await uploadFilesToCloudinary([file]);
+  if (!results) return next(new ErrorHandler("File upload failed", 500));
 
   const avatar = {
     public_id: results[0].public_id,
     url: results[0].secure_url,
   }
-
+  sout("name: ", name, "username: ", username, "password: ", password, "bio: ", bio, "email: ", email, "dob: ", dob, "avatar: ", avatar);
   const user = await User.create({
     name,
     username,

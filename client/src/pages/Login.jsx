@@ -26,8 +26,9 @@ const Login = () => {
         },
         config
       );
-      dispatch(userExists());
       toast.success(data.message);
+      dispatch(userExists(true));
+      navigate("/");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     }

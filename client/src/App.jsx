@@ -5,7 +5,7 @@ import LayoutLoader from "./components/layout/Loaders.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import axios from "axios";
 import {server} from "./constants/config.constant.js";
-import {userDoesNotExist} from "./redux/reducers/auth.js";
+import {userDoesNotExist, userExists} from "./redux/reducers/auth.js";
 import {Toaster} from "react-hot-toast";
 
 
@@ -29,11 +29,11 @@ const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     axios
-      .get(`${server}/api/v1/user/me`)
-      .then(res => console.log(res))
+      .get(`${server}/api/v1/user/profile`, {withCredentials: true})
+      .then(({data}) => dispatch(userExists(data.user)))
       .catch(err => dispatch(userDoesNotExist()));
-
   }, [dispatch]);
+
   return isLoading ? <LayoutLoader/> : (
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader/>}>

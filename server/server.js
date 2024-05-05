@@ -45,7 +45,7 @@ app.use(cors({
 
 sout("client point: ", process.env.CLIENT_URLS.split(',')[0]);
 app.use((req, res, next) => {
-  sout(`Route being hit: ${req.method} ${req.path}`);
+  console.log(`Route being hit: ${req.method} ${req.path}`);
   next();
 });
 

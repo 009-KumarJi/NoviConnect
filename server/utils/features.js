@@ -41,7 +41,7 @@ const uploadFilesToCloudinary = async (files = []) => {
   const uploadPromises = files.map((file) => { // mapping over the files array
     return new Promise((resolve, reject) => { // creating a new promise for each file
       cloudinary.uploader.upload( // uploading the file to cloudinary
-        getBase64(file), // getting the base64 data of the file
+        getBase64(file), // passing the base64 data of the file
         { // options for the upload
           resource_type: "auto",
           public_id: `${uuid()}`,
