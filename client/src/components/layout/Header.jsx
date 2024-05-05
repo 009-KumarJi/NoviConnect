@@ -10,6 +10,11 @@ import {
 } from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
 import {colorPalette, textDark} from "../../constants/color.constant.js";
+import axios from "axios";
+import {server} from "../../constants/config.constant.js";
+import toast from "react-hot-toast";
+import {useDispatch} from "react-redux";
+import {userDoesNotExist} from "../../redux/reducers/auth.js";
 
 
 const SearchDialog = lazy(() => import("../specific/Search.jsx"));
@@ -17,6 +22,7 @@ const NotificationsDialog = lazy(() => import("../specific/Notifications.jsx"));
 const NewGroupDialog = lazy(() => import("../specific/NewGroup.jsx"));
 
 const Header = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
@@ -42,7 +48,13 @@ const Header = () => {
     navigate("/groups");
   }
   const logoutHandler = () => {
-    console.log("Logout clicked");
+    axios
+      .get(`${server}/api/v1/user/logout`, {withCredentials: true})
+      .then(res => {
+        toast.success(res?.data?.message || "Logged-out successfully!");
+        dispatch(userDoesNotExist());
+      })
+      .catch(err => toast.error(err?.response?.data?.message || "Something went wrong!"))
   }
 
   return (
