@@ -5,6 +5,7 @@ This document outlines the structure and key components of the backend applicati
 ## Table of Contents
 - [Directory Descriptions](#directory-descriptions)
 - [File Descriptions](#file-descriptions)
+- [Server Flow](#server-flow)
 
 ## Directory Descriptions
 
@@ -48,3 +49,48 @@ This document outlines the structure and key components of the backend applicati
 | <a id="socketio-helper">[`socketio.helper.js`](./lib/socketio.helper.js)</a>                           | Contains helper functions for socket.io-related operations like retrieve active sockets for a list of users, creating room.                |
 | <a id="user-seeder">[`user.seeder.js`](./seeders/user.seeder.js)</a>                                   | Seeds the database with creating new dummy users. **Note: Remove this file in production.**                                                |
 | <a id="chat-seeder">[`chat.seeder.js`](./seeders/chat.seeder.js)</a>                                   | Seeds the database with creating new dummy chats and messages. **Note: Remove this file in production.**                                   |
+
+## Server Flow
+└── [server](./)
+└── [server.js](server.js)
+└── [package.json](package.json)
+└── [dummy.env](.env)
+├── [constants](constants/)
+│   └── [constants](constants/)
+│       └── [events.constant.js](constants\events.constant.js)
+├── [controllers](controllers/)
+│   └── [controllers](controllers/)
+│       └── [admin.controller.js](controllers\admin.controller.js)
+│       └── [chat.controller.js](controllers\chat.controller.js)
+│       └── [user.controller.js](controllers\user.controller.js)
+├── [lib](lib/)
+│   └── [lib](lib/)
+│       └── [chat.helper.js](lib\chat.helper.js)
+│       └── [cloudinary.helper.js](lib\cloudinary.helper.js)
+│       └── [socketio.helper.js](lib\socketio.helper.js)
+├── [middlewares](middlewares/)
+│   └── [middlewares](middlewares/)
+│       └── [auth.middleware.js](middlewares\auth.middleware.js)
+│       └── [error.middleware.js](middlewares\error.middleware.js)
+│       └── [fileExists.middleware.js](middlewares\fileExists.middleware.js)
+│       └── [multer.middleware.js](middlewares\multer.middleware.js)
+├── [models](models/)
+│   └── [models](models/)
+│       └── [chat.model.js](models\chat.model.js)
+│       └── [message.model.js](models\message.model.js)
+│       └── [request.model.js](models\request.model.js)
+│       └── [user.model.js](models\user.model.js)
+├── [routes](routes/)
+│   └── [routes](routes/)
+│       └── [admin.routes.js](routes\admin.routes.js)
+│       └── [chat.routes.js](routes\chat.routes.js)
+│       └── [user.routes.js](routes\user.routes.js)
+├── [seeders](seeders/)
+│   └── [seeders](seeders/)
+│       └── [chat.seeder.js](seeders\chat.seeder.js)
+│       └── [user.seeder.js](seeders\user.seeder.js)
+├── [utils](utils/)
+│   └── [utils](utils/)
+│       └── [features.js](utils\features.js)
+│       └── [utility.js](utils\utility.js)
+│       └── [validators.js](utils\validators.js)
