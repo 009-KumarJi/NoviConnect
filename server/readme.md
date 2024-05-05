@@ -51,38 +51,49 @@ This document outlines the structure and key components of the backend applicati
 | <a id="chat-seeder">[`chat.seeder.js`](./seeders/chat.seeder.js)</a>                                   | Seeds the database with creating new dummy chats and messages. **Note: Remove this file in production.**                                   |
 
 ## Server Flow
-├── [server.js](server.js)<br>
-├── [package.json](package.json)<br>
-├── [.env](.env)<br>
-├── [constants](constants/)/<br>
-│   └── [events.constant.js](constants/events.constant.js)<br>
-├── [controllers](controllers/)/<br>
-│   ├── [admin.controller.js](controllers/admin.controller.js)<br>
-│   ├── [chat.controller.js](controllers/chat.controller.js)<br>
-│   └── [user.controller.js](controllers/user.controller.js)<br>
-├── [lib](lib/)/<br>
-│   ├── [chat.helper.js](lib/chat.helper.js)<br>
-│   ├── [cloudinary.helper.js](lib/cloudinary.helper.js)<br>
-│   └── [socketio.helper.js](lib/socketio.helper.js)<br>
-├── [middlewares](middlewares/)/<br>
-│   ├── [auth.middleware.js](middlewares/auth.middleware.js)<br>
-│   ├── [error.middleware.js](middlewares/error.middleware.js)<br>
-│   ├── [fileExists.middleware.js](middlewares/fileExists.middleware.js)<br>
-│   └── [multer.middleware.js](middlewares/multer.middleware.js)<br>
-├── [models](models/)/<br>
-│   ├── [chat.model.js](models/chat.model.js)<br>
-│   ├── [message.model.js](models/message.model.js)<br>
-│   ├── [request.model.js](models/request.model.js)<br>
-│   └── [user.model.js](models/user.model.js)<br>
-├── [routes](routes/)/<br>
-│   ├── [admin.routes.js](routes/admin.routes.js)<br>
-│   ├── [chat.routes.js](routes/chat.routes.js)<br>
-│   └── [user.routes.js](routes/user.routes.js)<br>
-├── [seeders](seeders/)/<br>
-│   ├── [chat.seeder.js](seeders/chat.seeder.js)<br>
-│   └── [user.seeder.js](seeders/user.seeder.js)<br>
-└── [utils](utils/)/<br>
-├── [features.js](utils/features.js)<br>
-├── [utility.js](utils/utility.js)<br>
-└── [validators.js](utils/validators.js)<br>
 
+```
+server/
+├── server.js
+├── package.json
+├── .env
+│
+├── constants/
+│   └── events.constant.js
+│
+├── controllers/
+│   ├── admin.controller.js
+│   ├── chat.controller.js
+│   └── user.controller.js
+│
+├── lib/
+│   ├── chat.helper.js
+│   ├── cloudinary.helper.js
+│   └── socketio.helper.js
+│
+├── middlewares/
+│   ├── auth.middleware.js
+│   ├── error.middleware.js
+│   ├── fileExists.middleware.js
+│   └── multer.middleware.js
+│
+├── models/
+│   ├── chat.model.js
+│   ├── message.model.js
+│   ├── request.model.js
+│   └── user.model.js
+│
+├── routes/
+│   ├── admin.routes.js
+│   ├── chat.routes.js
+│   └── user.routes.js
+│
+├── seeders/
+│   ├── chat.seeder.js
+│   └── user.seeder.js
+│
+└── utils/
+    ├── features.js
+    ├── utility.js
+    └── validators.js
+```
