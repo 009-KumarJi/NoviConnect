@@ -18,11 +18,20 @@ const apiSlice = createApi({
     }),
     searchUser: builder.query({
       query: (search) => ({
-        url: `user/search?name=${search.trim().replace(/ /g, "+")}`,
+        url: `user/search?name=${search.trim().replaceAll(" ", "+")}`,
         method: "GET",
         credentials: "include"
       }),
       providesTags: ["User"]
+    }),
+    sendFriendRequest: builder.mutation({
+      query: (data) => ({
+        url: `user/send-request`,
+        method: "PUT",
+        credentials: "include",
+        body: data
+      }),
+      invalidatesTags: ["User"]
     }),
   })
 });
@@ -30,5 +39,6 @@ const apiSlice = createApi({
 export default apiSlice;
 export const {
   useMyChatsQuery,
-  useLazySearchUserQuery
+  useLazySearchUserQuery,
+  useSendFriendRequestMutation,
 } = apiSlice;

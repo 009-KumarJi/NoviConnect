@@ -25,7 +25,6 @@ const NewGroupDialog = lazy(() => import("../specific/NewGroup.jsx"));
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {isMobileMenu} = useSelector(state => state["misc"]);
   const {isSearch} = useSelector(state => state["misc"]);
   const {isNewGroup} = useSelector(state => state["misc"]);
   const {isNotification} = useSelector(state => state["misc"]);
