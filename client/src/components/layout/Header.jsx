@@ -13,8 +13,9 @@ import {colorPalette, textDark} from "../../constants/color.constant.js";
 import axios from "axios";
 import {server} from "../../constants/config.constant.js";
 import toast from "react-hot-toast";
-import {useDispatch} from "react-redux";
-import {userDoesNotExist} from "../../redux/reducers/auth.js";
+import {useDispatch, useSelector} from "react-redux";
+import {userDoesNotExist} from "../../redux/reducers/authSlice.js";
+import {setIsMobileMenu, setIsNewGroup, setIsNotification, setIsSearch} from "../../redux/reducers/miscSlice.js";
 
 
 const SearchDialog = lazy(() => import("../specific/Search.jsx"));
@@ -24,26 +25,14 @@ const NewGroupDialog = lazy(() => import("../specific/NewGroup.jsx"));
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
-  const [isNewGroupDialogOpen, setIsNewGroupDialogOpen] = useState(false);
-  const [isNotificationDialogOpen, setIsNotificationDialogOpen] = useState(false);
-  const handleMobile = () => {
-    console.log("Mobile menu clicked");
-    setIsMobileMenuOpen((prev) => !prev);
-  };
-  const openSearch = () => {
-    console.log("Search dialog opened");
-    setIsSearchDialogOpen((prev) => !prev);
-  };
-  const openNewGroup = () => {
-    console.log("New group dialog opened");
-    setIsNewGroupDialogOpen((prev) => !prev);
-  }
-  const showNotification = () => {
-    console.log("Notification dialog opened");
-    setIsNotificationDialogOpen((prev) => !prev);
-  }
+  const {isMobileMenu} = useSelector(state => state["misc"]);
+  const {isSearch} = useSelector(state => state["misc"]);
+  const {isNewGroup} = useSelector(state => state["misc"]);
+  const {isNotification} = useSelector(state => state["misc"]);
+  const handleMobile = () => dispatch(setIsMobileMenu(true));
+  const openSearch = () => dispatch(setIsSearch(true));
+  const openNewGroup = () => dispatch(setIsNewGroup(!isNewGroup));
+  const showNotification = () => dispatch(setIsNotification(!isNotification));
   const navigateToGroup = () => {
     navigate("/groups");
   }
@@ -88,21 +77,21 @@ const Header = () => {
       </Box>
 
       {
-        isSearchDialogOpen && (
+        isSearch && (
           <Suspense fallback={<Backdrop open/>}>
             <SearchDialog/>
           </Suspense>
         )
       }
       {
-        isNewGroupDialogOpen && (
+        isNewGroup && (
           <Suspense fallback={<Backdrop open/>}>
             <NewGroupDialog/>
           </Suspense>
         )
       }
       {
-        isNotificationDialogOpen && (
+        isNotification && (
           <Suspense fallback={<Backdrop open/>}>
             <NotificationsDialog/>
           </Suspense>

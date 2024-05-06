@@ -5,7 +5,7 @@ import {useInputValidation} from "6pp";
 import {colorPalette} from "../constants/color.constant.js";
 import axios from "axios";
 import {server} from "../constants/config.constant.js";
-import {userExists} from "../redux/reducers/auth.js";
+import {userExists} from "../redux/reducers/authSlice.js";
 import {useDispatch} from "react-redux";
 import toast from "react-hot-toast";
 
@@ -28,7 +28,7 @@ const Login = () => {
       );
       toast.success(data.message);
       dispatch(userExists(true));
-      navigate("/");
+      navigate("/", {replace: true});
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     }

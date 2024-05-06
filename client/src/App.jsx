@@ -5,7 +5,7 @@ import LayoutLoader from "./components/layout/Loaders.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import axios from "axios";
 import {server} from "./constants/config.constant.js";
-import {userDoesNotExist, userExists} from "./redux/reducers/auth.js";
+import {userDoesNotExist, userExists} from "./redux/reducers/authSlice.js";
 import {Toaster} from "react-hot-toast";
 
 

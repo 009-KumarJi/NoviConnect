@@ -10,7 +10,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import {server} from "../constants/config.constant.js";
 import {useDispatch} from "react-redux";
-import {userExists} from "../redux/reducers/auth.js";
+import {userExists} from "../redux/reducers/authSlice.js";
 
 
 const SignUpForm = () => {
