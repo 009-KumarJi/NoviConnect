@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Dialog, DialogTitle, ListItem, Stack, TextField, Typography} from "@mui/material";
+import {Button, Dialog, DialogTitle, Stack, TextField, Typography} from "@mui/material";
 import {colorPalette} from "../../constants/color.constant.js";
 import {sampleUsers} from "../../constants/sampleData.js";
 import UserItem from "../shared/UserItem.jsx";

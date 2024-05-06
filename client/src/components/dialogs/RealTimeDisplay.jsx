@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Typography } from "@mui/material";
+import React, {useEffect, useState} from 'react';
+import {Typography} from "@mui/material";
 import moment from "moment";
 
 const RealTimeDisplay = () => {

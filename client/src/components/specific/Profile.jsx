@@ -1,9 +1,9 @@
 import React from 'react';
 import {Avatar, Stack, Typography} from "@mui/material";
 import {
-  PermIdentityRounded as FaceIcon,
   AlternateEmail as UsernameIcon,
   CalendarMonth as CalenderIcon,
+  PermIdentityRounded as FaceIcon,
 } from "@mui/icons-material";
 import moment from "moment";
 import {colorPalette} from "../../constants/color.constant.js";

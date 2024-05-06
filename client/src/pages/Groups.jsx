@@ -1,6 +1,6 @@
 import React, {lazy, memo, Suspense, useEffect, useState} from 'react'
 import {Backdrop, Box, Button, Drawer, Grid, IconButton, Stack, TextField, Typography} from "@mui/material";
-import {colorPalette, darkPaleBlue, textDark} from "../constants/color.constant.js";
+import {colorPalette} from "../constants/color.constant.js";
 import {
   Add as AddIcon,
   Delete as DeleteIcon,
@@ -55,7 +55,7 @@ const Groups = () => {
   }, [ChatId]);
 
 
-  const IconBtns = <>
+  const IconButtons = <>
 
     <Box sx={{
       display: {
@@ -136,7 +136,7 @@ const Groups = () => {
         padding: "1rem 3rem",
       }}>
 
-        {IconBtns}
+        {IconButtons}
 
         {
           groupName && <>

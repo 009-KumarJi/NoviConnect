@@ -7,7 +7,6 @@ import UserItem from "../shared/UserItem.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsSearch} from "../../redux/reducers/miscSlice.js";
 import {useLazySearchUserQuery, useSendFriendRequestMutation} from "../../redux/api/apiSlice.js";
-import toast from "react-hot-toast";
 import {useAsyncMutation} from "../../../hooks/hook.jsx";
 
 
@@ -33,10 +32,10 @@ const Search = () => {
 
   return (
     <Dialog open={isSearch} onClose={searchCloseHandler} TransitionComponent={Slide} transitionDuration={300}>
-      <Stack p={"2rem"} direction={"column"} width="25rem" sx={{
+      <Stack p={"2rem"} direction="column" width="25rem" sx={{
         backgroundImage: `linear-gradient(0deg, ${colorPalette().CP6}, ${colorPalette().CP8})`,
       }}>
-        <DialogTitle textAlign={"center"}>Find People</DialogTitle>
+        <DialogTitle textAlign="center">Find People</DialogTitle>
         <TextField
           label={""}
           value={search.value}

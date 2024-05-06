@@ -1,7 +1,8 @@
 import express from "express";
 import {
   adminLogin,
-  adminLogout, getAdminData,
+  adminLogout,
+  getAdminData,
   getAllChats,
   getAllMessages,
   getAllUsers,

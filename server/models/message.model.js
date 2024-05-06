@@ -1,4 +1,4 @@
-import mongoose, {Schema, model, Types} from "mongoose";
+import mongoose, {model, Schema, Types} from "mongoose";
 
 const messageSchema = new Schema({
   sender: {

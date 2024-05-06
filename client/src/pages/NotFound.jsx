@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import {useNavigate } from 'react-router-dom';
-import {Typography, Button, Container, createTheme, Box} from '@mui/material';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {Box, Button, Container, Typography} from '@mui/material';
 import nFImg1 from '../assets/images/not-found/not-found.jpg';
 import nFImg2 from '../assets/images/not-found/not-found-1.jpg';
 import nFImg3 from '../assets/images/not-found/not-found-2.jpg';

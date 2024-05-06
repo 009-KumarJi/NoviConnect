@@ -1,19 +1,18 @@
 import React from 'react';
-import {Line, Doughnut} from "react-chartjs-2";
+import {Doughnut, Line} from "react-chartjs-2";
 import {
-  Chart as ChartJS,
+  ArcElement,
   CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  Legend,
   LinearScale,
   LineElement,
   PointElement,
   Tooltip,
-  Filler,
-  ArcElement,
-  Legend,
 } from "chart.js";
 import {graphGreen, graphPurple} from "../../constants/color.constant.js";
 import {getLast7Days} from "../../lib/features.js";
-import zIndex from "@mui/material/styles/zIndex.js";
 
 ChartJS.register(
   CategoryScale,

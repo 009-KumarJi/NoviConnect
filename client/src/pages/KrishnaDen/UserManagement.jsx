@@ -6,7 +6,6 @@ import {sampleDashboardData} from "../../constants/sampleData.js";
 import {transformImg} from "../../lib/features.js";
 
 
-
 const columns = [
   { field: 'id', headerName: 'ID', headerClassName: "table-header", width: 200 },
   { field: 'avatar', headerName: 'Avatar', headerClassName: "table-header", width: 150, renderCell: (params) => <Avatar src={params.row.avatar} alt={params.row.name}/> },

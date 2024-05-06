@@ -1,4 +1,4 @@
-import {styled, Paper as PaperComponent} from "@mui/material";
+import {Paper as PaperComponent, styled} from "@mui/material";
 import {Link as LinkComponent} from "react-router-dom";
 import {colorPalette, cursorHoveringChatName} from "../../constants/color.constant.js";
 
