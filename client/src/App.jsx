@@ -7,6 +7,7 @@ import axios from "axios";
 import {server} from "./constants/config.constant.js";
 import {userDoesNotExist, userExists} from "./redux/reducers/authSlice.js";
 import {Toaster} from "react-hot-toast";
+import {SocketProvider} from "./socket.jsx";
 
 
 const Login = lazy(() => import("./pages/Login.jsx"));
@@ -38,7 +39,7 @@ const App = () => {
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader/>}>
         <Routes>
-          <Route element={<ProtectRoute user={user}/>}>
+          <Route element={<SocketProvider><ProtectRoute user={user}/></SocketProvider>}>
             <Route path="/" element={<Home/>}/>
             <Route path="/chat/:ChatId" element={<Chat/>}/>
             <Route path="/groups" element={<Groups/>}/>

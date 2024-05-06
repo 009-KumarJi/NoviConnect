@@ -4,6 +4,7 @@ import {v2 as cloudinary} from "cloudinary";
 import {v4 as uuid} from "uuid";
 import {sout} from "./utility.js";
 import {getBase64} from "../lib/cloudinary.helper.js";
+import {NC_TOKEN} from "../constants/config.constant.js";
 
 const cookieOptions = {
   maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
@@ -27,7 +28,7 @@ const sendToken = (res, user, code, message) => {
   const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
   return res
     .status(code)
-    .cookie("nc-token", token, cookieOptions)
+    .cookie(NC_TOKEN, token, cookieOptions)
     .json({
       success: true,
       message,

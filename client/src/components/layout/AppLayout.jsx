@@ -10,9 +10,12 @@ import {useMyChatsQuery} from "../../redux/api/apiSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsMobileMenu} from "../../redux/reducers/miscSlice.js";
 import {useErrors} from "../../../hooks/hook.jsx";
+import {getSocket} from "../../socket.jsx";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
+    const socket = getSocket();
+    console.log("Socket: ", socket.id)
     const params = useParams();
     const dispatch = useDispatch();
     const {isLoading, data, isError, error, refetch} = useMyChatsQuery("");

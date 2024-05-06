@@ -5,7 +5,6 @@ import cors from "cors";
 import {v4 as uuid} from "uuid";
 import {Server} from "socket.io";
 import {createServer} from "http";
-import {v2 as cloudinary} from "cloudinary";
 
 import {connectDB} from "./utils/features.js";
 import {errorMiddleware} from "./middlewares/error.middleware.js";
@@ -16,12 +15,15 @@ import {NEW_MESSAGE, NEW_MESSAGE_ALERT} from "./constants/events.constant.js";
 import {getSockets} from "./lib/socketio.helper.js";
 import {Message} from "./models/message.model.js";
 import {sout} from "./utils/utility.js";
+import {corsOptions} from "./constants/config.constant.js";
+import {socketAuthenticator} from "./middlewares/auth.middleware.js";
+import {v2 as cloudinary} from "cloudinary";
 
 dotenv.config({path: "./.env"});
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {});
+const io = new Server(server, {cors: corsOptions});
 const activeUserSocketIds = new Map();
 
 const port = process.env.PORT || 3000;
@@ -38,10 +40,7 @@ cloudinary.config({
 // Using middlewares here
 app.use(express.json()); // Parse JSON bodies (as sent by API clients)
 app.use(cookieParser()); // Parse cookies attached to the client request
-app.use(cors({
-  origin: [process.env.CLIENT_URLS.split(','), "http://localhost:5173"], // Allow the client to make requests to this server
-  credentials: true // Allow the session cookie to be sent to and from the client
-}));
+app.use(cors(corsOptions));
 
 sout("client point: ", process.env.CLIENT_URLS.split(',')[0]);
 app.use((req, res, next) => {
@@ -58,14 +57,17 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-io.use((socket, next) =>{});
+io.use((socket, next) =>{
+  cookieParser()(
+    socket.request,
+    socket.request.res,
+    async (err) => await socketAuthenticator(err, socket, next)
+  );
+});
 
 io.on("connection", (socket) => {
   sout(`socketId: ${socket.id} connected!`);
-  const user = {
-    _id: "1234567890",
-    name: "Krishna"
-  };
+  const user = socket['user'];
   socket.on(NEW_MESSAGE, async ({ChatId, members, message}) => {
 
 

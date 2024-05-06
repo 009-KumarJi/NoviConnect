@@ -6,6 +6,7 @@ import {ErrorHandler} from "../utils/utility.js";
 import jwt from "jsonwebtoken";
 import {cookieOptions} from "../utils/features.js";
 import {adminKey} from "../server.js";
+import {NC_TOKEN} from "../constants/config.constant.js";
 
 const adminLogin = TryCatch(async (req, res, next) => {
   const {secret_key} = req.body;
@@ -14,7 +15,7 @@ const adminLogin = TryCatch(async (req, res, next) => {
   const token = jwt.sign(secret_key, process.env.JWT_SECRET);
 
   return res.status(200)
-    .clearCookie("nc-token", "", {...cookieOptions, maxAge: 0})
+    .clearCookie(NC_TOKEN, "", {...cookieOptions, maxAge: 0})
     .cookie("krishna-hero", token, {...cookieOptions, maxAge: 1000 * 60 * 15})
     .json({
       success: true,

@@ -7,6 +7,7 @@ import {Chat} from "../models/chat.model.js";
 import {Request} from "../models/request.model.js";
 import {NEW_REQUEST, REFETCH_CHATS} from "../constants/events.constant.js";
 import {getOtherMember} from "../lib/chat.helper.js";
+import {NC_TOKEN} from "../constants/config.constant.js";
 
 const newUser = TryCatch(async (req, res, next) => {
 
@@ -58,7 +59,7 @@ const getMyProfile = TryCatch(async (req, res, next) => {
 });
 const logout = TryCatch(async (req, res) => {
   return res.status(200)
-    .cookie("nc-token", "", {...cookieOptions, maxAge: 0})
+    .cookie(NC_TOKEN, "", {...cookieOptions, maxAge: 0})
     .json({
       success: true,
       message: "Logged out successfully",
@@ -116,7 +117,6 @@ const sendFriendRequest = TryCatch(async (req, res, next) => {
   });
 });
 const acceptFriendRequest = TryCatch(async (req, res, next) => {
-  console.log(req.body)
   const {requestId, status} = req.body;
   const request = await Request.findById(requestId)
     .populate("sender", "name")
