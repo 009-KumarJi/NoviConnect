@@ -25,6 +25,10 @@ const userSchema = new Schema({
     type: Date,
     required: [true, "Please provide a date of birth"],
   },
+  bio: {
+    type: String,
+    default: "Hey there! I am using NoviConnect.",
+  },
   avatar: {
     public_id: {
       type: String,

@@ -28,7 +28,10 @@ const Login = () => {
       );
       toast.success(data.message);
       dispatch(userExists(true));
-      navigate("/", {replace: true});
+      navigate("/", {
+        replace: true,
+        refresh: true,
+      });
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     }
@@ -50,14 +53,14 @@ const Login = () => {
       }}
     >
       <Container
-        component={"main"} maxWidth="xs"
+        component="main" maxWidth="xs"
         sx={{
           height: "100vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center"
         }}>
-        <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}
+        <Typography variant="h1" marginBottom="3rem" marginTop="2rem"
                     color={colorPalette(1).CP2}>NoviConnect</Typography>
         <Paper
           style={{

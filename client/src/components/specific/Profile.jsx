@@ -7,11 +7,13 @@ import {
 } from "@mui/icons-material";
 import moment from "moment";
 import {colorPalette} from "../../constants/color.constant.js";
+import {transformImg} from "../../lib/features.js";
 
-const Profile = () => {
+const Profile = ({user}) => {
   return (
     <Stack spacing={"2rem"} direction={"column"} alignItems={"center"}>
       <Avatar
+        src={transformImg(user?.avatar?.url)}
         sx={{
           height: 200,
           width: 200,
@@ -20,10 +22,10 @@ const Profile = () => {
           border: "5px solid white"
         }}
       />
-      <ProfileCard heading={"Bio"} text={"Lorem ipsum dolor sit amet"} />
-      <ProfileCard heading={"Name"} text={"John Doe"} Icon={<FaceIcon/>}/>
-      <ProfileCard heading={"Username"} text={"johndoe"} Icon={<UsernameIcon/>}/>
-      <ProfileCard heading={"Joined"} text={moment(`2021-11-05T00:00:00.000Z`).fromNow()} Icon={<CalenderIcon/>}/>
+      <ProfileCard heading={"Bio"} text={user?.bio} />
+      <ProfileCard heading={"Name"} text={user?.name} Icon={<FaceIcon/>}/>
+      <ProfileCard heading={"Username"} text={user?.username} Icon={<UsernameIcon/>}/>
+      <ProfileCard heading={"Joined"} text={moment(user?.createdAt).fromNow()} Icon={<CalenderIcon/>}/>
     </Stack>
   );
 };
