@@ -36,13 +36,12 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
-
 // Using middlewares here
 app.use(express.json()); // Parse JSON bodies (as sent by API clients)
 app.use(cookieParser()); // Parse cookies attached to the client request
 app.use(cors(corsOptions));
 
-sout("client point: ", process.env.CLIENT_URLS.split(',')[0]);
+sout("client point: ", process.env.CLIENT_URLS.split(",")[1]);
 app.use((req, res, next) => {
   console.log(`Route being hit: ${req.method} ${req.path}`);
   next();
@@ -58,6 +57,7 @@ app.get("/", (req, res) => {
 });
 
 io.use((socket, next) =>{
+  console.log("Socket url", socket.request.url);
   cookieParser()(
     socket.request,
     socket.request.res,
@@ -69,10 +69,8 @@ io.on("connection", (socket) => {
   sout(`socketId: ${socket.id} connected!`);
   const user = socket['user'];
   socket.on(NEW_MESSAGE, async ({ChatId, members, message}) => {
-
-
     activeUserSocketIds.set(user._id.toString(), socket.id);
-
+    console.log("emitting message: ", message);
     const messageForRealTime = {
       content: message,
       _id: uuid(),
@@ -89,7 +87,8 @@ io.on("connection", (socket) => {
       chat: ChatId
     }
     const membersSockets = getSockets(members);
-    io.to(membersSockets).emit(NEW_MESSAGE, {ChatId, message: messageForRealTime, mem: membersSockets});
+    console.log("Members Sockets: ", membersSockets);
+    io.to(membersSockets).emit(NEW_MESSAGE, {ChatId, message: messageForRealTime});
     io.to(membersSockets).emit(NEW_MESSAGE_ALERT, {ChatId});
     // TODO: Implement Room Building then send data to that room
     /*const roomId = await createRoom(membersSockets, ChatId, io);

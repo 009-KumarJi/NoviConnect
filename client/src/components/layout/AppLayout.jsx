@@ -15,7 +15,6 @@ import {getSocket} from "../../socket.jsx";
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
     const socket = getSocket();
-    console.log("Socket: ", socket.id)
     const params = useParams();
     const dispatch = useDispatch();
     const {isLoading, data, isError, error, refetch} = useMyChatsQuery("");
@@ -76,7 +75,7 @@ const AppLayout = () => (WrappedComponent) => {
             xs={12} sm={8} md={5} lg={6}
             height={"100%"}
           >
-            <WrappedComponent {...props}/>
+            <WrappedComponent {...props} ChatId={ChatId} user={user}/>
           </Grid>
 
 

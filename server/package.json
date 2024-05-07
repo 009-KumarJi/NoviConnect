@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "cross-env NODE_ENV=PRODUCTION nodemon server.js",
+    "start": "cross-env NODE_ENV=PRODUCTION node server.js",
     "dev": "cross-env NODE_ENV=DEVELOPMENT nodemon server.js"
   },
   "keywords": [],
