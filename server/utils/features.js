@@ -60,7 +60,7 @@ const uploadFilesToCloudinary = async (files = []) => {
     return results.map((result) => { // formatting the results
       return {
         public_id: result.public_id,
-        secure_url: result.secure_url,
+        url: result.secure_url,
       };
     }); // returning the formatted results
   } catch (error) {

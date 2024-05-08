@@ -1,7 +1,7 @@
 import {TryCatch} from "../middlewares/error.middleware.js";
-import {ErrorHandler} from "../utils/utility.js";
+import {ErrorHandler, sout} from "../utils/utility.js";
 import {Chat} from "../models/chat.model.js";
-import {deleteFilesFromCloudinary, emitEvent} from "../utils/features.js";
+import {deleteFilesFromCloudinary, emitEvent, uploadFilesToCloudinary} from "../utils/features.js";
 import {ALERT, NEW_ATTACHMENT, NEW_MESSAGE_ALERT, REFETCH_CHATS} from "../constants/events.constant.js";
 import {getOtherMember} from "../lib/chat.helper.js";
 import {User} from "../models/user.model.js";
@@ -151,6 +151,7 @@ const sendAttachments = TryCatch(async (req, res, next) => {
   const {ChatId} = req.body;
 
   const files = req.files || [];
+  sout(files)
 
   if (files.length < 1) return next(new ErrorHandler("Please provide attachments!", 422));
   if (files.length > 5) return next(new ErrorHandler("You can upload a maximum of 5 files!", 422));
@@ -164,9 +165,7 @@ const sendAttachments = TryCatch(async (req, res, next) => {
 
   if (!files.length) return next(new ErrorHandler("Please provide attachments", 422));
 
-  // TODO: Upload files to cloudinary
-  // dummy attachments for now
-  const attachments = [];
+  const attachments = await uploadFilesToCloudinary(files);
 
   const messageForDB = {
     content: "",

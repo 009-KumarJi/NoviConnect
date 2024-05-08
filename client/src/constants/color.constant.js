@@ -1,4 +1,5 @@
 export const darkPaleBlue = `rgba(62, 125, 143, 0.78)`;
+export const paleBlueOpaque = `rgb(62, 125, 143)`;
 export const cursorHoveringChatName = `rgba(198, 221, 227, 0.25)`;
 export const profileBackground = `rgba(62, 125, 143, 0.9)`;
 export const textDark = `rgb(56,113,132)`;
