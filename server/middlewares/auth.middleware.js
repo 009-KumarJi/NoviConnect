@@ -27,7 +27,6 @@ const socketAuthenticator = TryCatch(async (err, socket, next) => {
   const user = await User.findById(decodedData.id);
   if (!user) return next(new ErrorHandler("Unauthorized access for this route!", 401));
   socket.user = user;
-  console.log("User authenticated: ", user.name)
   next();
 })
 

@@ -1,5 +1,4 @@
 import moment from "moment";
-import {useCallback, useEffect, useRef, useState} from "react";
 
 const fileFormat = (url= "") => {
   const fileExt = url.split(".").pop();
@@ -16,8 +15,13 @@ const fileFormat = (url= "") => {
   }
 };
 
-const transformImg = (url="", width = 100) => url;
-
+const transformImg = (url = "", width = 100) => {
+  if (typeof url !== 'string') {
+    console.error('Invalid url: url should be a string');
+    return url;
+  }
+  return url.replace("upload/", `upload/dpr_auto/w_${width}/`);
+};
 const getLast7Days = () => {
   const currentDate = moment();
   const last7Days = Array.from(

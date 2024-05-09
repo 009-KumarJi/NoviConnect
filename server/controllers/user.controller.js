@@ -20,7 +20,7 @@ const newUser = TryCatch(async (req, res, next) => {
 
   const avatar = {
     public_id: results[0].public_id,
-    url: results[0].secure_url,
+    url: results[0].url,
   }
   sout("name: ", name, "username: ", username, "password: ", password, "bio: ", bio, "email: ", email, "dob: ", dob, "avatar: ", avatar);
   const user = await User.create({

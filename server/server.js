@@ -24,6 +24,7 @@ dotenv.config({path: "./.env"});
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {cors: corsOptions});
+app.set("io", io);
 const activeUserSocketIds = new Map();
 
 const port = process.env.PORT || 3000;
@@ -50,7 +51,7 @@ app.use((req, res, next) => {
 // User routes
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/chat", chatRoutes);
-app.use("/api/v1/krishna-den", adminRoutes);
+app.use("/api/v1/dev-den", adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -68,9 +69,10 @@ io.use((socket, next) =>{
 io.on("connection", (socket) => {
   sout(`socketId: ${socket.id} connected!`);
   const user = socket['user'];
+  sout(`User: ${user.name} connected!`)
+  activeUserSocketIds.set(user._id.toString(), socket.id);
   socket.on(NEW_MESSAGE, async ({ChatId, members, message}) => {
-    activeUserSocketIds.set(user._id.toString(), socket.id);
-    console.log("emitting message: ", message);
+    sout("Members: ", members);
     const messageForRealTime = {
       content: message,
       _id: uuid(),
@@ -87,9 +89,9 @@ io.on("connection", (socket) => {
       chat: ChatId
     }
     const membersSockets = getSockets(members);
-    console.log("Members Sockets: ", membersSockets);
     io.to(membersSockets).emit(NEW_MESSAGE, {ChatId, message: messageForRealTime});
     io.to(membersSockets).emit(NEW_MESSAGE_ALERT, {ChatId});
+    sout(`Message sent to: ${membersSockets}`)
     // TODO: Implement Room Building then send data to that room
     /*const roomId = await createRoom(membersSockets, ChatId, io);
     io.to(roomId).emit(NEW_MESSAGE, {

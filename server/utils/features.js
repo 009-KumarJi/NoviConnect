@@ -5,6 +5,7 @@ import {v4 as uuid} from "uuid";
 import {sout} from "./utility.js";
 import {getBase64} from "../lib/cloudinary.helper.js";
 import {NC_TOKEN} from "../constants/config.constant.js";
+import {getSockets} from "../lib/socketio.helper.js";
 
 const cookieOptions = {
   maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
@@ -35,7 +36,11 @@ const sendToken = (res, user, code, message) => {
     });
 };
 const emitEvent = (req, event, users, data) => {
-  console.log("Emitting event: ", event);
+  const io = req.app.get('io');
+  const userSocket = getSockets(users);
+  console.log("Emitting event: ", event, " to: ", users, " with data: ", data);
+  console.log("User socket: ", userSocket);
+  io.to(userSocket).emit(event, data);
 };
 const uploadFilesToCloudinary = async (files = []) => {
   sout("Uploading files to cloudinary...");
@@ -45,7 +50,7 @@ const uploadFilesToCloudinary = async (files = []) => {
         getBase64(file), // passing the base64 data of the file
         { // options for the upload
           resource_type: "auto",
-          public_id: `${uuid()}`,
+          public_id: uuid(),
         },
         (error, result) => { // callback function for the upload
           if (error) return reject(error); // if there is an error, reject the promise

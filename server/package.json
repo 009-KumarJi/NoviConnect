@@ -9,7 +9,6 @@
     "dev": "cross-env NODE_ENV=DEVELOPMENT nodemon server.js"
   },
   "keywords": [],
-  "author": "Krishna Kumar",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",

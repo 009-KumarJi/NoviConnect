@@ -2,10 +2,11 @@ import {TryCatch} from "../middlewares/error.middleware.js";
 import {ErrorHandler, sout} from "../utils/utility.js";
 import {Chat} from "../models/chat.model.js";
 import {deleteFilesFromCloudinary, emitEvent, uploadFilesToCloudinary} from "../utils/features.js";
-import {ALERT, NEW_ATTACHMENT, NEW_MESSAGE_ALERT, REFETCH_CHATS} from "../constants/events.constant.js";
+import {ALERT, NEW_ATTACHMENT, NEW_MESSAGE, NEW_MESSAGE_ALERT, REFETCH_CHATS} from "../constants/events.constant.js";
 import {getOtherMember} from "../lib/chat.helper.js";
 import {User} from "../models/user.model.js";
 import {Message} from "../models/message.model.js";
+import {getSockets} from "../lib/socketio.helper.js";
 
 const newGroupChat = TryCatch(async (req, res, next) => {
   const {name, members} = req.body;
@@ -183,7 +184,8 @@ const sendAttachments = TryCatch(async (req, res, next) => {
   const message = await Message.create(messageForDB);
 
 
-  emitEvent(req, NEW_ATTACHMENT, chat.members, {message: messageForRealTime, ChatId});
+  sout(getSockets(chat.members))
+  emitEvent(req, NEW_MESSAGE, chat.members, {message: messageForRealTime, ChatId});
   emitEvent(req, NEW_MESSAGE_ALERT, chat.members, {ChatId});
 
   return res.status(200).json({
@@ -265,23 +267,27 @@ const deleteChat = TryCatch(async (req, res, next) => {
 });
 const getMessages = TryCatch(async (req, res, next) => {
   const {ChatId} = req.params;
-  const resultPerPage = 20;
   const {page = 1} = req.query;
+
+  const resultPerPage = 20;
   const skip = (page - 1) * resultPerPage;
+
+  const chat = await Chat.findById(ChatId);
+
+  if (!chat) return next(new ErrorHandler("Chat not found", 404));
 
   const [messages, totalMessagesCount] = await Promise.all([
     Message
       .find({chat: ChatId}) // finds all messages with the chat id
-      .sort("-createdAt") // sorts the messages in descending order of creation date
-      .limit(resultPerPage) // limits the number of messages to be returned
+      .sort({createdAt: -1}) // sorts the messages in descending order of creation date
       .skip(skip) // skips the number of messages
+      .limit(resultPerPage) // limits the number of messages to be returned
       .populate("sender", "name") // populates the sender field with name
       .lean(), // converts the mongoose document to plain JS object
     Message.countDocuments({chat: ChatId}), // counts the number of messages with the chat id
   ]);
 
-  const totalPages = Math.ceil(totalMessagesCount / resultPerPage);
-  if (page > totalPages) return next(new ErrorHandler("Page Not Found", 404))
+  const totalPages = Math.ceil(totalMessagesCount / resultPerPage) || 0;
 
   return res.status(200).json({
     success: true,
