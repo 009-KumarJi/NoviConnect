@@ -1,0 +1,1 @@
+export const sout = (...text) => import.meta.env.VITE_MODE === "development" && console.log(...text);

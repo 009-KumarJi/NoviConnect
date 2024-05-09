@@ -7,6 +7,7 @@ import {useAsyncMutation, useErrors} from "../../../hooks/hook.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsNotification} from "../../redux/reducers/miscSlice.js";
 import toast from "react-hot-toast";
+import {sout} from "../../utils/helper.js";
 
 const Notifications = () => {
   const {isLoading, data, error, isError} = useGetNotificationsQuery();
@@ -15,13 +16,13 @@ const Notifications = () => {
     try {
       const res = await friendRequest({requestId, status});
       if (res.data?.success) {
-        console.log("socket emit");
+        sout("socket emit");
         toast.success(res?.data?.message || "Friend Request Accepted!");
       } else {
         toast.error(res?.error?.data?.message || "Something went wrong!");
       }
     } catch (e) {
-      console.log(e);
+      sout(e);
       toast.error("Something went wrong!")
     }
   };

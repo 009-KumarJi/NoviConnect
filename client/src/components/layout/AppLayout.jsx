@@ -13,6 +13,7 @@ import {useErrors, useSockets} from "../../../hooks/hook.jsx";
 import {getSocket} from "../../socket.jsx";
 import {NEW_MESSAGE, NEW_MESSAGE_ALERT, NEW_REQUEST} from "../../constants/events.constant.js";
 import {incrementNotificationCount} from "../../redux/reducers/chatSlice.js";
+import {sout} from "../../utils/helper.js";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -29,7 +30,7 @@ const AppLayout = () => (WrappedComponent) => {
     useErrors([{isError, error}])
     const handleDeleteChat = (_event, _id, groupChat) => {
       _event.preventDefault();
-      console.log("Delete Chat ID: ", _id, groupChat);
+      sout("Delete Chat ID: ", _id, groupChat);
     }
     const handleMobileMenuClose = () => dispatch(setIsMobileMenu(false));
 

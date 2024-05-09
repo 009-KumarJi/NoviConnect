@@ -12,6 +12,7 @@ import {
 } from "@mui/icons-material";
 import {Navigate, useLocation} from "react-router-dom";
 import {Link} from "../styles/StyledComponents.jsx";
+import {sout} from "../../utils/helper.js";
 
 const isAdmin = true;
 const adminTabs = [
@@ -37,7 +38,7 @@ const adminTabs = [
 const SideBar = ({width = '100vw', drawer = false}) => {
   const location = useLocation();
   const logoutHandler = () => {
-    console.log('logout');
+    sout('logout');
   }
 
   return <Stack

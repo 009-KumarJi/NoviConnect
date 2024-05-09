@@ -3,6 +3,7 @@ import {Box, Button, Container, Paper, TextField, Typography} from "@mui/materia
 import {useInputValidation} from "6pp";
 import {colorPalette} from "../../constants/color.constant.js";
 import {Navigate} from "react-router-dom";
+import {sout} from "../../utils/helper.js";
 
 const isAdmin = false;
 
@@ -11,7 +12,7 @@ const KrishnaDenLogin = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log("Login form submitted");
+    sout("Login form submitted");
   };
 
   if (isAdmin) return <Navigate to="/krishnaden/dashboard"/>;

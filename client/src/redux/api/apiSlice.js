@@ -68,7 +68,7 @@ const apiSlice = createApi({
         method: "GET",
         credentials: "include"
       }),
-      providesTags: ["Message"]
+      keepUnusedDataFor: 0,
     }),
     sendAttachments: builder.mutation({
       query: (data) => ({

@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import AppLayout from "../components/layout/AppLayout.jsx";
 import {IconButton, Skeleton, Stack} from "@mui/material";
 import {colorPalette} from "../constants/color.constant.js";
@@ -13,6 +13,7 @@ import {useErrors, useSockets} from "../../hooks/hook.jsx";
 import {useInfiniteScrollTop} from "6pp";
 import {useDispatch} from "react-redux";
 import {setIsFileMenu} from "../redux/reducers/miscSlice.js";
+import {sout} from "../utils/helper.js";
 
 
 const Chat = ({ChatId, user}) => {
@@ -29,12 +30,20 @@ const Chat = ({ChatId, user}) => {
   const socket = getSocket();
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    return () => {
+      setMessages([]);
+      setPage(1);
+      setMessage("");
+      setPrevMessages([]);
+    }
+  }, [ChatId]);
+
   const newMessagesHandler = useCallback((data) => {
-    console.log(data);
+    if (data.ChatId !== ChatId) return;
+    sout(data);
     setMessages(prevState => prevState.concat(data.message))
-  }, []);
-
-
+  }, [ChatId]);
 
   const {data: prevMessages, setData: setPrevMessages} = useInfiniteScrollTop(
     containerRef,
