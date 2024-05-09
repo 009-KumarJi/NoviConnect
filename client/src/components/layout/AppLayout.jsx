@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import Header from "./Header.jsx";
 import Title from "../shared/Title.jsx";
 import {Drawer, Grid, Skeleton} from "@mui/material";
@@ -9,8 +9,10 @@ import {profileBackground} from "../../constants/color.constant.js";
 import {useMyChatsQuery} from "../../redux/api/apiSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsMobileMenu} from "../../redux/reducers/miscSlice.js";
-import {useErrors} from "../../../hooks/hook.jsx";
+import {useErrors, useSockets} from "../../../hooks/hook.jsx";
 import {getSocket} from "../../socket.jsx";
+import {NEW_MESSAGE, NEW_MESSAGE_ALERT, NEW_REQUEST} from "../../constants/events.constant.js";
+import {incrementNotificationCount} from "../../redux/reducers/chatSlice.js";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -31,6 +33,16 @@ const AppLayout = () => (WrappedComponent) => {
     }
     const handleMobileMenuClose = () => dispatch(setIsMobileMenu(false));
 
+    const newMessagesAlertHandler = useCallback(()=>{},[]);
+    const newRequestHandler = useCallback(()=>{
+      dispatch(incrementNotificationCount());
+    },[dispatch]);
+
+    const eventHandlers = {
+      [NEW_MESSAGE_ALERT]: newMessagesAlertHandler,
+      [NEW_REQUEST]: newRequestHandler,
+    };
+    useSockets(socket, eventHandlers);
 
     return (
       <>

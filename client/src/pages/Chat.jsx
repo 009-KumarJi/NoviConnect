@@ -34,7 +34,7 @@ const Chat = ({ChatId, user}) => {
     setMessages(prevState => prevState.concat(data.message))
   }, []);
 
-  const eventHandler = {[NEW_MESSAGE]: newMessagesHandler};
+
 
   const {data: prevMessages, setData: setPrevMessages} = useInfiniteScrollTop(
     containerRef,
@@ -43,7 +43,10 @@ const Chat = ({ChatId, user}) => {
     setPage,
     prevMessagesChunk.data?.messages || []
   );
+
+  const eventHandler = {[NEW_MESSAGE]: newMessagesHandler};
   useSockets(socket, eventHandler);
+
   const allMessages = [...prevMessages, ...messages];
   useErrors([
     {isError: chatDetails.isError, error: chatDetails.error},

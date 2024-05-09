@@ -109,7 +109,7 @@ const sendFriendRequest = TryCatch(async (req, res, next) => {
     status: "pending"
   });
 
-  emitEvent(ReceiverId, NEW_REQUEST, [ReceiverId]);
+  emitEvent(req, NEW_REQUEST, [ReceiverId]);
 
   return res.status(200).json({
     success: true,
