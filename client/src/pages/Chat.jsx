@@ -14,6 +14,7 @@ import {useInfiniteScrollTop} from "6pp";
 import {useDispatch} from "react-redux";
 import {setIsFileMenu} from "../redux/reducers/miscSlice.js";
 import {sout} from "../utils/helper.js";
+import {resetNewMessagesAlert} from "../redux/reducers/chatSlice.js";
 
 
 const Chat = ({ChatId, user}) => {
@@ -31,6 +32,9 @@ const Chat = ({ChatId, user}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+
+    dispatch(resetNewMessagesAlert(ChatId));
+
     return () => {
       setMessages([]);
       setPage(1);
