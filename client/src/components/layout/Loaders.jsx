@@ -1,5 +1,6 @@
-import React from 'react';
-import {Grid, Skeleton, Stack} from "@mui/material";
+import React, {useEffect, useState} from 'react';
+import {Box, Grid, LinearProgress, Skeleton, Stack, Typography} from "@mui/material";
+import {BouncingSkeleton} from "../styles/StyledComponents.jsx";
 
 const LayoutLoader = () => {
   return <Grid container height={"calc(100vh - 4rem)"} spacing={"1rem"}>
@@ -43,4 +44,36 @@ const LayoutLoader = () => {
   </Grid>;
 };
 
-export default LayoutLoader;
+const TypingLoader = () => {
+
+  return (
+    <Stack
+      direction="row"
+      justifyContent="center"
+      spacing="0.5rem"
+      padding="0.5rem"
+    >
+      {
+        Array.from({length: 4}).map((_, index) => (
+          <BouncingSkeleton
+            key={index}
+            variant="circular"
+            width={15}
+            height={15}
+            style={{animationDelay: `${0.1 + index * 0.2}s`}}
+          />
+        ))
+      }
+    </Stack>
+  );
+};
+
+function LinearLoader() {
+  return (
+    <Box sx={{width: '100%'}}>
+      <LinearProgress/>
+    </Box>
+  );
+}
+
+export {LayoutLoader, TypingLoader, LinearLoader};

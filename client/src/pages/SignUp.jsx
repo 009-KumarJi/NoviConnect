@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Avatar, Box, Button, Container, IconButton, Paper, Stack, TextField, Typography} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 import {CameraAlt as CameraAltIcon} from "@mui/icons-material";
@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import {server} from "../constants/config.constant.js";
 import {useDispatch} from "react-redux";
 import {userExists} from "../redux/reducers/authSlice.js";
+import {TypingLoader} from "../components/layout/Loaders.jsx";
 
 
 const SignUpForm = () => {
@@ -21,6 +22,7 @@ const SignUpForm = () => {
   const password = useStrongPassword();
   const dob = useInputValidation("");
   const bio = useInputValidation("");
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   const handleSubmitSignUp = async (event) => {
@@ -46,8 +48,10 @@ const SignUpForm = () => {
       }
     }
     try {
+      setIsLoading(true);
       const {data} = await axios.post(`${server}/api/v1/user/new-login`, formData, config);
       dispatch(userExists());
+      setIsLoading(false);
       toast.success(data.message);
       goToLogin();
     } catch (error) {
@@ -79,7 +83,7 @@ const SignUpForm = () => {
       >
         <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}
                     color={colorPalette(1).CP2}>NoviConnect</Typography>
-
+        {isLoading && <LinearLoader/>}
         <Paper
           style={{
             backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",

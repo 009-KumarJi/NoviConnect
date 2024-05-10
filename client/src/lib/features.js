@@ -31,5 +31,11 @@ const getLast7Days = () => {
   return last7Days.reverse();
 }
 
-
-export { fileFormat, transformImg, getLast7Days};
+const getOrSaveFromStorage = ({key, value, get}) => {
+  get
+    ? localStorage.getItem(key)
+      ? JSON.parse(localStorage.getItem(key))
+      : null
+    : localStorage.setItem(key, JSON.stringify(value));
+}
+export { fileFormat, transformImg, getLast7Days, getOrSaveFromStorage};

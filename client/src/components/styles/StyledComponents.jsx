@@ -1,4 +1,4 @@
-import {Paper as PaperComponent, styled} from "@mui/material";
+import {Box, keyframes, Paper as PaperComponent, Skeleton, styled} from "@mui/material";
 import {Link as LinkComponent} from "react-router-dom";
 import {colorPalette, cursorHoveringChatName} from "../../constants/color.constant.js";
 
@@ -66,3 +66,12 @@ export const DarkPaper = styled(PaperComponent)`
   color: ${colorPalette().CP9};
   box-shadow: 0px 3px 2px ${colorPalette(0.5).CP6};
 `;
+
+const bounceAnimation = keyframes`
+  0% {transform: scale(1)}
+  50% {transform: scale(1.5)}
+  100% {transform: scale(1)}
+`
+export const BouncingSkeleton = styled(Skeleton)(() => ({
+  animation: `${bounceAnimation} 1s infinite`,
+}))

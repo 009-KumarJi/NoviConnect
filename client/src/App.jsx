@@ -1,7 +1,7 @@
 import React, {lazy, Suspense, useEffect} from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import ProtectRoute from "./components/auth/ProtectRoute.jsx";
-import LayoutLoader from "./components/layout/Loaders.jsx";
+import {LayoutLoader} from "./components/layout/Loaders.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import axios from "axios";
 import {server} from "./constants/config.constant.js";

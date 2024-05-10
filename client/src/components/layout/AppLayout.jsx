@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import Header from "./Header.jsx";
 import Title from "../shared/Title.jsx";
 import {Drawer, Grid, Skeleton} from "@mui/material";
@@ -14,6 +14,7 @@ import {getSocket} from "../../socket.jsx";
 import {NEW_MESSAGE_ALERT, NEW_REQUEST} from "../../constants/events.constant.js";
 import {incrementNotificationCount, setNewMessagesAlert} from "../../redux/reducers/chatSlice.js";
 import {sout} from "../../utils/helper.js";
+import {getOrSaveFromStorage} from "../../lib/features.js";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -34,6 +35,14 @@ const AppLayout = () => (WrappedComponent) => {
       _event.preventDefault();
       sout("Delete Chat ID: ", _id, groupChat);
     }
+
+    useEffect(() => {
+      getOrSaveFromStorage({
+        key: NEW_MESSAGE_ALERT,
+        value: newMessagesAlert,
+      })
+    }, []);
+
     const handleMobileMenuClose = () => dispatch(setIsMobileMenu(false));
 
     const newMessagesAlertHandler = useCallback((data) => {
