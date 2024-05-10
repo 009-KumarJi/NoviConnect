@@ -12,8 +12,11 @@ import {
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {Link} from "../components/styles/StyledComponents.jsx";
 import AvatarCard from "../components/shared/AvatarCard.jsx";
-import {sampleChats, sampleUsers} from "../constants/sampleData.js";
 import UserItem from "../components/shared/UserItem.jsx";
+import {useChatDetailsQuery, useMyGroupsQuery} from "../redux/api/apiSlice.js";
+import {useErrors} from "../../hooks/hook.jsx";
+import {LayoutLoader} from "../components/layout/Loaders.jsx";
+import {sout} from "../utils/helper.js";
 
 const ConfirmDeleteDialog = lazy(() => import("../components/dialogs/ConfirmDeleteDialog.jsx"));
 const AddMemberDialog = lazy(() => import("../components/dialogs/AddMemberDialog.jsx"));
@@ -22,12 +25,23 @@ const Groups = () => {
   const navigate = useNavigate();
   const ChatId = useSearchParams()[0].get("group");
   const isAddMember = false;
+  const myGroups = useMyGroupsQuery("");
+  sout("groups: ", myGroups);
+
+  const groupDetails = useChatDetailsQuery({ChatId, populate: true}, {skip: !ChatId});
+  sout("groupName: ", groupDetails?.data?.chat?.name);
+
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false);
+
+
   const [groupName, setGroupName] = useState("");
   const [groupNameUpdatedValue, setGroupNameUpdatedValue] = useState("");
-  const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false);
+  const [groupMembers, setGroupMembers] = useState([]);
+  sout("groupMembers: ", groupMembers);
+
 
   const navigateBack = () => navigate("/");
   const handleMobile = () => setIsMobileOpen(!isMobileOpen);
@@ -41,19 +55,6 @@ const Groups = () => {
   };
   const removeMemberHandler = (id) => {
   };
-
-  useEffect(() => {
-    if (ChatId) {
-      setGroupName(`Group ${ChatId}`);
-      setGroupNameUpdatedValue(`Group ${ChatId}`);
-    }
-    return () => {
-      setGroupName("");
-      setGroupNameUpdatedValue("");
-      setIsEdit(false);
-    }
-  }, [ChatId]);
-
 
   const IconButtons = <>
 
@@ -89,6 +90,27 @@ const Groups = () => {
       <KeyboardBackspaceButton/>
     </IconButton>
   </>;
+
+  const errors = [
+    {isError: myGroups.isError, error: myGroups.error},
+    {isError: groupDetails.isError, error: groupDetails.error},
+  ]
+  useErrors(errors);
+
+  useEffect(() => {
+    if (groupDetails?.data) {
+      setGroupName(groupDetails.data.chat.name);
+      setGroupNameUpdatedValue(groupDetails.data.chat.name);
+      setGroupMembers(groupDetails.data.chat?.members);
+    }
+    return () => {
+      setGroupName("");
+      setGroupNameUpdatedValue("");
+      setGroupMembers([]);
+      setIsEdit(false);
+    }
+  }, [groupDetails.data, ChatId]);
+
   const GroupName = <Stack direction="row" alignItems="center" justifyContent="center" spacing="1rem" padding="3rem">
     {
       isEdit ?
@@ -120,13 +142,13 @@ const Groups = () => {
       <Button size="large" variant="contained" startIcon={<AddIcon/>} onClick={addMemberHandler}>Add Member</Button>
     </Stack>
 
-  return (
+  return myGroups.isLoading ? <LayoutLoader/> : (
     <Grid container={true} height={"100vh"}>
       <Grid
         item={true} sm={4}
         sx={{display: {xs: "none", sm: "block"}}}
       >
-        <GroupsList myGroups={sampleChats} ChatId={ChatId}/>
+        <GroupsList myGroups={myGroups?.data?.groups} ChatId={ChatId}/>
       </Grid>
       <Grid item={true} xs={12} sm={8} sx={{
         display: "flex",
@@ -167,7 +189,7 @@ const Groups = () => {
               marginBottom="2rem"
             >
               {
-                sampleUsers.map((i) => (
+                groupMembers.map((i) => (
                   <UserItem
                     user={i} isSelected
                     key={i._id}
@@ -204,7 +226,7 @@ const Groups = () => {
 
       <Drawer open={isMobileOpen} onClose={handleMobileClose} anchor={"right"}
               sx={{display: {xs: "block", sm: "none"}, backgroundColor: `${colorPalette(0.2).CP3}`}}>
-        <GroupsList width="50vw" myGroups={sampleChats} ChatId={ChatId}/>
+        <GroupsList width="50vw" myGroups={myGroups?.data?.groups} ChatId={ChatId}/>
       </Drawer>
     </Grid>
   )
@@ -236,7 +258,7 @@ const GroupListItem = memo(({group, ChatId}) => {
   const {name, avatar, _id} = group;
   return <Link to={`?group=${_id}`} onClick={(e) => (ChatId === _id) && e.preventDefault()}>
     <Stack direction="row" spacing="1rem" alignItems="center" sx={{
-      color: (_id===ChatId) ? `${colorPalette(1).CP4}` : "unset",
+      color: (_id === ChatId) ? `${colorPalette(1).CP4}` : "unset",
 
     }}>
       <AvatarCard avatar={avatar}/>

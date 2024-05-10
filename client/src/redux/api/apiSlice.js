@@ -79,6 +79,31 @@ const apiSlice = createApi({
       }),
       invalidatesTags: ["Message"]
     }),
+    myGroups: builder.query({
+      query: () => ({
+        url: "chat/my/groups",
+        method: "GET",
+        credentials: "include"
+      }),
+      providesTags: ["Group"]
+    }),
+    availableFriends: builder.query({
+      query: (ChatId) => ({
+          url: `user/get-friends${ChatId ? `?ChatId=${ChatId}` : ""}`,
+          method: "GET",
+          credentials: "include"
+      }),
+      providesTags: ["Chat"]
+    }),
+    newGroupChat: builder.mutation({
+      query: ({name, members}) => ({
+        url: "chat/new-group",
+        method: "POST",
+        credentials: "include",
+        body: {name, members}
+      }),
+      invalidatesTags: ["Chat"]
+    }),
   })
 });
 
@@ -92,4 +117,7 @@ export const {
   useChatDetailsQuery,
   useGetMessagesQuery,
   useSendAttachmentsMutation,
+  useMyGroupsQuery,
+  useAvailableFriendsQuery,
+  useNewGroupChatMutation
 } = apiSlice;

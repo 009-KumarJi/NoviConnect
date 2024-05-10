@@ -4,8 +4,10 @@ import {colorPalette} from "../../constants/color.constant.js";
 import moment from "moment";
 import {fileFormat} from "../../lib/features.js";
 import RenderAttachment from "./RenderAttachment.jsx";
+import {sout} from "../../utils/helper.js";
 
 const MessageComponent = ({message, loggedUser}) => {
+  sout(`(sent by ${loggedUser.name})MessageComponent: `, message)
   const {sender, content, attachments =[], createdAt} = message;
   const isSameSender = sender?._id === loggedUser?._id;
   const timeAgo = moment(createdAt).fromNow();

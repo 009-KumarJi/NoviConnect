@@ -2,6 +2,7 @@ import React, {memo} from 'react';
 import {Avatar, IconButton, ListItem, Stack, Typography} from "@mui/material";
 import {Add as AddIcon, Remove as RemoveIcon} from "@mui/icons-material";
 import {transformImg} from "../../lib/features.js";
+import {sout} from "../../utils/helper.js";
 
 const UserItem = ({
                     user,
@@ -10,6 +11,7 @@ const UserItem = ({
                     isSelected = false,
                     styling = {}
                   }) => {
+  sout("UserItem: ", user)
   const {name, _id, avatar} = user;
   return (
     <ListItem>

@@ -32,8 +32,8 @@ const Header = () => {
 
   const handleMobile = () => dispatch(setIsMobileMenu(true));
   const openSearch = () => dispatch(setIsSearch(true));
-  const openNewGroup = () => dispatch(setIsNewGroup(!isNewGroup));
-  const showNotification = () => dispatch(setIsNotification(!isNotification)) && dispatch(resetNotificationCount());
+  const openNewGroup = () => dispatch(setIsNewGroup(true));
+  const showNotification = () => dispatch(setIsNotification(true)) && dispatch(resetNotificationCount());
   const navigateToGroup = () => {
     navigate("/groups");
   }

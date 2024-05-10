@@ -7,7 +7,7 @@ import {InputBox} from "../components/styles/StyledComponents.jsx";
 import FileMenu from "../components/dialogs/FileMenu.jsx";
 import MessageComponent from "../components/shared/MessageComponent.jsx";
 import {getSocket} from "../socket.jsx";
-import {NEW_MESSAGE, START_TYPING, STOP_TYPING} from "../constants/events.constant.js";
+import {ALERT, NEW_MESSAGE, START_TYPING, STOP_TYPING} from "../constants/events.constant.js";
 import {useChatDetailsQuery, useGetMessagesQuery} from "../redux/api/apiSlice.js";
 import {useErrors, useSockets} from "../../hooks/hook.jsx";
 import {useInfiniteScrollTop} from "6pp";
@@ -58,7 +58,7 @@ const Chat = ({ChatId, user}) => {
   const messageOnChangeHandler = (e) => {
     setMessage(e.target.value);
     if (!iAmTyping) {
-      socket.emit(START_TYPING, { members, ChatId });
+      socket.emit(START_TYPING, {members, ChatId});
       setIAmTyping(true);
       sout("I am typing...")
     }
@@ -66,7 +66,7 @@ const Chat = ({ChatId, user}) => {
     if (typingTimeout.current) clearTimeout(typingTimeout.current);
 
     typingTimeout.current = setTimeout(() => {
-      socket.emit(STOP_TYPING, { members, ChatId });
+      socket.emit(STOP_TYPING, {members, ChatId});
       setIAmTyping(false);
       sout("I stopped typing...")
     }, [2000]);
@@ -97,7 +97,7 @@ const Chat = ({ChatId, user}) => {
 
   useEffect(() => {
     if (bottomRef.current)
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+      bottomRef.current.scrollIntoView({behavior: "smooth"});
   }, [messages]);
 
   useEffect(() => {
@@ -120,9 +120,24 @@ const Chat = ({ChatId, user}) => {
     if (data.ChatId !== ChatId) return;
     setUserTyping(false);
     sout("User stopped typing...", data);
-  },[ChatId]);
+  }, [ChatId]);
+
+  const alertListener = useCallback((data) => {
+    if (data.ChatId !== ChatId) return;
+    const messageForAlert = {
+      content: data.message,
+      sender: {
+        _id: "djasdhajksdhasdsadasdas",
+        name: "Admin",
+      },
+      chat: ChatId,
+      createdAt: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, messageForAlert]);
+  }, [ChatId])
 
   const eventHandler = {
+    [ALERT]: alertListener,
     [NEW_MESSAGE]: newMessagesListener,
     [START_TYPING]: startTypingListener,
     [STOP_TYPING]: stopTypingListener
