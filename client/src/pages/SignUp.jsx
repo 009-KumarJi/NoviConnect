@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import {server} from "../constants/config.constant.js";
 import {useDispatch} from "react-redux";
 import {userExists} from "../redux/reducers/authSlice.js";
-import {TypingLoader} from "../components/layout/Loaders.jsx";
+import {LinearLoader} from "../components/layout/Loaders.jsx";
 
 
 const SignUpForm = () => {

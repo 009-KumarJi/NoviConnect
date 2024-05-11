@@ -35,11 +35,11 @@ const sendToken = (res, user, code, message) => {
       message,
     });
 };
-const emitEvent = (req, event, users, data) => {
+const emitEvent = (req, event, users, data= "") => {
   const io = req.app.get('io');
   const userSocket = getSockets(users);
-  console.log("Emitting event: ", event, " to: ", users, " with data: ", data);
-  console.log("User socket: ", userSocket);
+  sout("Emitting event: ", event, " to: ", users, " with data: ", data);
+  sout("User socket: ", userSocket);
   io.to(userSocket).emit(event, data);
 };
 const uploadFilesToCloudinary = async (files = []) => {

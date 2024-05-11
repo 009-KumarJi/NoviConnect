@@ -2,10 +2,20 @@ import React, {useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography} from "@mui/material";
 import {sampleUsers} from "../../constants/sampleData.js";
 import UserItem from "../shared/UserItem.jsx";
+import {useDispatch, useSelector} from "react-redux";
+import {setIsAddMember} from "../../redux/reducers/miscSlice.js";
+import {useAsyncMutation} from "../../../hooks/hook.jsx";
+import {useAddMembersMutation} from "../../redux/api/apiSlice.js";
 
-const AddMemberDialog = ({addMember, isLoadingAddMember, ChatId}) => {
+const AddMemberDialog = ({ChatId}) => {
+
+  const dispatch = useDispatch();
+
   const [members, setMembers] = useState(sampleUsers);
   const [selectedMembers, setSelectedMembers] = useState([]);
+
+  const {isAddMember} = useSelector(state => state['misc']);
+  const [addMembers, isLoadingAddMembers] = useAsyncMutation(useAddMembersMutation);
 
   const selectMemberHandler = (i) => {
     setSelectedMembers((prev) =>
@@ -20,12 +30,11 @@ const AddMemberDialog = ({addMember, isLoadingAddMember, ChatId}) => {
   };
 
   const closeHandler = () => {
-    setSelectedMembers([]);
-    setMembers([]);
+    dispatch(setIsAddMember(false));
   };
 
   return (
-    <Dialog open onClose={closeHandler}>
+    <Dialog open={isAddMember} onClose={closeHandler}>
       <DialogTitle textAlign="center">Add Member</DialogTitle>
       <DialogContent dividers sx={{maxHeight: 400, overflowY: 'auto'}}>
         <Stack spacing={"1rem"}>

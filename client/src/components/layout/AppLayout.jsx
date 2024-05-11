@@ -11,7 +11,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setIsMobileMenu} from "../../redux/reducers/miscSlice.js";
 import {useErrors, useSockets} from "../../../hooks/hook.jsx";
 import {getSocket} from "../../socket.jsx";
-import {NEW_MESSAGE_ALERT, NEW_REQUEST} from "../../constants/events.constant.js";
+import {NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHATS} from "../../constants/events.constant.js";
 import {incrementNotificationCount, setNewMessagesAlert} from "../../redux/reducers/chatSlice.js";
 import {sout} from "../../utils/helper.js";
 import {getOrSaveFromStorage} from "../../lib/features.js";
@@ -45,20 +45,29 @@ const AppLayout = () => (WrappedComponent) => {
 
     const handleMobileMenuClose = () => dispatch(setIsMobileMenu(false));
 
-    const newMessagesAlertHandler = useCallback((data) => {
+    const newMessagesAlertListener = useCallback((data) => {
       if (data.ChatId === ChatId) return;
       dispatch(setNewMessagesAlert(data));
       sout("New Message Alert: ", data.ChatId);
     },[dispatch, ChatId]);
-    const newRequestHandler = useCallback(()=> {
+
+    const newRequestListener = useCallback(()=> {
+      sout("New Request Alert...")
       dispatch(incrementNotificationCount());
     },[dispatch]);
 
-    const eventHandlers = {
-      [NEW_MESSAGE_ALERT]: newMessagesAlertHandler,
-      [NEW_REQUEST]: newRequestHandler,
+    const refetchListener = useCallback(()=> {
+      sout("Refetching Chats...")
+      refetch();
+    },[refetch]);
+
+    const eventListeners = {
+      [NEW_MESSAGE_ALERT]: newMessagesAlertListener,
+      [NEW_REQUEST]: newRequestListener,
+      [REFETCH_CHATS]: refetchListener,
     };
-    useSockets(socket, eventHandlers);
+
+    useSockets(socket, eventListeners);
 
     return (
       <>

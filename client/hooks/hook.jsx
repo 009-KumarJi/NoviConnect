@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import toast from "react-hot-toast";
-import {NEW_MESSAGE} from "../src/constants/events.constant.js";
+import {sout} from "../src/utils/helper.js";
 
 const useErrors = (errors = []) => {
   useEffect(() => {
@@ -45,10 +45,12 @@ const useAsyncMutation = (mutationHook) => {
 const useSockets = (socket, handlers) => {
   useEffect(() => {
     Object.entries(handlers).forEach(([event, handler]) => {
+      sout(`Listening for event: ${event}`)
       socket.on(event, handler);
     });
     return () => {
       Object.entries(handlers).forEach(([event, handler]) => {
+        sout(`Removing event listener: ${event}`)
         socket.off(event, handler);
       });
     }

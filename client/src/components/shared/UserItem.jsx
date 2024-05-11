@@ -9,9 +9,9 @@ const UserItem = ({
                     handler,
                     handlerIsLoading,
                     isSelected = false,
-                    styling = {}
+                    styling = {},
+                    admin = ""
                   }) => {
-  sout("UserItem: ", user)
   const {name, _id, avatar} = user;
   return (
     <ListItem>
@@ -34,7 +34,11 @@ const UserItem = ({
             textOverflow: "ellipsis",
             width: "100%"
           }}
-        >{name}</Typography>
+        >{name}{
+          admin === _id && (
+            <Typography variant="caption" color="text.secondary">  (Admin)</Typography>
+          )
+        }</Typography>
         <IconButton
           size="small"
           sx={{
