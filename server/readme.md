@@ -6,6 +6,7 @@ This document outlines the structure and key components of the backend applicati
 - [Directory Descriptions](#directory-descriptions)
 - [File Descriptions](#file-descriptions)
 - [Server Flow](#server-flow)
+- [Database Schema](#database-schema)
 
 ## Directory Descriptions
 
@@ -99,3 +100,5 @@ server/
     ├── utility.js
     └── validators.js
 ```
+## Database Schema
+[<img src="../client/src/assets/images/db_diagram.png">](./models/)
