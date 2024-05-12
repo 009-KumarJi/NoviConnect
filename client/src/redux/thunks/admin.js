@@ -31,13 +31,20 @@ const adminLogout = createAsyncThunk("admin/logout", async () => {
         "Content-Type": "application/json",
       },
     };
-
     const { data } = await axios.get(`${server}/admin/api/krishna-den/logout`, config);
-
     return data.message;
   } catch (error) {
     throw error.response.data.message;
   }
 });
 
-export {adminLogin, adminLogout};
+const verifyAdmin = createAsyncThunk("admin/verify", async () => {
+  try {
+    const { data } = await axios.get(`${server}/admin/api/krishna-den/`, {withCredentials: true});
+    return data;
+  } catch (error) {
+    throw error.response.data.message;
+  }
+});
+
+export {adminLogin, adminLogout, verifyAdmin};

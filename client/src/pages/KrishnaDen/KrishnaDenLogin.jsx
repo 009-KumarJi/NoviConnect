@@ -6,7 +6,7 @@ import {colorPalette} from "../../constants/color.constant.js";
 import {Navigate, useNavigate} from "react-router-dom";
 import {sout} from "../../utils/helper.js";
 import {useDispatch, useSelector} from "react-redux";
-import {adminLogin} from "../../redux/thunks/admin.js";
+import {adminLogin, verifyAdmin} from "../../redux/thunks/admin.js";
 
 
 const KrishnaDenLogin = () => {
@@ -20,6 +20,11 @@ const KrishnaDenLogin = () => {
     dispatch(adminLogin(secretKey.value));
     sout("Login form submitted");
   };
+
+  useEffect(() => {
+    sout("Verifying Admin... ")
+    dispatch(verifyAdmin())
+  }, [dispatch]);
 
   if (isAdmin) return <Navigate to={"/krishnaden/dashboard"}/>;
 

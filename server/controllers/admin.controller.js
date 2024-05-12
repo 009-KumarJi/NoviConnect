@@ -33,7 +33,7 @@ const adminLogout = TryCatch(async (req, res) => {
 const getAdminData = TryCatch(async (req, res) => {
   return res.status(200).json({
     admin: true,
-    message: "Hare Krishna! Welcome Admin!",
+    message: "Hare Krishna! Welcome Back! Admin!",
   });
 });
 const getAllUsers = TryCatch(async (req, res) => {

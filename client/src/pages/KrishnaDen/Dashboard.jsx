@@ -41,7 +41,7 @@ const Dashboard = () => {
         padding: "2rem 3.5rem",
         borderRadius: "1rem",
         width: "100%",
-        maxWidth: "45rem",
+        maxWidth: "40rem",
       }}>
         <Typography margin={"2rem 0"} variant={"h4"}>
           Last Messages

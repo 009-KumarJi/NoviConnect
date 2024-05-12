@@ -65,7 +65,7 @@ const LineChart = ({value=[]}) => {
     ],
   }
   return (
-    <Line data={data} options={lineChartOptions}/>
+    <Line data={data} options={lineChartOptions} sx={{maxWidth: "40rem"}}/>
   );
 };
 
