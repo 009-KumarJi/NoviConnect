@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import {Link} from "../styles/StyledComponents.jsx";
-import {Box, Container, Stack, Typography} from "@mui/material";
+import {Box, Container, Typography} from "@mui/material";
 import AvatarCard from "./AvatarCard.jsx";
 import {darkPaleBlue} from "../../constants/color.constant.js";
 
@@ -19,54 +19,38 @@ const ChatItem = (
 ) => {
   return (
     <Link
-      sx={{
-        padding: "0",
-      }}
+      sx={{padding: "0"}}
       to={`/chat/${_id}`}
-      onContextMenu={
-        (_event) => {
-          handleDeleteChat(_event, _id, groupChat);
-        }
-      }
+      onContextMenu={(_event) => handleDeleteChat(_event, _id, groupChat)}
     >
-      <Container sx={{
-        display: "flex",
-        gap: "1rem",
-        alignItems: "center",
-        padding: "1rem",
-        backgroundColor: sameSender ? `${darkPaleBlue}` : "unset",
-        color: sameSender ? "white" : "unset",
-        position: "relative",
-        borderRadius: "10rem"
-      }}
+      <Container
+        sx={{
+          display: "flex",
+          gap: "1rem",
+          alignItems: "center",
+          padding: "1rem",
+          backgroundColor: sameSender ? `${darkPaleBlue}` : "unset",
+          color: sameSender ? "white" : "unset",
+          position: "relative",
+          borderRadius: "10rem"
+        }}
       >
-        <AvatarCard avatar={avatar}/>
-
-        <Stack>
-          <Typography>{name}</Typography>
-          {
-            newMessageAlert && (
-              <Typography>{newMessageAlert.count} New Messages</Typography>
-            )
-          }
-        </Stack>
-
-        {
-          isOnline && (
-            <Box
-              sx={{
-                width: "1rem",
-                height: "1rem",
-                borderRadius: "50%",
-                backgroundColor: "green",
-                position: "absolute",
-                right: "1rem",
-                transform: "translateY(-50%)",
-              }}
-            />
-          )
-        }
-
+        <AvatarCard avatar={avatar} newMessage={newMessageAlert?.count || 0}/>
+        <Typography>{name}</Typography>
+        {isOnline && (
+          <Box
+            sx={{
+              flexGrow: 1,
+              width: ".7rem",
+              height: ".7rem",
+              borderRadius: "50%",
+              backgroundColor: "green",
+              position: "absolute",
+              right: "1rem",
+              boxShadow: "0 0 10px limegreen",
+            }}
+          />
+        )}
       </Container>
     </Link>
   );

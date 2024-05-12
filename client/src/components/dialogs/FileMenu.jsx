@@ -1,8 +1,13 @@
 import React, {useRef} from 'react';
-import {Box, Input, ListItemText, Menu, MenuItem, MenuList, Tooltip} from "@mui/material";
+import {Box, ListItemText, Menu, MenuItem, MenuList, Slide} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsFileMenu, setUploadingLoader} from "../../redux/reducers/miscSlice.js";
-import {AudioFile as AudioIcon, Image as ImageIcon, InsertDriveFile as DocumentIcon, MovieFilter as VideoIcon} from "@mui/icons-material";
+import {
+  AudioFile as AudioIcon,
+  Image as ImageIcon,
+  InsertDriveFile as DocumentIcon,
+  MovieFilter as VideoIcon
+} from "@mui/icons-material";
 import {paleBlueOpaque} from "../../constants/color.constant.js";
 import toast from "react-hot-toast";
 import {useSendAttachmentsMutation} from "../../redux/api/apiSlice.js";
@@ -45,7 +50,7 @@ const FileMenu = ({anchorE1, ChatId}) => {
   }
 
   return (
-    <Menu open={isFileMenu} anchorEl={anchorE1} onClose={handleClose} >
+    <Menu open={isFileMenu} anchorEl={anchorE1} onClose={handleClose} TransitionComponent={Slide} transitionDuration={150}>
       <Box sx={{
         width: "10rem"
       }}>

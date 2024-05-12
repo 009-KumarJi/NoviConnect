@@ -3,8 +3,6 @@ import {server} from "./constants/config.constant.js";
 import {createContext, useContext, useMemo} from "react";
 
 
-
-
 const socketContext = createContext();
 const getSocket = () => useContext(socketContext);
 const SocketProvider = ({children}) => {

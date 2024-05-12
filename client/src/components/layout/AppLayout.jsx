@@ -3,13 +3,13 @@ import Header from "./Header.jsx";
 import Title from "../shared/Title.jsx";
 import {Drawer, Grid, Skeleton} from "@mui/material";
 import ChatList from "../specific/ChatList.jsx";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import Profile from "../specific/Profile.jsx";
 import {profileBackground} from "../../constants/color.constant.js";
 import {useMyChatsQuery} from "../../redux/api/apiSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsMobileMenu} from "../../redux/reducers/miscSlice.js";
-import {useErrors, useSockets} from "../../../hooks/hook.jsx";
+import {useErrors, useSockets} from "../../hooks/hook.jsx";
 import {getSocket} from "../../socket.jsx";
 import {NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHATS} from "../../constants/events.constant.js";
 import {incrementNotificationCount, setNewMessagesAlert} from "../../redux/reducers/chatSlice.js";
@@ -19,16 +19,18 @@ import {getOrSaveFromStorage} from "../../lib/features.js";
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
     const socket = getSocket();
+    const navigate = useNavigate();
     const params = useParams();
     const dispatch = useDispatch();
-    const {isLoading, data, isError, error, refetch} = useMyChatsQuery("");
+
+    const ChatId = params.ChatId;
 
     const {isMobileMenu} = useSelector(state => state["misc"]);
     const {user} = useSelector(state => state.auth);
     const {newMessagesAlert} = useSelector(state => state['chat']);
     sout("New Messages Alert: ", newMessagesAlert)
 
-    const ChatId = params.ChatId;
+    const {isLoading, data, isError, error, refetch} = useMyChatsQuery("");
 
     useErrors([{isError, error}])
     const handleDeleteChat = (_event, _id, groupChat) => {
@@ -41,7 +43,7 @@ const AppLayout = () => (WrappedComponent) => {
         key: NEW_MESSAGE_ALERT,
         value: newMessagesAlert,
       })
-    }, []);
+    }, [newMessagesAlert]);
 
     const handleMobileMenuClose = () => dispatch(setIsMobileMenu(false));
 
@@ -49,7 +51,7 @@ const AppLayout = () => (WrappedComponent) => {
       if (data.ChatId === ChatId) return;
       dispatch(setNewMessagesAlert(data));
       sout("New Message Alert: ", data.ChatId);
-    },[dispatch, ChatId]);
+    },[ChatId, dispatch]);
 
     const newRequestListener = useCallback(()=> {
       sout("New Request Alert...")
@@ -59,7 +61,8 @@ const AppLayout = () => (WrappedComponent) => {
     const refetchListener = useCallback(()=> {
       sout("Refetching Chats...")
       refetch();
-    },[refetch]);
+      navigate("/");
+    },[refetch, navigate]);
 
     const eventListeners = {
       [NEW_MESSAGE_ALERT]: newMessagesAlertListener,
@@ -74,14 +77,14 @@ const AppLayout = () => (WrappedComponent) => {
         <Title/>
         <Header/>
         {
-          isLoading && <Skeleton variant="rectangular" height={"4rem"}/> || (
+          isLoading ? <Skeleton variant="rectangular" height={"4rem"}/> : (
             <Drawer
               open={isMobileMenu}
               onClose={handleMobileMenuClose}
             >
               <ChatList
                 w="70vw"
-                chats={data.chats}
+                chats={data?.chats}
                 ChatId={ChatId}
                 handleDeleteChat={handleDeleteChat}
                 newMessagesAlert={newMessagesAlert}
@@ -92,16 +95,17 @@ const AppLayout = () => (WrappedComponent) => {
         <Grid container height={"calc(100vh - 4rem)"}>
           <Grid
             item
-            sm={4} md={3}
-            height={"100%"}
+            sm={4}
+            md={3}
             sx={{
               display: {xs: "none", sm: "block"}
             }}
+            height={"100%"}
           >
             {
               isLoading ? <Skeleton/> : (
                 <ChatList
-                  chats={data.chats}
+                  chats={data?.chats}
                   ChatId={ChatId}
                   handleDeleteChat={handleDeleteChat}
                   newMessagesAlert={newMessagesAlert}

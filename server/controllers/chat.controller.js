@@ -2,7 +2,7 @@ import {TryCatch} from "../middlewares/error.middleware.js";
 import {ErrorHandler, sout} from "../utils/utility.js";
 import {Chat} from "../models/chat.model.js";
 import {deleteFilesFromCloudinary, emitEvent, uploadFilesToCloudinary} from "../utils/features.js";
-import {ALERT, NEW_ATTACHMENT, NEW_MESSAGE, NEW_MESSAGE_ALERT, REFETCH_CHATS} from "../constants/events.constant.js";
+import {ALERT, NEW_MESSAGE, NEW_MESSAGE_ALERT, REFETCH_CHATS} from "../constants/events.constant.js";
 import {getOtherMember} from "../lib/chat.helper.js";
 import {User} from "../models/user.model.js";
 import {Message} from "../models/message.model.js";
@@ -109,12 +109,12 @@ const removeMember = TryCatch(async (req, res, next) => {
   if (chat.creator.toString() !== req.userId) return next(new ErrorHandler("You are not authorized to perform this action", 403));
   if (!chat.groupChat) return next(new ErrorHandler("This is not a group chat", 422));
   if (chat.members.length <= 3) return next(new ErrorHandler("Group chat must have at least 3 members", 422));
-
+  const allMembers = chat.members.map(member => member.toString());
   chat.members = chat.members.filter(member => member.toString() !== UserId.toString());
   await chat.save();
 
   emitEvent(req, ALERT, chat.members, `${removedUser.name} removed from the group chat`);
-  emitEvent(req, REFETCH_CHATS, chat.members);
+  emitEvent(req, REFETCH_CHATS, allMembers);
 
   return res.status(200).json({
     success: true,

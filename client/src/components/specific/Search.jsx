@@ -7,27 +7,35 @@ import UserItem from "../shared/UserItem.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsSearch} from "../../redux/reducers/miscSlice.js";
 import {useLazySearchUserQuery, useSendFriendRequestMutation} from "../../redux/api/apiSlice.js";
-import {useAsyncMutation} from "../../../hooks/hook.jsx";
+import {useAsyncMutation} from "../../hooks/hook.jsx";
+import {sout} from "../../utils/helper.js";
 
 
 const Search = () => {
   const dispatch = useDispatch();
-  const search = useInputValidation("");
   const {isSearch} = useSelector(state => state["misc"]);
+
+  const search = useInputValidation("");
   const [users, setUsers] = useState([]);
+
   const [searchUser] = useLazySearchUserQuery();
+
   const [sendFriendRequest, isLoadingSFRequest] = useAsyncMutation(useSendFriendRequestMutation);
+
   useEffect(() => {
+
     const timeOutId = setTimeout(() => {
-      if (search.value)
-        searchUser(search.value)
-          .then(({data}) => setUsers(data.users))
-          .catch()
-    }, 600);
+      search.value &&
+      searchUser(search.value)
+        .then(({data}) => setUsers(data.users))
+        .catch(e => sout(e));
+    }, 500);
+
     return () => clearTimeout(timeOutId);
+
   }, [search.value]);
-  const addFriendHandler = async (id) =>
-    await sendFriendRequest("Sending Friend Request!", {ReceiverId: id})
+
+  const addFriendHandler = async (id) => await sendFriendRequest("Sending Friend Request...", {ReceiverId: id})
   const searchCloseHandler = () => dispatch(setIsSearch(false));
 
   return (
@@ -35,7 +43,9 @@ const Search = () => {
       <Stack p={"2rem"} direction="column" width="25rem" sx={{
         backgroundImage: `linear-gradient(0deg, ${colorPalette().CP6}, ${colorPalette().CP8})`,
       }}>
-        <DialogTitle textAlign="center">Find People</DialogTitle>
+        <DialogTitle textAlign="center">
+          Find People
+        </DialogTitle>
         <TextField
           label={""}
           value={search.value}
@@ -53,9 +63,7 @@ const Search = () => {
         <List sx={{
           overflowY: "auto",
           height: "60vh",
-          '&::-webkit-scrollbar': {
-            width: '0.3em',
-          },
+          '&::-webkit-scrollbar': {width: '0.3em'},
           '&::-webkit-scrollbar-track': {
             boxShadow: 'inset 0 0 0.5rem rgba(0,0,0,0.00)',
             webkitBoxShadow: 'inset 0 0 0.5rem rgba(0,0,0,0.00)',
@@ -66,14 +74,15 @@ const Search = () => {
           },
         }}>
           {
-            users.map((user) =>
-              <UserItem
-                user={user}
-                key={user._id}
-                handler={addFriendHandler}
-                handlerIsLoading={isLoadingSFRequest}
-              />
-            )
+            users
+              ?.map((user) =>
+                <UserItem
+                  user={user}
+                  key={user._id}
+                  handler={addFriendHandler}
+                  handlerIsLoading={isLoadingSFRequest}
+                />
+              )
           }
         </List>
       </Stack>

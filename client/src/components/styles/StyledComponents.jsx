@@ -1,4 +1,4 @@
-import {Box, keyframes, Paper as PaperComponent, Skeleton, styled} from "@mui/material";
+import {keyframes, LinearProgress, Paper as PaperComponent, Skeleton, styled} from "@mui/material";
 import {Link as LinkComponent} from "react-router-dom";
 import {colorPalette, cursorHoveringChatName} from "../../constants/color.constant.js";
 
@@ -75,3 +75,15 @@ const bounceAnimation = keyframes`
 export const BouncingSkeleton = styled(Skeleton)(() => ({
   animation: `${bounceAnimation} 1s infinite`,
 }))
+
+export const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  height: '10px',
+  borderRadius: '5px',
+  '& .MuiLinearProgress-bar': {
+    borderRadius: '5px',
+    backgroundColor: theme.palette.primary.main,
+  },
+  '& .MuiLinearProgress-barColorPrimary': {
+    backgroundColor: theme.palette.grey[200],
+  },
+}));

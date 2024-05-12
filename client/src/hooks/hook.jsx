@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import toast from "react-hot-toast";
-import {sout} from "../src/utils/helper.js";
+import {sout} from "../utils/helper.js";
 
 const useErrors = (errors = []) => {
   useEffect(() => {
@@ -17,6 +17,7 @@ const useErrors = (errors = []) => {
 const useAsyncMutation = (mutationHook) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
+
   const [mutate] = mutationHook();
 
   const executeMutation = async (toastMessage, ...args) => {
@@ -43,17 +44,24 @@ const useAsyncMutation = (mutationHook) => {
 }
 
 const useSockets = (socket, handlers) => {
+  // Guard clause to handle missing parameters
+  if (!socket || !handlers) return;
+
   useEffect(() => {
+    // Set up event listeners when component mounts
     Object.entries(handlers).forEach(([event, handler]) => {
-      sout(`Listening for event: ${event}`)
+      sout(`Listening for event: ${event}`);
       socket.on(event, handler);
     });
+
+    // Remove event listeners when component unmounts
     return () => {
       Object.entries(handlers).forEach(([event, handler]) => {
-        sout(`Removing event listener: ${event}`)
+        sout(`Removing event listener: ${event}`);
         socket.off(event, handler);
       });
-    }
-  }, [socket, handlers]);
-}
+    };
+  }, [socket, handlers]); // Dependency array ensures effect runs only when socket or handlers change
+};
+
 export {useErrors, useAsyncMutation, useSockets};

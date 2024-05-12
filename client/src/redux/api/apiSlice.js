@@ -41,7 +41,7 @@ const apiSlice = createApi({
       }),
       keepUnusedDataFor: 0
     }),
-    AcceptFriendRequest: builder.mutation({
+    acceptFriendRequest: builder.mutation({
       query: (data) => ({
         url: `user/accept-request`,
         method: "PUT",
@@ -89,7 +89,7 @@ const apiSlice = createApi({
     }),
     availableFriends: builder.query({
       query: (ChatId) => ({
-          url: `user/get-friends${ChatId ? `?ChatId=${ChatId}` : ""}`,
+          url: `user/get-friends${ChatId ? `?ChatId=${ChatId}` : ''}`,
           method: "GET",
           credentials: "include"
       }),
@@ -139,6 +139,14 @@ const apiSlice = createApi({
       }),
       invalidatesTags: ["Chat"]
     }),
+    leaveGroup: builder.mutation({
+      query: (ChatId) => ({
+        url: `chat/leave/${ChatId}`,
+        method: "DELETE",
+        credentials: "include"
+      }),
+      invalidatesTags: ["Chat"]
+    }),
   })
 });
 
@@ -158,5 +166,6 @@ export const {
   useRenameGroupChatMutation,
   useDeleteGroupChatMutation,
   useRemoveMemberMutation,
-  useAddMembersMutation
+  useAddMembersMutation,
+  useLeaveGroupMutation
 } = apiSlice;

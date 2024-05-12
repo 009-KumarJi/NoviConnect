@@ -32,7 +32,7 @@ const getLast7Days = () => {
 }
 
 const getOrSaveFromStorage = ({key, value, get}) => {
-  get
+  return get
     ? localStorage.getItem(key)
       ? JSON.parse(localStorage.getItem(key))
       : null

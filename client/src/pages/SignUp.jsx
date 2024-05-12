@@ -1,5 +1,15 @@
 import React, {useState} from 'react';
-import {Avatar, Box, Button, Container, IconButton, Paper, Stack, TextField, Typography} from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Paper,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 import {CameraAlt as CameraAltIcon} from "@mui/icons-material";
 import {VisuallyHiddenInput} from "../components/styles/StyledComponents.jsx";
@@ -12,6 +22,7 @@ import {server} from "../constants/config.constant.js";
 import {useDispatch} from "react-redux";
 import {userExists} from "../redux/reducers/authSlice.js";
 import {LinearLoader} from "../components/layout/Loaders.jsx";
+import {capitalizeFirstLetter} from "../utils/helper.js";
 
 
 const SignUpForm = () => {
@@ -22,21 +33,26 @@ const SignUpForm = () => {
   const password = useStrongPassword();
   const dob = useInputValidation("");
   const bio = useInputValidation("");
-  const [isLoading, setIsLoading] = useState(false);
+  const avatar = useFileHandler("single");
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmitSignUp = async (event) => {
     event.preventDefault();
 
-    if (!firstName.value || !lastName.value || !username.value || !email.value || !password.value || !dob.value) {
-      alert('Please fill all required fields.');
+    const fields = [firstName, lastName, username, email, password, dob];
+    if (fields.some(field => !field.value)) {
+      toast.error('Please fill all required fields.');
       return;
     }
     const formData = new FormData();
     formData.append("avatar", avatar.file);
-    formData.append("name", `${firstName.value} ${lastName.value}`);
+    formData.append("name", `${capitalizeFirstLetter(firstName.value)} ${capitalizeFirstLetter(lastName.value)}`);
     formData.append("username", username.value);
-    formData.append("email", email.value);
+    formData.append("email", email.value.toLowerCase());
     formData.append("password", password.value);
     formData.append("dob", dob.value);
     formData.append("bio", bio.value);
@@ -58,8 +74,6 @@ const SignUpForm = () => {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     }
   };
-  const avatar = useFileHandler("single");
-  const navigate = useNavigate();
   const goToLogin = () => navigate("/login");
 
   const today = new Date();
@@ -81,7 +95,7 @@ const SignUpForm = () => {
           alignItems: "center",
         }}
       >
-        <Typography variant={"h1"} marginBottom={"3rem"} marginTop={"2rem"}
+        <Typography variant="h1" marginBottom={"3rem"} marginTop={"2rem"}
                     color={colorPalette(1).CP2}>NoviConnect</Typography>
         {isLoading && <LinearLoader/>}
         <Paper

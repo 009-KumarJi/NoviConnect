@@ -11,7 +11,6 @@ const ProtectRoute = ({children, user, redirect="/login"}) => {
     // Otherwise, render the Outlet component.
     return children ? children : <Outlet />;
 }
-
 export default ProtectRoute;
 
 

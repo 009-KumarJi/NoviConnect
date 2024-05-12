@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "author": {
+    "email": "krishnakumar091@yahoo.com",
+    "name": "Krishna Kumar",
+    "url": "https://www.github.com/009-KumarJi/"
+  },
   "type": "module",
   "scripts": {
     "start": "cross-env NODE_ENV=PRODUCTION node server.js",

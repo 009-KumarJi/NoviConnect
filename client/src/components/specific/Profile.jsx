@@ -11,9 +11,9 @@ import {transformImg} from "../../lib/features.js";
 
 const Profile = ({user}) => {
   return (
-    <Stack spacing={"2rem"} direction={"column"} alignItems={"center"}>
+    <Stack spacing={"2rem"} direction="column" alignItems={"center"}>
       <Avatar
-        src={transformImg(user?.avatar?.url)}
+        src={transformImg(user?.avatar?.url, 350)}
         sx={{
           height: 200,
           width: 200,
@@ -32,16 +32,16 @@ const Profile = ({user}) => {
 
 const ProfileCard = ({text, Icon, heading}) => (
     <Stack
-      spacing={"1rem"}
-      direction={"row"}
-      alignItems={"center"}
-      color={"white"}
-      textAlign={"center"}
+      spacing="1rem"
+      direction="row"
+      alignItems="center"
+      color="white"
+      textAlign="center"
     >
       {Icon && Icon}
       <Stack>
-        <Typography variant={"body1"}>{text}</Typography>
-        <Typography variant={"caption"} color={colorPalette().CP7}>{heading}</Typography>
+        <Typography variant="body1">{text}</Typography>
+        <Typography variant="caption" color={colorPalette().CP7}>{heading}</Typography>
       </Stack>
     </Stack>
 );

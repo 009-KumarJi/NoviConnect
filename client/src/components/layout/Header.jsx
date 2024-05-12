@@ -27,16 +27,19 @@ const Header = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const {isSearch, isNewGroup, isNotification} = useSelector(state => state["misc"]);
   const {notificationCount} = useSelector(state => state["chat"]);
 
   const handleMobile = () => dispatch(setIsMobileMenu(true));
   const openSearch = () => dispatch(setIsSearch(true));
   const openNewGroup = () => dispatch(setIsNewGroup(true));
-  const showNotification = () => dispatch(setIsNotification(true)) && dispatch(resetNotificationCount());
-  const navigateToGroup = () => {
-    navigate("/groups");
+  const showNotification = () => {
+    dispatch(setIsNotification(true));
+    dispatch(resetNotificationCount());
   }
+  const navigateToGroup = () => navigate("/groups");
+
   const logoutHandler = () => {
     axios
       .get(`${server}/api/v1/user/logout`, {withCredentials: true})
@@ -106,7 +109,11 @@ const IconMould = ({icon, onClick, title, value}) => {
   return (
     <Tooltip title={title}>
       <IconButton color={"inherit"} size={"large"} onClick={onClick}>
-        {value ? <Badge badgeContent={value} color="error">{icon}</Badge> : icon}
+        {
+          value
+            ? <Badge badgeContent={value} color="error">{icon}</Badge>
+            : icon
+        }
       </IconButton>
     </Tooltip>
   );
