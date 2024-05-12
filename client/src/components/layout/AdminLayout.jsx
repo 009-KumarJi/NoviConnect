@@ -1,3 +1,4 @@
+// path: client/src/components/layout/AdminLayout.jsx
 import React, {useState} from 'react';
 import {Box, Drawer, Grid, IconButton, Stack, Typography} from "@mui/material";
 import {colorPalette} from "../../constants/color.constant.js";
@@ -10,11 +11,13 @@ import {
   Menu as MenuIcon,
   Message as MessageIcon,
 } from "@mui/icons-material";
-import {Navigate, useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {Link} from "../styles/StyledComponents.jsx";
-import {sout} from "../../utils/helper.js";
+import {sout} from "../../utils/helper.js"
+import {resetStore} from "../../redux/resetActions.js";
+import {useDispatch} from "react-redux";
+import {adminLogout} from "../../redux/thunks/admin.js";
 
-const isAdmin = true;
 const adminTabs = [
   {
     name: 'Dashboard',
@@ -37,17 +40,21 @@ const adminTabs = [
 
 const SideBar = ({width = '100vw', drawer = false}) => {
   const location = useLocation();
+  const dispatch = useDispatch();
+
   const logoutHandler = () => {
+    dispatch(adminLogout())
     sout('logout');
   }
 
   return <Stack
     width={width}
+    direction={"column"}
+    p={"3rem"}
     sx={{
       height: "100vh",
       color: `${colorPalette(1).CP8}`,
       bgcolor: drawer ? 'rgba(9,9,44,1)' : "inherit",
-      padding: "3rem",
       maxWidth: !drawer ? "50vw" : "100vw",
     }}
     spacing={"3rem"}
@@ -91,7 +98,7 @@ const SideBar = ({width = '100vw', drawer = false}) => {
 }
 
 const AdminLayout = ({children}) => {
-  if (!isAdmin) return <Navigate to={'/krishnaden'}/>;
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleMobile = () => setIsSidebarOpen((prevState) => !prevState);
@@ -111,16 +118,29 @@ const AdminLayout = ({children}) => {
         }}
       >
         <IconButton onClick={handleMobile}>
-          {!isSidebarOpen ? <MenuIcon style={{color: `${colorPalette().CP8}`}}/> :
-            <MenuCloseIcon style={{color: `${colorPalette().CP8}`}}/>}
+          {
+            isSidebarOpen
+              ? <MenuCloseIcon style={{color: `${colorPalette().CP8}`}}/>
+              : <MenuIcon style={{color: `${colorPalette().CP8}`}}/>
+          }
         </IconButton>
       </Box>
-      <Grid item md={4} lg={3} sx={{display: {xs: "none", md: "block"}, bgcolor: 'rgba(9,9,44,1)'}}>
+
+      <Grid
+        item
+        md={4} lg={3}
+        sx={{
+          display: {xs: "none", md: "block"},
+          bgcolor: 'rgba(9,9,44,1)'
+        }}
+      >
         <SideBar/>
       </Grid>
+
       <Grid item xs={12} md={8} lg={9} sx={{bgcolor: 'rgb(17,0,49)'}}>
         {children}
       </Grid>
+
       <Drawer open={isSidebarOpen} onClose={handleClose}>
         <SideBar width={`50vw`} drawer={true}/>
       </Drawer>
@@ -129,3 +149,4 @@ const AdminLayout = ({children}) => {
 };
 
 export default AdminLayout;
+

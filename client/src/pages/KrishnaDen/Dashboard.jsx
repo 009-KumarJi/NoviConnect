@@ -1,3 +1,4 @@
+// path: client/src/pages/KrishnaDen/Dashboard.jsx
 import React from 'react';
 import AdminLayout from "../../components/layout/AdminLayout.jsx";
 import {Box, Container, Stack, Typography} from "@mui/material";
@@ -12,7 +13,6 @@ import {
 import {CurvedButton, DarkPaper, SearchField} from "../../components/styles/StyledComponents.jsx";
 import RealTimeDisplay from "../../components/dialogs/RealTimeDisplay.jsx";
 import {DoughnutChart, LineChart} from "../../components/specific/Charts.jsx";
-
 const Dashboard = () => {
   const AppBar = <DarkPaper sx={{
     padding: "2rem",

@@ -1,4 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
+import {adminLogin, adminLogout} from "../thunks/admin.js";
+import {sout} from "../../utils/helper.js";
 
 const initialState = {
   user: null,
@@ -18,6 +21,29 @@ const authSlice = createSlice({
       state.user = null;
       state.isLoading = false;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(adminLogin.fulfilled, (state, action) => {
+        sout("Success: ", action.payload)
+        toast.success(action.payload);
+        state.isAdmin = true;
+      })
+      .addCase(adminLogin.rejected, (state, action) => {
+        sout("Error: ", action.error.message)
+        toast.error(action.error.message);
+        state.isAdmin = false;
+      })
+      .addCase(adminLogout.fulfilled, (state, action) => {
+        sout("Success: ", action.payload)
+        toast.success(action.payload);
+        state.isAdmin = false;
+      })
+      .addCase(adminLogout.rejected, (state, action) => {
+        sout("Error: ", action.error.message)
+        toast.error(action.error.message);
+        state.isAdmin = false;
+      })
   }
 })
 

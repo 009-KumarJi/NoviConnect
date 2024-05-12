@@ -55,7 +55,7 @@ app.use((req, res, next) => {
 // User routes
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/chat", chatRoutes);
-app.use("/api/v1/dev-den", adminRoutes);
+app.use("/admin/api/krishna-den", adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("Kahan aa gaya bhai tu! frontend pe jaa na! idhar kya kar rha hai?");

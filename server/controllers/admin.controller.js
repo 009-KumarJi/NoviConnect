@@ -21,7 +21,6 @@ const adminLogin = TryCatch(async (req, res, next) => {
       success: true,
       message: "~Hare Krishna~!",
     });
-
 });
 const adminLogout = TryCatch(async (req, res) => {
   return res.status(200)

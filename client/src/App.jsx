@@ -25,7 +25,7 @@ const ChatManagement = lazy(() => import("./pages/KrishnaDen/ChatManagement.jsx"
 
 const App = () => {
 
-  const {user, isLoading} = useSelector(state => state.auth);
+  const {user, isLoading, isAdmin} = useSelector(state => state.auth);
 
   const dispatch = useDispatch();
 
@@ -50,11 +50,15 @@ const App = () => {
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<SignUpForm/>}/>
           </Route>
+
           <Route path="/krishnaden" element={<AdminLogin/>}/>
-          <Route path="/krishnaden/dashboard" element={<Dashboard/>}/>
-          <Route path="/krishnaden/user-management" element={<UserManagement/>}/>
-          <Route path="/krishnaden/message-management" element={<MessageManagement/>}/>
-          <Route path="/krishnaden/chat-management" element={<ChatManagement/>}/>
+
+          <Route element={<ProtectRoute user={isAdmin} redirect="/krishnaden"/>}>
+            <Route path="/krishnaden/dashboard" element={<Dashboard/>}/>
+            <Route path="/krishnaden/user-management" element={<UserManagement/>}/>
+            <Route path="/krishnaden/message-management" element={<MessageManagement/>}/>
+            <Route path="/krishnaden/chat-management" element={<ChatManagement/>}/>
+          </Route>
           <Route path="*" element={<NotFound/>}/>
         </Routes>
       </Suspense>

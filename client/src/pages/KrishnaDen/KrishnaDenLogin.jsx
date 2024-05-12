@@ -1,21 +1,27 @@
-import React from 'react';
+// path: client/src/pages/KrishnaDen/KrishnaDenLogin.jsx
+import React, {useEffect} from 'react';
 import {Box, Button, Container, Paper, TextField, Typography} from "@mui/material";
 import {useInputValidation} from "6pp";
 import {colorPalette} from "../../constants/color.constant.js";
-import {Navigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import {sout} from "../../utils/helper.js";
+import {useDispatch, useSelector} from "react-redux";
+import {adminLogin} from "../../redux/thunks/admin.js";
 
-const isAdmin = false;
 
 const KrishnaDenLogin = () => {
   const secretKey = useInputValidation("");
 
+  const {isAdmin} = useSelector(state => state.auth);
+    const dispatch = useDispatch();
+
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(adminLogin(secretKey.value));
     sout("Login form submitted");
   };
 
-  if (isAdmin) return <Navigate to="/krishnaden/dashboard"/>;
+  if (isAdmin) return <Navigate to={"/krishnaden/dashboard"}/>;
 
   return (
     <Box sx={{backgroundColor: `rgba(23, 23, 91, 1)`, height: "100vh",}}>
