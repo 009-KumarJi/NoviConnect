@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {Box, ListItemText, Menu, MenuItem, MenuList, Slide} from "@mui/material";
+import {Box, ListItemText, Menu, MenuItem, MenuList} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsFileMenu, setUploadingLoader} from "../../redux/reducers/miscSlice.js";
 import {
@@ -50,7 +50,7 @@ const FileMenu = ({anchorE1, ChatId}) => {
   }
 
   return (
-    <Menu open={isFileMenu} anchorEl={anchorE1} onClose={handleClose} TransitionComponent={Slide} transitionDuration={150}>
+    <Menu open={isFileMenu} anchorEl={anchorE1} onClose={handleClose}>
       <Box sx={{
         width: "10rem"
       }}>

@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {userDoesNotExist} from "../../redux/reducers/authSlice.js";
 import {setIsMobileMenu, setIsNewGroup, setIsNotification, setIsSearch} from "../../redux/reducers/miscSlice.js";
 import {resetNotificationCount} from "../../redux/reducers/chatSlice.js";
+import {resetStore} from "../../redux/resetActions.js";
 
 
 const SearchDialog = lazy(() => import("../specific/Search.jsx"));
@@ -44,8 +45,9 @@ const Header = () => {
     axios
       .get(`${server}/api/v1/user/logout`, {withCredentials: true})
       .then(res => {
-        toast.success(res?.data?.message || "Logged-out successfully!");
+        dispatch(resetStore());
         dispatch(userDoesNotExist());
+        toast.success(res?.data?.message || "Logged-out successfully!");
       })
       .catch(err => toast.error(err?.response?.data?.message || "Something went wrong!"))
   }

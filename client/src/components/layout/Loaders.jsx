@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Grid, LinearProgress, Skeleton, Stack} from "@mui/material";
+import {Box, Grid, Skeleton, Stack} from "@mui/material";
 import {BouncingSkeleton, StyledLinearProgress} from "../styles/StyledComponents.jsx";
 
 const LayoutLoader = () => {

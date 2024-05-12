@@ -1,8 +1,9 @@
 import React, {memo} from 'react';
 import {Link} from "../styles/StyledComponents.jsx";
-import {Box, Container, Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import AvatarCard from "./AvatarCard.jsx";
 import {darkPaleBlue} from "../../constants/color.constant.js";
+import {motion} from "framer-motion";
 
 const ChatItem = (
   {
@@ -17,14 +18,20 @@ const ChatItem = (
     handleDeleteChat,
   }
 ) => {
+  const handleDelete = (_event) => {
+    handleDeleteChat(_event, _id, groupChat);
+  }
   return (
     <Link
       sx={{padding: "0"}}
       to={`/chat/${_id}`}
-      onContextMenu={(_event) => handleDeleteChat(_event, _id, groupChat)}
+      onContextMenu={(_event) => handleDelete(_event)}
     >
-      <Container
-        sx={{
+      <motion.div
+        initial={{opacity: 0, y: "-100%"}}
+        whileInView={{opacity: 1, y: 0}}
+        transition={{delay: index * 0.1}}
+        style={{
           display: "flex",
           gap: "1rem",
           alignItems: "center",
@@ -51,7 +58,7 @@ const ChatItem = (
             }}
           />
         )}
-      </Container>
+      </motion.div>
     </Link>
   );
 };

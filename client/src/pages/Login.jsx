@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Button, Container, Paper, TextField, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useInputValidation} from "6pp";
@@ -11,8 +11,10 @@ import toast from "react-hot-toast";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const handleSubmitSignIn = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     const config = {
       withCredentials: true,
       headers: {
@@ -27,13 +29,12 @@ const Login = () => {
         config
       );
       toast.success(data.message);
-      dispatch(userExists(true));
-      navigate("/", {
-        replace: true,
-        refresh: true,
-      });
+      dispatch(userExists(data.user));
+      navigate("/", {replace: true});
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -100,6 +101,7 @@ const Login = () => {
                 color={"primary"}
                 type={"submit"}
                 fullWidth={true}
+                disabled={isLoading}
               >
                 Sign In
               </Button>
@@ -109,6 +111,7 @@ const Login = () => {
               variant={"text"}
               onClick={goToRegister}
               fullWidth={true}
+              disabled={isLoading}
             >
               Sign Up
             </Button>

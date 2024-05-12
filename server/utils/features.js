@@ -32,7 +32,8 @@ const sendToken = (res, user, code, message) => {
     .cookie(NC_TOKEN, token, cookieOptions)
     .json({
       success: true,
-      message,
+      user,
+      message
     });
 };
 const emitEvent = (req, event, users, data= "") => {
@@ -73,9 +74,24 @@ const uploadFilesToCloudinary = async (files = []) => {
   }
 };
 const deleteFilesFromCloudinary = async (publicIds) => {
-  console.log("Deleting files from cloudinary...");
-};
+  sout("Deleting files from cloudinary...");
 
+  const deletePromises = publicIds.map((public_id) => {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.destroy(public_id, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  });
+
+  try {
+    await Promise.all(deletePromises);
+    sout("Files deleted successfully!");
+  } catch (error) {
+    sout("An error occurred while deleting files from Cloudinary:", error);
+  }
+};
 
 export {connectDB, sendToken, cookieOptions, emitEvent, deleteFilesFromCloudinary, uploadFilesToCloudinary};
 

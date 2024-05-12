@@ -28,12 +28,14 @@ const App = () => {
   const {user, isLoading} = useSelector(state => state.auth);
 
   const dispatch = useDispatch();
+
   useEffect(() => {
     axios
       .get(`${server}/api/v1/user/profile`, {withCredentials: true})
       .then(({data}) => dispatch(userExists(data.user)))
       .catch(err => dispatch(userDoesNotExist()));
   }, [dispatch]);
+
 
   return isLoading ? <LayoutLoader/> : (
     <BrowserRouter>
@@ -44,7 +46,7 @@ const App = () => {
             <Route path="/chat/:ChatId" element={<Chat/>}/>
             <Route path="/groups" element={<Groups/>}/>
           </Route>
-          <Route element={<ProtectRoute user={true}/>}>
+          <Route element={<ProtectRoute user={!user} redirect={"/"}/>}>
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<SignUpForm/>}/>
           </Route>

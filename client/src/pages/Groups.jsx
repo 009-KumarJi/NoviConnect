@@ -154,6 +154,7 @@ const Groups = () => {
         }
       }}
       onClick={navigateHome}
+      disabled={isLoadingDeleteGC || isLoadingRenaming}
     >
       <HomeIcon/>
     </IconButton>
@@ -181,7 +182,7 @@ const Groups = () => {
             <Typography variant="h4">{groupName}</Typography>
             <IconButton
               onClick={() => setIsEdit(true)}
-              disabled={isLoadingRenaming}
+              disabled={isLoadingRenaming || isLoadingDeleteGC}
             >
               <EditIcon/>
             </IconButton>
@@ -207,12 +208,14 @@ const Groups = () => {
         size="large" color="error"
         variant="outlined" startIcon={<DeleteIcon/>}
         onClick={openConfirmDeleteHandler}
+        disabled={isLoadingDeleteGC || isLoadingRenaming}
       >
         Delete Group
       </Button>
       <Button
         size="large" variant="contained"
         startIcon={<AddIcon/>} onClick={addMemberHandler}
+        disabled={isLoadingDeleteGC || isLoadingRenaming}
       >
         Add Member
       </Button>
@@ -241,10 +244,10 @@ const Groups = () => {
             {GroupName}
             <Typography
               margin="1rem"
-              alignSelf={"flex-start"}
-              variant="body1"
+              alignSelf={"center"}
+              variant="body2"
             >
-              Members
+              Group Members
             </Typography>
             <Stack
               maxWidth={"45rem"}

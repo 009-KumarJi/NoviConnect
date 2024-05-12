@@ -1,15 +1,5 @@
 import React, {useState} from 'react';
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  IconButton,
-  Paper,
-  Stack,
-  TextField,
-  Typography
-} from '@mui/material';
+import {Avatar, Box, Button, Container, IconButton, Paper, Stack, TextField, Typography} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 import {CameraAlt as CameraAltIcon} from "@mui/icons-material";
 import {VisuallyHiddenInput} from "../components/styles/StyledComponents.jsx";
@@ -43,6 +33,8 @@ const SignUpForm = () => {
   const handleSubmitSignUp = async (event) => {
     event.preventDefault();
 
+    setIsLoading(true);
+
     const fields = [firstName, lastName, username, email, password, dob];
     if (fields.some(field => !field.value)) {
       toast.error('Please fill all required fields.');
@@ -64,16 +56,16 @@ const SignUpForm = () => {
       }
     }
     try {
-      setIsLoading(true);
       const {data} = await axios.post(`${server}/api/v1/user/new-login`, formData, config);
       dispatch(userExists());
-      setIsLoading(false);
       toast.success(data.message);
       goToLogin();
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }
   const goToLogin = () => navigate("/login");
 
   const today = new Date();
@@ -209,6 +201,7 @@ const SignUpForm = () => {
                     color={"primary"}
                     type={"submit"}
                     fullWidth={true}
+                    disabled={isLoading}
             >
               Sign Up
             </Button>
@@ -218,9 +211,11 @@ const SignUpForm = () => {
             variant={"text"}
             onClick={goToLogin}
             fullWidth={true}
+            disabled={isLoading}
           >
             Sign In
           </Button>
+          <LinearLoader/>
         </Paper>
       </Container>
     </div>

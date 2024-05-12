@@ -5,6 +5,7 @@ import moment from "moment";
 import {fileFormat} from "../../lib/features.js";
 import RenderAttachment from "./RenderAttachment.jsx";
 import {sout} from "../../utils/helper.js";
+import {motion} from "framer-motion";
 
 const MessageComponent = ({message, loggedUser}) => {
   sout(`(sent by ${loggedUser.name})MessageComponent: `, message)
@@ -12,7 +13,10 @@ const MessageComponent = ({message, loggedUser}) => {
   const isSameSender = sender?._id === loggedUser?._id;
   const timeAgo = moment(createdAt).fromNow();
   return (
-    <div
+    <motion.div
+      initial={{opacity: 0, x: "-100%"}}
+      whileInView={{opacity: 1, x: 0}}
+
       style={{
         alignSelf: isSameSender ? "flex-end" : "flex-start",
         backgroundColor: "floralwhite",
@@ -39,7 +43,7 @@ const MessageComponent = ({message, loggedUser}) => {
           }))
       }
       <Typography variant={"caption"} color={"text.secondary"}>{timeAgo}</Typography>
-    </div>
+    </motion.div>
   );
 };
 

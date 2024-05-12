@@ -13,14 +13,17 @@ const newGroupChat = TryCatch(async (req, res, next) => {
   if (members.includes(req.userId)) return next(new ErrorHandler("You are already a member", 422));
   const allMembers = [...members, req.userId];
 
-  await Chat.create({
+  const createdChat = await Chat.create({
     name,
     groupChat: true,
     creator: req.userId,
     members: allMembers,
   });
 
-  emitEvent(req, ALERT, allMembers, `Welcome to group chat, ${name}`);
+  emitEvent(req, ALERT, allMembers, {
+    message: `Welcome to group chat, ${name}`,
+    ChatId: createdChat._id
+  });
   emitEvent(req, REFETCH_CHATS, members);
 
   res.status(201).json({
@@ -89,7 +92,10 @@ const addMembers = TryCatch(async (req, res, next) => {
 
   const allUsersName = allNewMembers.map(({name}) => name).join(", ");
 
-  emitEvent(req, ALERT, chat.members, `${allUsersName} added to the group chat`);
+  emitEvent(req, ALERT, chat.members, {
+    ChatId,
+    message: `${allUsersName} added to the group chat`
+  });
   emitEvent(req, REFETCH_CHATS, chat.members);
 
   return res.status(200).json({
@@ -113,7 +119,10 @@ const removeMember = TryCatch(async (req, res, next) => {
   chat.members = chat.members.filter(member => member.toString() !== UserId.toString());
   await chat.save();
 
-  emitEvent(req, ALERT, chat.members, `${removedUser.name} removed from the group chat`);
+  emitEvent(req, ALERT, chat.members, {
+    ChatId,
+    message: `${removedUser.name} removed from the group chat`
+  });
   emitEvent(req, REFETCH_CHATS, allMembers);
 
   return res.status(200).json({
@@ -141,11 +150,14 @@ const leaveGroupChat = TryCatch(async (req, res, next) => {
 
   const [leftUser] = await Promise.all([User.findById(req.userId, "name"), chat.save()]);
 
-  emitEvent(req, ALERT, chat.members, `${leftUser.name} left the group chat`);
+  emitEvent(req, ALERT, chat.members, {
+    message: `${leftUser.name} left the group chat`,
+    ChatId
+  });
 
   return res.status(200).json({
     success: true,
-    message: "You Left group chat successfully",
+    message: "You Left group chat",
   });
 });
 const sendAttachments = TryCatch(async (req, res, next) => {
@@ -228,7 +240,10 @@ const renameGroupChat = TryCatch(async (req, res, next) => {
   chat.name = name;
   await chat.save();
 
-  emitEvent(req, ALERT, chat.members, `Group chat renamed to ${name}`);
+  emitEvent(req, ALERT, chat.members, {
+    message: `Group chat renamed to ${name}`,
+    ChatId
+  });
   emitEvent(req, REFETCH_CHATS, chat.members);
 
   return res.status(200).json({
@@ -262,7 +277,7 @@ const deleteChat = TryCatch(async (req, res, next) => {
 
   return res.status(200).json({
     success: true,
-    message: "Group chat deleted successfully",
+    message: "Friend removed successfully",
   });
 });
 const getMessages = TryCatch(async (req, res, next) => {
@@ -275,6 +290,7 @@ const getMessages = TryCatch(async (req, res, next) => {
   const chat = await Chat.findById(ChatId);
 
   if (!chat) return next(new ErrorHandler("Chat not found", 404));
+  if (!chat.members.includes(req.userId)) return next(new ErrorHandler("You are not a member of this chat", 422));
 
   const [messages, totalMessagesCount] = await Promise.all([
     Message

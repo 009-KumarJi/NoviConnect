@@ -130,13 +130,13 @@ const Chat = ({ChatId, user}) => {
     const messageForAlert = {
       content: data.message,
       sender: {
-        _id: "ThisIsAnAlertMessage'sId",
+        _id: "This_Is_An_Alert_Message_s_Id",
         name: "Admin",
       },
-      chat: ChatId,
+      chat: data.ChatId,
       createdAt: new Date().toISOString(),
     };
-    setMessages(prevState => prevState.concat(messageForAlert));
+    setMessages(prevState => [...prevState, messageForAlert]);
   }, [ChatId])
 
   const eventHandler = {
