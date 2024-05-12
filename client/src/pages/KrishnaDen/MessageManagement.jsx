@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import AdminLayout from "../../components/layout/AdminLayout.jsx";
-import {Avatar, Box, Stack} from "@mui/material";
+import {Avatar, Box, Skeleton, Stack} from "@mui/material";
 import Table from "../../components/shared/Table.jsx";
-import {sampleDashboardData} from "../../constants/sampleData.js";
 import {fileFormat, transformImg} from "../../lib/features.js";
 import moment from "moment";
 import RenderAttachment from "../../components/shared/RenderAttachment.jsx";
+import {useAllMessagesQuery} from "../../redux/api/adminApiSlice.js";
+import {useErrors} from "../../hooks/hook.jsx";
+import {sout} from "../../utils/helper.js";
 
 
 const columns = [
@@ -16,7 +18,7 @@ const columns = [
     {
       const {attachments} = params.row;
       return attachments.length > 0
-        ? attachments.map((i, index) => {
+        ? attachments.map((i, _) => {
           const url = i.url;
           const file = fileFormat(url);
           return <Box>
@@ -25,7 +27,6 @@ const columns = [
             </a>
           </Box>
         })
-
         : "No Attachments";
     }
   },
@@ -47,22 +48,29 @@ const columns = [
 const MessageManagement = () => {
 
   const [rows, setRows] = useState([]);
+  const {data, isError, error, refetch, isLoading} = useAllMessagesQuery({});
+  useErrors([{isError, error}]);
+  sout(data)
 
   useEffect(() => {
-    setRows(sampleDashboardData.messages.map(i => ({
-      ...i,
-      id: i._id,
-      sender: {avatar: transformImg(i.sender.avatar, 50), name: i.sender.name},
-      createdAt: moment(i.createdAt).format("MMMM Do YYYY, h:mm:ss a"),
-      groupChat: i.groupChat ? "Yes" : "No",
-    })));
-  }, []);
+    if (data){
+      setRows(data?.messages?.map(i => ({
+        ...i,
+        id: i._id,
+        sender: {avatar: transformImg(i.sender.avatar, 50), name: i.sender.name},
+        createdAt: moment(i.createdAt).format("MMMM Do YYYY, h:mm:ss a"),
+        groupChat: i.groupChat ? "Yes" : "No",
+        attachments: i.attachments > 0 ? i.attachments.map(i => ({url: i.url, type: i.type})) : [],
+      })));
+    }
+  }, [data, isLoading]);
 
-  return (
+  return isLoading ? <Skeleton/> : (
     <AdminLayout>
       <Table heading={"All Messages"} columns={columns} rows={rows} rowHeight={200}/>
     </AdminLayout>
   );
+
 };
 
 export default MessageManagement;

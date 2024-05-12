@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import {Box, Button, Container, Paper, TextField, Typography} from "@mui/material";
 import {useInputValidation} from "6pp";
 import {colorPalette} from "../../constants/color.constant.js";
-import {Navigate, useNavigate} from "react-router-dom";
+import {Navigate} from "react-router-dom";
 import {sout} from "../../utils/helper.js";
 import {useDispatch, useSelector} from "react-redux";
 import {adminLogin, verifyAdmin} from "../../redux/thunks/admin.js";

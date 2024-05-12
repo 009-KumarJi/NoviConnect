@@ -52,6 +52,7 @@ const getAllUsers = TryCatch(async (req, res) => {
       avatar: user.avatar.url,
       groupsCount,
       friends,
+      joinedAt: user.createdAt,
     }
   }));
 
@@ -94,7 +95,7 @@ const getAllChats = TryCatch(async (req, res) => {
 
   return res.status(200).json({
     success: true,
-    transformedChats,
+    chats: transformedChats,
   });
 });
 const getAllMessages = TryCatch(async (req, res) => {
@@ -140,9 +141,11 @@ const getDashboardStatistics = TryCatch(async (req, res) => {
 
   const dayInMilliseconds = 1000 * 60 * 60 * 24;
   const messagesPerDay = new Array(7).fill(0);
-  messagesPerDay.forEach((message) => {
+  lastWeekMessages.forEach((message) => {
     const index = 6 - Math.floor((today.getTime() - message.createdAt.getTime()) / dayInMilliseconds);
-    messagesPerDay[index]++;
+    if (index >= 0 && index < 7) {
+      messagesPerDay[index]++;
+    }
   });
 
   const statistics = {

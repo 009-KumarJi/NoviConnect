@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import AdminLayout from "../../components/layout/AdminLayout.jsx";
 import Table from "../../components/shared/Table.jsx";
-import {Avatar} from "@mui/material";
-import {sampleDashboardData} from "../../constants/sampleData.js";
+import {Avatar, Skeleton} from "@mui/material";
 import {transformImg} from "../../lib/features.js";
+import {useAllUsersQuery} from "../../redux/api/adminApiSlice.js";
+import {useErrors} from "../../hooks/hook.jsx";
+import {sout} from "../../utils/helper.js";
+import moment from "moment";
 
 
 const columns = [
@@ -22,11 +25,24 @@ const UserManagement = () => {
 
   const [rows, setRows] = useState([]);
 
-  useEffect(() => {
-    setRows(sampleDashboardData.users.map(i => ({...i, id: i._id, avatar: transformImg(i.avatar)})));
-  }, []);
+  const {data, isError, error, refetch, isLoading} = useAllUsersQuery({});
+  useErrors([{isError, error}]);
+  sout(data)
 
-  return (
+  useEffect(() => {
+    if (data) {
+      setRows(data?.transformedUsers
+        ?.map(i => ({
+          ...i,
+          id: i._id,
+          groups: i.groupsCount,
+          joinedAt: moment(i.joinedAt).format("MMMM Do YYYY, hh:mm:ss"),
+          avatar: transformImg(i.avatar)
+        })));
+    }
+  }, [data, isLoading]);
+
+  return isLoading ? <Skeleton/> : (
     <AdminLayout>
       <Table heading={"All Users"} columns={columns} rows={rows} />
     </AdminLayout>

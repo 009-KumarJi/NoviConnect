@@ -1,5 +1,5 @@
 // path: client/src/pages/KrishnaDen/Dashboard.jsx
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import AdminLayout from "../../components/layout/AdminLayout.jsx";
 import {Box, Container, Stack, Typography} from "@mui/material";
 import {colorPalette} from "../../constants/color.constant.js";
@@ -13,7 +13,46 @@ import {
 import {CurvedButton, DarkPaper, SearchField} from "../../components/styles/StyledComponents.jsx";
 import RealTimeDisplay from "../../components/dialogs/RealTimeDisplay.jsx";
 import {DoughnutChart, LineChart} from "../../components/specific/Charts.jsx";
+import {useDashboardStatsQuery} from "../../redux/api/adminApiSlice.js";
+import {useErrors} from "../../hooks/hook.jsx";
+import {LayoutLoader} from "../../components/layout/Loaders.jsx";
+import {sout} from "../../utils/helper.js";
+
 const Dashboard = () => {
+
+  const {data, isError, error, refetch, isLoading} = useDashboardStatsQuery();
+  useErrors([{isError, error}]);
+  sout(data)
+
+  const [lineData, setLineData] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [doughnutData, setDoughnutData] = useState([0, 0]);
+  const [usersNumber, setUsersNumber] = useState(0);
+  const [totalChatsNumber, setTotalChatsNumber] = useState(0);
+  const [groupChatsNumber, setGroupChatsNumber] = useState(0);
+  const [messagesNumber, setMessagesNumber] = useState(0);
+
+  const allValues = {
+    lineData,
+    doughnutData,
+    usersNumber,
+    totalChatsNumber,
+    groupChatsNumber,
+    messagesNumber,
+  }
+  sout(allValues)
+
+  useEffect(() => {
+    if (data) {
+      setLineData(data.statistics.messageChart);
+      setUsersNumber(data.statistics.usersCount);
+      setTotalChatsNumber(data.statistics.totalChatsCount);
+      setGroupChatsNumber(data.statistics.groupsCount);
+      setMessagesNumber(data.statistics.messagesCount);
+      setDoughnutData([totalChatsNumber - groupChatsNumber, groupChatsNumber])
+    }
+  }, [data, lineData, usersNumber, totalChatsNumber, groupChatsNumber, messagesNumber]);
+
+
   const AppBar = <DarkPaper sx={{
     padding: "2rem",
     margin: '2rem 0',
@@ -46,7 +85,7 @@ const Dashboard = () => {
         <Typography margin={"2rem 0"} variant={"h4"}>
           Last Messages
         </Typography>
-        <LineChart value={[65, 59, 80, 81, 56, 55, 40]}/>
+        <LineChart value={lineData}/>
       </DarkPaper>
 
       <DarkPaper sx={{
@@ -59,7 +98,7 @@ const Dashboard = () => {
         position: "relative",
         maxWidth: "25rem",
       }}>
-        <DoughnutChart labels={["Single Chats", "Group Chats"]} value={[20, 80]}/>
+        <DoughnutChart labels={["Single Chats", "Group Chats"]} value={doughnutData}/>
         <Stack
           position={"absolute"}
           direction={"row"}
@@ -85,21 +124,22 @@ const Dashboard = () => {
       alignItems={"center"}
       spacing={"2rem"}
     >
-      <Widget title={"Users"} value={"100"} icon={<PersonIcon/>}/>
-      <Widget title={"Chats"} value={"10"} icon={<GroupIcon/>}/>
-      <Widget title={"Messages"} value={"1000"} icon={<MessageIcon/>}/>
+      <Widget title={"Users"} value={usersNumber} icon={<PersonIcon/>}/>
+      <Widget title={"Chats"} value={totalChatsNumber} icon={<GroupIcon/>}/>
+      <Widget title={"Messages"} value={messagesNumber} icon={<MessageIcon/>}/>
     </Stack>
   )
 
   return (
     <AdminLayout>
-      <Container component={"main"}>
-        {AppBar}
-
-        {ChartArea}
-
-        {Widgets}
-      </Container>
+      {
+        isLoading ? <LayoutLoader/> :
+          <Container component={"main"}>
+            {AppBar}
+            {ChartArea}
+            {Widgets}
+          </Container>
+      }
     </AdminLayout>
   );
 
