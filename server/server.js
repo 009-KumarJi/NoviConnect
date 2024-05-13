@@ -55,7 +55,6 @@ app.use(express.json()); // Parse JSON bodies (as sent by API clients)
 app.use(cookieParser()); // Parse cookies attached to the client request
 app.use(cors(corsOptions));
 
-sout("client point: ", process.env.CLIENT_URLS.split(","));
 app.use((req, res, next) => {
   sout(`Route being hit: ${req.method} ${req.path}`);
   next();
