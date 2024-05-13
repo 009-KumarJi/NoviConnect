@@ -8,8 +8,11 @@ const START_TYPING = 'START_TYPING';
 const STOP_TYPING = 'STOP_TYPING';
 const CHAT_JOINED = 'CHAT_JOINED';
 const CHAT_LEFT = 'CHAT_LEFT';
+const ONLINE_USERS = 'ONLINE_USERS';
+const ONLINE_USERS_LIST = 'ONLINE_USERS_LIST';
 
 export {
+  ONLINE_USERS_LIST,
   ALERT,
   REFETCH_CHATS,
   NEW_ATTACHMENT,
@@ -19,7 +22,8 @@ export {
   START_TYPING,
   STOP_TYPING,
   CHAT_JOINED,
-  CHAT_LEFT
+  CHAT_LEFT,
+  ONLINE_USERS
 };
 
 // Path: server/constants/events.constant.js

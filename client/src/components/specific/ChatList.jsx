@@ -2,6 +2,8 @@ import React from 'react';
 import {Stack} from "@mui/material";
 import ChatItem from "../shared/ChatItem.jsx";
 import {colorPalette} from "../../constants/color.constant.js";
+import {sout} from "../../utils/helper.js";
+import {useSockets} from "../../hooks/hook.jsx";
 
 const ChatList = (
   {
@@ -30,10 +32,11 @@ const ChatList = (
           const newMessageAlert = newMessagesAlert.find(
             ({ChatId}) => ChatId === _id
           );
-          const isOnline = members?.some(
-            (member) => onlineUsers.includes(_id)
-          );
-
+          const isOnline = members.some(member => onlineUsers.includes(member));
+          sout("onlineUsers ---- : ", onlineUsers);
+          sout("isOnline ---- : ", isOnline);
+          sout("id ---- : ", _id);
+          sout("members ---- : ", members);
           return (
             <ChatItem
               index={index}

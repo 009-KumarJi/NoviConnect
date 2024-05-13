@@ -11,7 +11,15 @@ import {errorMiddleware} from "./middlewares/error.middleware.js";
 import userRoutes from "./routes/user.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
-import {NEW_MESSAGE, NEW_MESSAGE_ALERT, START_TYPING, STOP_TYPING} from "./constants/events.constant.js";
+import {
+  CHAT_JOINED,
+  CHAT_LEFT,
+  ONLINE_USERS_LIST,
+  NEW_MESSAGE,
+  NEW_MESSAGE_ALERT, ONLINE_USERS,
+  START_TYPING,
+  STOP_TYPING
+} from "./constants/events.constant.js";
 import {getSockets} from "./lib/socketio.helper.js";
 import {Message} from "./models/message.model.js";
 import {sout} from "./utils/utility.js";
@@ -22,6 +30,7 @@ import {v2 as cloudinary} from "cloudinary";
 dotenv.config({path: "./.env"});
 
 const activeUserSocketIds = new Map();
+const onlineUsers = new Set();
 const envMode = process.env.NODE_ENV || "PRODUCTION";
 const adminKey = process.env.ADMIN_SECRET_KEY;
 
@@ -74,6 +83,7 @@ io.on("connection", (socket) => {
 
   const user = socket['user'];
   activeUserSocketIds.set(user._id.toString(), socket.id);
+  socket.broadcast.emit(ONLINE_USERS_LIST, Array.from(activeUserSocketIds.keys()));
 
   sout(`socketId: ${socket.id} connected!`);
   sout(`User: ${user.name} connected!`);
@@ -136,8 +146,19 @@ io.on("connection", (socket) => {
     socket.to(membersSockets).emit(STOP_TYPING, {ChatId});
   })
 
+  socket.on(CHAT_JOINED, ({userId, members}) => {
+    onlineUsers.add(userId.toString());
+    io.to(getSockets(members)).emit(ONLINE_USERS, Array.from(activeUserSocketIds.keys()));
+  });
+
+  socket.on(CHAT_LEFT, ({userId, members}) => {
+    onlineUsers.delete(userId.toString());
+    io.to(getSockets(members)).emit(ONLINE_USERS, Array.from(activeUserSocketIds.keys()));
+  });
+
   socket.on("disconnect", () => {
     activeUserSocketIds.delete(user._id);
+    onlineUsers.delete(user._id);
     sout(`socketId: ${socket.id} disconnected!`);
   });
 });
