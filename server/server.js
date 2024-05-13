@@ -23,11 +23,15 @@ import {
 import {getSockets} from "./lib/socketio.helper.js";
 import {Message} from "./models/message.model.js";
 import {sout} from "./utils/utility.js";
-import {corsOptions} from "./constants/config.constant.js";
 import {socketAuthenticator} from "./middlewares/auth.middleware.js";
 import {v2 as cloudinary} from "cloudinary";
 
 dotenv.config({path: "./.env"});
+const corsOptions = {
+  origin: ["http://localhost:5173", process.env.CLIENT_URL],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+}
 
 const activeUserSocketIds = new Map();
 const onlineUsers = new Set();
@@ -46,15 +50,15 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {cors: corsOptions});
 const port = process.env.PORT || 3000;
-
+export const client_url = () => process.env.CLIENT_URL;
+console.log("Client URL: ", client_url());
 app.set("io", io);
-
 
 // Using middlewares here
 app.use(express.json()); // Parse JSON bodies (as sent by API clients)
 app.use(cookieParser()); // Parse cookies attached to the client request
 app.use(cors(corsOptions));
-
+console.log("CORS Options: ", corsOptions);
 app.use((req, res, next) => {
   sout(`Route being hit: ${req.method} ${req.path}`);
   next();
