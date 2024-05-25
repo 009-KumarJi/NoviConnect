@@ -28,16 +28,17 @@ const NotFound = () => {
   };
 
   return (
-    <Box width={"100vw"} height={"100vh"} sx={{backgroundColor: `rgb(7, 0, 42)`}} >
-      <Container maxWidth="sm" style={{ textAlign: 'center', paddingTop: '3rem', color: `${colorPalette().CP9}` }}>
-        <img src={selectedImage} alt="Not Found" style={{ width: '100%', maxWidth: '300px' }} />
-        <Typography variant="h2" style={{ paddingTop: '1.5rem', paddingBottom: '1rem' }}>
+    <Box width={"100vw"} height={"100vh"} sx={{backgroundColor: `rgb(7, 0, 42)`}}>
+      <Container maxWidth="sm" style={{textAlign: 'center', paddingTop: '3rem', color: `${colorPalette().CP9}`}}>
+        <img src={selectedImage} alt="Not Found" style={{width: '100%', maxWidth: '300px'}}/>
+        <Typography variant="h2" style={{paddingTop: '1.5rem', paddingBottom: '1rem'}}>
           Oops! Page not found.
         </Typography>
-        <Typography variant="body1" style={{ paddingBottom: '1rem' }}>
+        <Typography variant="body1" style={{paddingBottom: '1rem'}}>
           The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
         </Typography>
-        <Button variant="contained" color="primary" onClick={handleGoHome} style={{bgcolor: `${colorPalette(0.6).CP5}`}}>
+        <Button variant="contained" color="primary" onClick={handleGoHome}
+                style={{bgcolor: `${colorPalette(0.6).CP5}`}}>
           Go to Home
         </Button>
       </Container>

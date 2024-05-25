@@ -95,7 +95,7 @@ const Chat = ({ChatId, user}) => {
       setPage(1);
       setMessageTyped("");
       setPrevMessages([]);
-      socket.emit(CHAT_LEFT, { userId: user._id, members });
+      socket.emit(CHAT_LEFT, {userId: user._id, members});
     }
   }, [ChatId]);
 
@@ -170,12 +170,12 @@ const Chat = ({ChatId, user}) => {
         {
           allMessages
             ?.map((msg) =>
-                <MessageComponent
-                  key={msg._id}
-                  message={msg}
-                  loggedUser={user}
-                />
-          )
+              <MessageComponent
+                key={msg._id}
+                message={msg}
+                loggedUser={user}
+              />
+            )
         }
         {userTyping && <TypingLoader/>}
         <div ref={bottomRef}/>

@@ -1,6 +1,6 @@
 import React from 'react';
-import {Box, Grid, Skeleton, Stack} from "@mui/material";
-import {BouncingSkeleton, StyledLinearProgress} from "../styles/StyledComponents.jsx";
+import {Grid, Skeleton, Stack} from "@mui/material";
+import {BouncingSkeleton} from "../styles/StyledComponents.jsx";
 
 const LayoutLoader = () => {
   return <Grid container height={"calc(100vh - 4rem)"} spacing={"1rem"}>
@@ -57,12 +57,4 @@ const TypingLoader = () => {
   );
 };
 
-const LinearLoader = () => {
-  return (
-    <Box sx={{ width: '100%' }}>
-      <StyledLinearProgress />
-    </Box>
-  );
-}
-
-export {LayoutLoader, TypingLoader, LinearLoader};
+export {LayoutLoader, TypingLoader};

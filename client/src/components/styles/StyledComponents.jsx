@@ -21,6 +21,7 @@ export const Link = styled(LinkComponent)`
   padding: 1rem;
   margin: 0.1rem 1rem 0.1rem 0.3rem;
   border-radius: 10rem;
+
   &:hover {
     background-color: ${cursorHoveringChatName};
   }
@@ -56,6 +57,7 @@ export const CurvedButton = styled('button')`
   font-size: 1.1rem;
   color: ${colorPalette().CP9};
   cursor: pointer;
+
   &:hover {
     background-color: ${colorPalette(0.2).CP5};
   }
@@ -68,15 +70,21 @@ export const DarkPaper = styled(PaperComponent)`
 `;
 
 const bounceAnimation = keyframes`
-  0% {transform: scale(1)}
-  50% {transform: scale(1.5)}
-  100% {transform: scale(1)}
+  0% {
+    transform: scale(1)
+  }
+  50% {
+    transform: scale(1.5)
+  }
+  100% {
+    transform: scale(1)
+  }
 `
 export const BouncingSkeleton = styled(Skeleton)(() => ({
   animation: `${bounceAnimation} 1s infinite`,
 }))
 
-export const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
+export const StyledLinearProgress = styled(LinearProgress)(({theme}) => ({
   height: '10px',
   borderRadius: '5px',
   '& .MuiLinearProgress-bar': {

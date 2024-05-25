@@ -11,9 +11,9 @@ const adminLogin = createAsyncThunk("admin/login", async (secretKey) => {
       },
     };
 
-    const { data } = await axios.post(
+    const {data} = await axios.post(
       `${server}/admin/api/krishna-den/verify`,
-      { secret_key: secretKey },
+      {secret_key: secretKey},
       config
     );
 
@@ -31,7 +31,7 @@ const adminLogout = createAsyncThunk("admin/logout", async () => {
         "Content-Type": "application/json",
       },
     };
-    const { data } = await axios.get(`${server}/admin/api/krishna-den/logout`, config);
+    const {data} = await axios.get(`${server}/admin/api/krishna-den/logout`, config);
     return data.message;
   } catch (error) {
     throw error.response.data.message;
@@ -40,7 +40,7 @@ const adminLogout = createAsyncThunk("admin/logout", async () => {
 
 const verifyAdmin = createAsyncThunk("admin/verify", async () => {
   try {
-    const { data } = await axios.get(`${server}/admin/api/krishna-den/`, {withCredentials: true});
+    const {data} = await axios.get(`${server}/admin/api/krishna-den/`, {withCredentials: true});
     return data;
   } catch (error) {
     throw error.response.data.message;

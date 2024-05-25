@@ -1,4 +1,3 @@
-
 export const usernameValidator = (username) => {
   if (!username) return "Username is required.";
   if (username.match(/\s/)) return "Username cannot contain spaces.";

@@ -1,6 +1,6 @@
 import moment from "moment";
 
-const fileFormat = (url= "") => {
+const fileFormat = (url = "") => {
   const fileExt = url.split(".").pop();
   if (["jpg", "jpeg", "png", "gif"].includes(fileExt)) {
     return "image";
@@ -38,4 +38,4 @@ const getOrSaveFromStorage = ({key, value, get}) => {
       : null
     : localStorage.setItem(key, JSON.stringify(value));
 }
-export { fileFormat, transformImg, getLast7Days, getOrSaveFromStorage};
+export {fileFormat, transformImg, getLast7Days, getOrSaveFromStorage};

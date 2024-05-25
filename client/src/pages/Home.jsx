@@ -14,9 +14,13 @@ const Home = () => {
       overflow="auto"
       whiteSpace="nowrap"
     ><Typography p="2rem" variant="h1" fontWeight="bolder" textAlign="center" color={textDark}>
-  Novi<span style={{color: `${colorPalette(1).CP9}`, backgroundColor: `${textDarkA(0.9)}`, paddingRight:"1rem"}}>Connect</span>
-</Typography>
-</Box>
+      Novi<span style={{
+      color: `${colorPalette(1).CP9}`,
+      backgroundColor: `${textDarkA(0.9)}`,
+      paddingRight: "1rem"
+    }}>Connect</span>
+    </Typography>
+    </Box>
   )
 }
 export default AppLayout()(Home);

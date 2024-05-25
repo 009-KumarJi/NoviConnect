@@ -30,7 +30,7 @@ const FileMenu = ({anchorE1, ChatId}) => {
     if (files.length > 5) return toast.error(`You can upload at most 5 ${key} at a time!`);
 
     dispatch(setUploadingLoader(true));
-    const toastId = toast.loading(`Uploading ${files.length} ${files.length===1 ? key.slice(0, key.length-1) : key}...`);
+    const toastId = toast.loading(`Uploading ${files.length} ${files.length === 1 ? key.slice(0, key.length - 1) : key}...`);
     // fetch the files and upload them to the server
     try {
       const formData = new FormData();
@@ -38,8 +38,14 @@ const FileMenu = ({anchorE1, ChatId}) => {
       files.forEach(file => formData.append("files", file));
       const res = await sendAttachments(formData);
       res.data
-        ? toast.success(`${files.length===1 ? key.slice(0, key.length-1) : key} sent successfully!!!`, {id: toastId, icon: "🚀"})
-        : toast.error(`Failed to send ${files.length===1 ? key.slice(0, key.length-1) : key}...`, {id: toastId, icon: "❌"});
+        ? toast.success(`${files.length === 1 ? key.slice(0, key.length - 1) : key} sent successfully!!!`, {
+          id: toastId,
+          icon: "🚀"
+        })
+        : toast.error(`Failed to send ${files.length === 1 ? key.slice(0, key.length - 1) : key}...`, {
+          id: toastId,
+          icon: "❌"
+        });
     } catch (error) {
       toast(error.message, {id: toastId, icon: "❌"})
     } finally {
@@ -56,46 +62,46 @@ const FileMenu = ({anchorE1, ChatId}) => {
       }}>
         <MenuList>
           <MenuItem onClick={() => selectRef(imageRef)}>
-              <ImageIcon sx={{
-                color: paleBlueOpaque,
-                fontSize: "1.5rem"
-              }}/>
+            <ImageIcon sx={{
+              color: paleBlueOpaque,
+              fontSize: "1.5rem"
+            }}/>
             <ListItemText primary={"Image"} sx={{marginLeft: "1rem"}}/>
             <input
               type="file"
               multiple
               accept="image/png, image/jpeg, image/jpg, image/gif, image/svg, image/webp"
-              style={{ display: 'none' }}
+              style={{display: 'none'}}
               onChange={(e) => handleFileOpen(e, "images")}
               ref={imageRef}
             />
           </MenuItem>
           <MenuItem onClick={() => selectRef(audioRef)}>
-              <AudioIcon sx={{
-                color: paleBlueOpaque,
-                fontSize: "1.5rem"
-              }}/>
+            <AudioIcon sx={{
+              color: paleBlueOpaque,
+              fontSize: "1.5rem"
+            }}/>
             <ListItemText primary={"Audio"} sx={{marginLeft: "1rem"}}/>
             <input
               type="file"
               multiple
               accept="audio/mpeg, audio/wav, audio/ogg, audio/midi, audio/aac"
-              style={{ display: 'none' }}
+              style={{display: 'none'}}
               onChange={(e) => handleFileOpen(e, "audios")}
               ref={audioRef}
             />
           </MenuItem>
           <MenuItem onClick={() => selectRef(videoRef)}>
-              <VideoIcon sx={{
-                color: paleBlueOpaque,
-                fontSize: "1.5rem"
-              }}/>
+            <VideoIcon sx={{
+              color: paleBlueOpaque,
+              fontSize: "1.5rem"
+            }}/>
             <ListItemText primary={"Video"} sx={{marginLeft: "1rem"}}/>
             <input
               type="file"
               multiple
               accept="video/mp4, video/webm, video/ogg, video/quicktime"
-              style={{ display: 'none' }}
+              style={{display: 'none'}}
               onChange={(e) => handleFileOpen(e, "videos")}
               ref={videoRef}
             />
@@ -110,7 +116,7 @@ const FileMenu = ({anchorE1, ChatId}) => {
               type="file"
               multiple
               accept="*"
-              style={{ display: 'none' }}
+              style={{display: 'none'}}
               onChange={(e) => handleFileOpen(e, "documents")}
               ref={documentRef}
             />

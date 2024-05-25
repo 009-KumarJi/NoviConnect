@@ -11,10 +11,9 @@ import {
   Menu as MenuIcon,
   Message as MessageIcon,
 } from "@mui/icons-material";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import {Link} from "../styles/StyledComponents.jsx";
 import {sout} from "../../utils/helper.js"
-import {resetStore} from "../../redux/resetActions.js";
 import {useDispatch} from "react-redux";
 import {adminLogout} from "../../redux/thunks/admin.js";
 

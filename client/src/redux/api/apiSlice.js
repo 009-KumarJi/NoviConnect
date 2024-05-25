@@ -51,7 +51,7 @@ const apiSlice = createApi({
       invalidatesTags: ["Chat"]
     }),
     chatDetails: builder.query({
-      query({ChatId, populate=false}) {
+      query({ChatId, populate = false}) {
         let url = `chat/${ChatId}`;
         if (populate) url += `?populate=true`;
         return {
@@ -63,7 +63,7 @@ const apiSlice = createApi({
       providesTags: ["Chat"]
     }),
     getMessages: builder.query({
-      query: ({ChatId, page= 1}) => ({
+      query: ({ChatId, page = 1}) => ({
         url: `chat/message/${ChatId}?page=${page}`,
         method: "GET",
         credentials: "include"
@@ -89,9 +89,9 @@ const apiSlice = createApi({
     }),
     availableFriends: builder.query({
       query: (ChatId) => ({
-          url: `user/get-friends${ChatId ? `?ChatId=${ChatId}` : ''}`,
-          method: "GET",
-          credentials: "include"
+        url: `user/get-friends${ChatId ? `?ChatId=${ChatId}` : ''}`,
+        method: "GET",
+        credentials: "include"
       }),
       providesTags: ["Chat"]
     }),

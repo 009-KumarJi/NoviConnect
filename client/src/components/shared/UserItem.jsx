@@ -35,7 +35,7 @@ const UserItem = ({
           }}
         >{name}{
           admin === _id && (
-            <Typography variant="caption" color="text.secondary">  (Admin)</Typography>
+            <Typography variant="caption" color="text.secondary"> (Admin)</Typography>
           )
         }</Typography>
         <IconButton

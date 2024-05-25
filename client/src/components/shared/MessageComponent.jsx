@@ -9,7 +9,7 @@ import {motion} from "framer-motion";
 
 const MessageComponent = ({message, loggedUser}) => {
   sout(`(sent by ${loggedUser.name})MessageComponent: `, message)
-  const {sender, content, attachments =[], createdAt} = message;
+  const {sender, content, attachments = [], createdAt} = message;
   const isSameSender = sender?._id === loggedUser?._id;
   const timeAgo = moment(createdAt).fromNow();
   return (
@@ -26,7 +26,8 @@ const MessageComponent = ({message, loggedUser}) => {
         width: "fit-content"
       }}
     >
-      {!isSameSender && (<Typography fontWeight={600} variant="caption" color={colorPalette(0.8).CP3}>{sender.name}</Typography>)}
+      {!isSameSender && (
+        <Typography fontWeight={600} variant="caption" color={colorPalette(0.8).CP3}>{sender.name}</Typography>)}
       {content && (<Typography>{content}</Typography>)}
       {
         attachments.length > 0 && (

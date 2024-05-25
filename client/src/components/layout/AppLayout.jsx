@@ -38,8 +38,8 @@ const AppLayout = () => (WrappedComponent) => {
       sout("Online Users: ", data);
       data.forEach(userId => onlineUsersSet.add(userId));
       setOnlineUsersSet(new Set(onlineUsersSet));
-    },[onlineUsersSet]);
-;
+    }, [onlineUsersSet]);
+
     const {isMobileMenu} = useSelector(state => state["misc"]);
     const {user} = useSelector(state => state.auth);
     const {newMessagesAlert} = useSelector(state => state['chat']);

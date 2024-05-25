@@ -13,7 +13,7 @@ const KrishnaDenLogin = () => {
   const secretKey = useInputValidation("");
 
   const {isAdmin} = useSelector(state => state.auth);
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -50,29 +50,29 @@ const KrishnaDenLogin = () => {
             padding: 6,
           }}
         >
-            <form
-              onSubmit={submitHandler}
-              style=
-                {{
-                  padding: 4,
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                }}
+          <form
+            onSubmit={submitHandler}
+            style=
+              {{
+                padding: 4,
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+              }}
+          >
+            <TextField required={true} label={"Secret Key"} type={"password"} margin={"normal"}
+                       variant={"outlined"}
+                       fullWidth={true} value={secretKey.value} onChange={secretKey.changeHandler}/>
+            <Button
+              sx={{marginTop: "1rem"}}
+              variant="contained"
+              color="primary"
+              type={"submit"}
+              fullWidth={true}
             >
-              <TextField required={true} label={"Secret Key"} type={"password"} margin={"normal"}
-                         variant={"outlined"}
-                         fullWidth={true} value={secretKey.value} onChange={secretKey.changeHandler}/>
-              <Button
-                sx={{marginTop: "1rem"}}
-                variant="contained"
-                color="primary"
-                type={"submit"}
-                fullWidth={true}
-              >
-                Sign In
-              </Button>
-            </form>
+              Sign In
+            </Button>
+          </form>
         </Paper>
       </Container>
     </Box>

@@ -11,7 +11,6 @@ import toast from "react-hot-toast";
 import {server} from "../constants/config.constant.js";
 import {useDispatch} from "react-redux";
 import {userExists} from "../redux/reducers/authSlice.js";
-import {LinearLoader} from "../components/layout/Loaders.jsx";
 import {capitalizeFirstLetter} from "../utils/helper.js";
 
 
@@ -89,7 +88,6 @@ const SignUpForm = () => {
       >
         <Typography variant="h1" marginBottom={"3rem"} marginTop={"2rem"}
                     color={colorPalette(1).CP2}>NoviConnect</Typography>
-        {isLoading && <LinearLoader/>}
         <Paper
           style={{
             backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))",
@@ -215,7 +213,6 @@ const SignUpForm = () => {
           >
             Sign In
           </Button>
-          <LinearLoader/>
         </Paper>
       </Container>
     </div>

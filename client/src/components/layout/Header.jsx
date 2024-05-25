@@ -75,7 +75,8 @@ const Header = () => {
               <IconMould icon={<SearchIcon/>} onClick={openSearch} title="Search"/>
               <IconMould icon={<AddIcon/>} onClick={openNewGroup} title="New Group"/>
               <IconMould icon={<GroupIcon/>} onClick={navigateToGroup} title="Manage Groups"/>
-              <IconMould icon={<NotificationsIcon/>} onClick={showNotification} title="Notifications" value={notificationCount}/>
+              <IconMould icon={<NotificationsIcon/>} onClick={showNotification} title="Notifications"
+                         value={notificationCount}/>
               <IconMould icon={<LogoutIcon/>} onClick={logoutHandler} title="Logout"/>
             </Box>
           </Toolbar>

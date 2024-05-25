@@ -7,7 +7,8 @@ const RenderAttachment = (file, url) => {
     case "video":
       return <video src={url} preload="none" width="200px" controls={true}/>
     case "image":
-      return <img src={transformImg(url, 200)} alt="attachment" width="200px" height="150px" style={{objectFit: "contain"}}/>
+      return <img src={transformImg(url, 200)} alt="attachment" width="200px" height="150px"
+                  style={{objectFit: "contain"}}/>
     case "audio":
       return <audio src={url} preload="none" controls={true}/>
     case "document":

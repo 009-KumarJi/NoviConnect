@@ -14,8 +14,7 @@ const columns = [
   {field: 'id', headerName: 'ID', headerClassName: "table-header", width: 200},
   {
     field: 'attachments', headerName: 'Attachments', headerClassName: "table-header", width: 200,
-    renderCell: (params) =>
-    {
+    renderCell: (params) => {
       const {attachments} = params.row;
       return attachments.length > 0
         ? attachments.map((i, _) => {
@@ -30,7 +29,8 @@ const columns = [
         : "No Attachments";
     }
   },
-  {field: 'content', headerName: 'Content', headerClassName: "table-header", width: 400, renderCell: (params) =>
+  {
+    field: 'content', headerName: 'Content', headerClassName: "table-header", width: 400, renderCell: (params) =>
       <span>
         {
           (params.row.content.length > 50)
@@ -39,8 +39,15 @@ const columns = [
               ? params.row.content
               : "No Content"
         }</span>
-      },
-  {field: 'sender', headerName: 'Sent By', headerClassName: "table-header", width: 200, renderCell: (params) => <Stack direction="row" spacing="1rem" alignItems="center"><Avatar src={params.row.sender.avatar} alt={params.row.sender.name}/><span>{params.row.sender.name}</span></Stack>},
+  },
+  {
+    field: 'sender',
+    headerName: 'Sent By',
+    headerClassName: "table-header",
+    width: 200,
+    renderCell: (params) => <Stack direction="row" spacing="1rem" alignItems="center"><Avatar
+      src={params.row.sender.avatar} alt={params.row.sender.name}/><span>{params.row.sender.name}</span></Stack>
+  },
   {field: 'chat', headerName: 'Chat', headerClassName: "table-header", width: 220},
   {field: 'groupChat', headerName: 'Group Chat', headerClassName: "table-header", width: 100},
   {field: 'createdAt', headerName: 'Created At', headerClassName: "table-header", width: 250},
@@ -53,7 +60,7 @@ const MessageManagement = () => {
   sout(data)
 
   useEffect(() => {
-    if (data){
+    if (data) {
       setRows(data?.messages?.map(i => ({
         ...i,
         id: i._id,

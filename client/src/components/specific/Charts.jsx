@@ -50,7 +50,7 @@ const lineChartOptions = {
     }
   }
 }
-const LineChart = ({value=[]}) => {
+const LineChart = ({value = []}) => {
   const data = {
     labels: getLast7Days(),
     datasets: [
@@ -81,7 +81,7 @@ const DoughnutChartOptions = {
   },
   cutout: '60%',
 }
-const DoughnutChart = ({value=[], labels=[]}) => {
+const DoughnutChart = ({value = [], labels = []}) => {
   const data = {
     labels: labels,
     datasets: [
@@ -97,7 +97,7 @@ const DoughnutChart = ({value=[], labels=[]}) => {
     ],
   }
   return (
-    <Doughnut data={data} options={DoughnutChartOptions} style={{zIndex:10}}/>
+    <Doughnut data={data} options={DoughnutChartOptions} style={{zIndex: 10}}/>
   );
 };
 

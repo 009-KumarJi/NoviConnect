@@ -10,10 +10,10 @@ const SocketProvider = ({children}) => {
     () => io(server, {withCredentials: true,}),
     []
   );
-    return (
-        <socketContext.Provider value={socket}>
-            {children}
-        </socketContext.Provider>
-    );
+  return (
+    <socketContext.Provider value={socket}>
+      {children}
+    </socketContext.Provider>
+  );
 }
 export {SocketProvider, getSocket};
