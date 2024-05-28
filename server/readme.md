@@ -101,4 +101,4 @@ server/
     └── validators.js
 ```
 ## Database Schema
-[<img src="../client/src/assets/images/db_diagram.png">](./models/)
+[<img src="../client/src/assets/images/noviconnect_db.png">](./models/)
