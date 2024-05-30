@@ -11,9 +11,12 @@ A MERN Chat App using ReactJS, Express.js, Node.js, MongoDB, and Socket.IO.
 - **Authentication**: JWT
 - **Styling**: Material-UI
 
+## [`Video Demo`](https://www.linkedin.com/posts/krishna-kumar-975b25186_demo-httpslnkdingg88yqyn-after-about-activity-7195526884514807808--qZH?utm_source=share&utm_medium=member_android)
+
 ## [`Deployed Demo`](https://noviconnect-client.vercel.app/)
 
 ## [`Backend Architecture`](./server/readme.md)
+
 ## [`Frontend Snapshots`](./client/readme.md)
 
 ## Features
