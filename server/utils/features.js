@@ -7,12 +7,14 @@ import {getBase64} from "../lib/cloudinary.helper.js";
 import {NC_TOKEN} from "../constants/config.constant.js";
 import {getSockets} from "../lib/socketio.helper.js";
 
+const httpOnly = true;
 const cookieOptions = {
   maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
-  httpOnly: true, // The cookie is not accessible via JavaScript
-  sameSite: "none", // The cookie is sent in a cross-site request
+  httpOnly, // The cookie is not accessible via JavaScript
+  sameSite: "strict", // The cookie is sent in a cross-site request
   secure: true, // The cookie is sent only via HTTPS
 };
+
 const connectDB = (uri) => {
   console.log("Attempting to connect to database...");
   mongoose.connect(uri, {
@@ -27,6 +29,7 @@ const connectDB = (uri) => {
 }
 const sendToken = (res, user, code, message) => {
   const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
+  console.log("Token: ", token);
   return res
     .status(code)
     .cookie(NC_TOKEN, token, cookieOptions)
@@ -45,11 +48,12 @@ const emitEvent = (req, event, users, data= "") => {
 };
 const uploadFilesToCloudinary = async (files = []) => {
   sout("Uploading files to cloudinary...");
-  const uploadPromises = files.map((file) => { // mapping over the files array
+
+  const uploadPromises = files.map((file) => {
     return new Promise((resolve, reject) => { // creating a new promise for each file
-      cloudinary.uploader.upload( // uploading the file to cloudinary
-        getBase64(file), // passing the base64 data of the file
-        { // options for the upload
+      cloudinary.uploader.upload(
+        getBase64(file),
+        {
           resource_type: "auto",
           public_id: uuid(),
         },
