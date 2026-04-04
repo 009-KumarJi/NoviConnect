@@ -31,13 +31,15 @@ dotenv.config({path: "./.env"});
 const corsOptions = {
   origin: ["http://localhost:5173", process.env.CLIENT_URL],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
 }
 
 const envMode = process.env.NODE_ENV || "PRODUCTION";
 const adminKey = process.env.ADMIN_SECRET_KEY;
 
-connectDB(process.env.MONGO_URI);
+const mongoURI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/noviconnect";
+
+connectDB(mongoURI);
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

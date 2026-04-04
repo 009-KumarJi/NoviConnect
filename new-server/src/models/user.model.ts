@@ -13,8 +13,12 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: [true, "Please provide a password"],
     select: false,
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
   },
   username: {
     type: String,
@@ -44,7 +48,7 @@ const userSchema = new Schema({
 });
 
 userSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
+  if (!this.isModified("password") || !this.password) return;
   this.password = await hash(this.password, 10);
 });
 

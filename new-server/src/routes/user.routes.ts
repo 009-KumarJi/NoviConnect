@@ -8,7 +8,12 @@ import {
   logout,
   newUser,
   searchUser,
-  sendFriendRequest
+  sendFriendRequest,
+  forgotPassword,
+  verifyOTP,
+  resetPassword,
+  verifyGoogleSignup,
+  sendSignupOTP
 } from "../controllers/user.controller.js";
 import {singleAvatar} from "../middlewares/multer.middleware.js";
 import {isAuthenticated} from "../middlewares/auth.middleware.js";
@@ -29,6 +34,11 @@ const app = express.Router(); // `express.Router()` creates a modular, mountable
 
 app.post("/new-login", singleAvatar, registerValidator(), validateHandler, confirmFileExists, newUser);
 app.post("/login", loginValidator(), validateHandler, login);
+app.post("/google-signup-verify", verifyGoogleSignup);
+app.post("/send-signup-otp", sendSignupOTP);
+app.post("/forgot-password", forgotPassword);
+app.post("/verify-otp", verifyOTP);
+app.patch("/reset-password", resetPassword);
 
 // After here, user must be authenticated to access the routes
 app.use(isAuthenticated); // This middleware mandates login before accessing routes below.

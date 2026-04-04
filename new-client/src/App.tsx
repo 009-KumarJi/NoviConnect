@@ -11,6 +11,7 @@ import {SocketProvider} from "./socket";
 
 const Login = lazy(() => import("./pages/Login"));
 const SignUpForm = lazy(() => import("./pages/SignUp"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Home = lazy(() => import("./pages/Home"));
 const Chat = lazy(() => import("./pages/Chat"));
@@ -47,6 +48,7 @@ const App = () => {
           <Route element={<ProtectRoute user={!user} redirect={"/"}/>}>
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<SignUpForm/>}/>
+            <Route path="/forgot-password" element={<ForgotPassword/>}/>
           </Route>
 
           <Route path="/krishnaden" element={<AdminLogin/>}/>

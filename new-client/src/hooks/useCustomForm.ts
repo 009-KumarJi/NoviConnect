@@ -1,6 +1,6 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 
-export const useInputValidation = (initValue: string, validator?: (val: string) => { isValid: boolean, errorMessage: string }) => {
+export const useInputValidation = (initValue: string, validator?: (val: string) => { isValid: boolean, errorMessage: string } | string | undefined) => {
   const [value, setValue] = useState(initValue);
   const [error, setError] = useState<string | null>(null);
 

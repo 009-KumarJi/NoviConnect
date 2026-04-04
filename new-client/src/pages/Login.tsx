@@ -11,38 +11,30 @@ import toast from "react-hot-toast";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const handleSubmitSignIn = async (event) => {
+
+  const handleSubmitSignIn = async (event: any) => {
     event.preventDefault();
     setIsLoading(true);
-    const config = {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      }
-    };
     try {
       const {data} = await axios.post(`${server}/api/v1/user/login`, {
           username: username.value,
           password: password.value,
         },
-        config
+        {withCredentials: true, headers: {"Content-Type": "application/json"}}
       );
       toast.success(data.message);
       dispatch(userExists(data.user));
       navigate("/", {replace: true});
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       setIsLoading(false);
     }
   }
 
-  const navigate = useNavigate();
-  const goToRegister = () => {
-    navigate("/register");
-  };
-
+  const goToRegister = () => navigate("/register");
 
   const username = useInputValidation("");
   const password = useInputValidation("");
@@ -75,52 +67,59 @@ const Login = () => {
             padding: 6,
           }}
         >
-          <>
-            <form
-              onSubmit={handleSubmitSignIn}
-              style=
-                {{
-                  padding: 4,
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                }}
-            >
-              <TextField
-                required={true} label={"Username"}
-                type={"text"} margin={"normal"}
-                variant={"outlined"} fullWidth={true}
-                value={username.value} onChange={username.changeHandler}
-              />
-              <TextField required={true} label={"Password"} type={"password"} margin={"normal"}
-                         variant={"outlined"}
-                         fullWidth={true} value={password.value} onChange={password.changeHandler}/>
-              <Button
-                sx={{marginTop: "1rem"}}
-                variant={"contained"}
-                color={"primary"}
-                type={"submit"}
-                fullWidth={true}
-                disabled={isLoading}
-              >
-                Sign In
-              </Button>
-            </form>
-            <Typography textAlign="center" marginTop={"1rem"}>New to NoviConnect?</Typography>
+          <form
+            onSubmit={handleSubmitSignIn}
+            style={{
+              padding: 4,
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+            }}
+          >
+            <TextField
+              required={true} label={"Username"}
+              type={"text"} margin={"normal"}
+              variant={"outlined"} fullWidth={true}
+              value={username.value} onChange={username.changeHandler}
+            />
+            <TextField required={true} label={"Password"} type={"password"} margin={"normal"}
+                       variant={"outlined"}
+                       fullWidth={true} value={password.value} onChange={password.changeHandler}/>
+
             <Button
-              variant={"text"}
-              onClick={goToRegister}
+              sx={{marginTop: "1rem"}}
+              variant={"contained"}
+              color={"primary"}
+              type={"submit"}
               fullWidth={true}
               disabled={isLoading}
             >
-              Sign Up
+              Sign In
             </Button>
-          </>
+
+            <Typography
+              textAlign="right"
+              marginTop="0.5rem"
+              fontSize="0.85rem"
+              sx={{cursor: "pointer", color: "blue", textDecoration: "underline"}}
+              onClick={() => navigate("/forgot-password")}
+            >
+              Forgot Password?
+            </Typography>
+          </form>
+
+          <Typography textAlign="center" marginTop={"1.5rem"}>New to NoviConnect?</Typography>
+          <Button
+            variant={"text"}
+            onClick={goToRegister}
+            fullWidth={true}
+            disabled={isLoading}
+          >
+            Sign Up
+          </Button>
         </Paper>
       </Container>
     </div>
   )
 }
 export default Login;
-
-// Path: client/src/pages/Login.jsx

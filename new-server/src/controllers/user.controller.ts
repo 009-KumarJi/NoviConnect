@@ -1,4 +1,9 @@
 // @ts-nocheck
+import {redis} from "../utils/redis.js";
+import {sendEmailOTP} from "../utils/mail.helper.js";
+import {OAuth2Client} from "google-auth-library";
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 import {User} from "../models/user.model.js";
 import {cookieOptions, emitEvent, sendToken, uploadFilesToCloudinary} from "../utils/features.js";
 import {compare} from "bcrypt";
@@ -11,19 +16,37 @@ import {getOtherMember} from "../lib/chat.helper.js";
 import {NC_TOKEN} from "../constants/config.constant.js";
 
 const newUser = TryCatch(async (req, res, next) => {
+  const {name, username, password, bio, email, dob, otp, isGoogleSignup, googleAvatarUrl} = req.body;
 
-  const {name, username, password, bio, email, dob} = req.body;
-  const file = req.file;
-  sout("file: ", file);
+  const existingUser = await User.findOne({email});
+  if (existingUser) return next(new ErrorHandler("A user with this email already exists.", 400));
 
-  const results = await uploadFilesToCloudinary([file]);
-  if (!results) return next(new ErrorHandler("File upload failed", 500));
-
-  const avatar = {
-    public_id: results[0].public_id,
-    url: results[0].url,
+  if (isGoogleSignup) {
+    const verified = await redis.get(`google_verified:${email}`);
+    if (!verified) return next(new ErrorHandler("Google profile session expired. Please sign in with Google again.", 400));
+    await redis.del(`google_verified:${email}`);
+  } else {
+    if (!otp) return next(new ErrorHandler("Please provide an OTP for signup", 400));
+    const storedOtp = await redis.get(`signup_otp:${email}`);
+    if (!storedOtp || storedOtp !== otp.toString()) {
+      return next(new ErrorHandler("Invalid or expired OTP", 400));
+    }
+    await redis.del(`signup_otp:${email}`);
   }
-  sout("name: ", name, "username: ", username, "password: ", password, "bio: ", bio, "email: ", email, "dob: ", dob, "avatar: ", avatar);
+
+  const file = req.file;
+  let avatar = { public_id: "", url: "" };
+
+  if (file) {
+    const results = await uploadFilesToCloudinary([file]);
+    if (!results) return next(new ErrorHandler("File upload failed", 500));
+    avatar = { public_id: results[0].public_id, url: results[0].url };
+  } else if (googleAvatarUrl) {
+    avatar = { public_id: email.split('@')[0] || "google_pfp", url: googleAvatarUrl };
+  } else {
+    return next(new ErrorHandler("Please upload an avatar image", 400));
+  }
+
   const user = await User.create({
     name,
     username,
@@ -33,6 +56,7 @@ const newUser = TryCatch(async (req, res, next) => {
     dob,
     avatar
   });
+  
   sendToken(res, user, 201, "User created successfully!");
 });
 const login = TryCatch(async (req, res, next) => {
@@ -212,7 +236,118 @@ const getMyFriends = TryCatch(async (req, res, next) => {
 
 });
 
+const forgotPassword = TryCatch(async (req, res, next) => {
+  const {email} = req.body;
+  if (!email) return next(new ErrorHandler("Please provide an email", 400));
+  
+  const user = await User.findOne({email});
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  await redis.setex(`otp:${email}`, 600, otp);
+  
+  const isSent = await sendEmailOTP(email, otp);
+  if (!isSent) return next(new ErrorHandler("Could not send email", 500));
+  
+  return res.status(200).json({
+    success: true,
+    message: "OTP sent to your email successfully"
+  });
+});
+
+const verifyOTP = TryCatch(async (req, res, next) => {
+  const {email, otp} = req.body;
+  if (!email || !otp) return next(new ErrorHandler("Provide email and OTP", 400));
+  
+  const storedOtp = await redis.get(`otp:${email}`);
+  if (!storedOtp || storedOtp !== otp.toString()) {
+    return next(new ErrorHandler("Invalid or expired OTP", 400));
+  }
+  
+  await redis.del(`otp:${email}`);
+  
+  const resetToken = Math.random().toString(36).slice(-8);
+  await redis.setex(`reset_token:${email}`, 900, resetToken);
+  
+  return res.status(200).json({
+    success: true,
+    message: "OTP verified correctly",
+    resetToken
+  });
+});
+
+const resetPassword = TryCatch(async (req, res, next) => {
+  const {email, resetToken, newPassword} = req.body;
+  if (!email || !resetToken || !newPassword) return next(new ErrorHandler("Provide email, token and new password", 400));
+  
+  const storedToken = await redis.get(`reset_token:${email}`);
+  if (!storedToken || storedToken !== resetToken) {
+    return next(new ErrorHandler("Invalid or expired reset token", 400));
+  }
+  
+  const user = await User.findOne({email}).select("+password");
+  if (!user) return next(new ErrorHandler("User not found", 404));
+  
+  user.password = newPassword;
+  await user.save();
+  await redis.del(`reset_token:${email}`);
+  
+  return res.status(200).json({
+    success: true,
+    message: "Password reset successfully!"
+  });
+});
+
+const verifyGoogleSignup = TryCatch(async (req, res, next) => {
+  const {credential} = req.body;
+  if (!credential) return next(new ErrorHandler("No credential provided", 400));
+  
+  const ticket = await googleClient.verifyIdToken({
+    idToken: credential,
+    audience: process.env.GOOGLE_CLIENT_ID
+  });
+  const payload = ticket.getPayload();
+  if (!payload) return next(new ErrorHandler("Invalid Google Token", 401));
+  
+  const {email, name, picture, sub} = payload;
+  const existingUser = await User.findOne({email});
+  if (existingUser) return next(new ErrorHandler("This email is already registered. Please login with your username and password.", 400));
+  
+  // Set google verified bypass token
+  await redis.setex(`google_verified:${email}`, 900, "true");
+  
+  return res.status(200).json({
+    success: true,
+    message: "Google verification successful. Please complete your profile.",
+    payload: { email, name, picture, sub }
+  });
+});
+
+const sendSignupOTP = TryCatch(async (req, res, next) => {
+  const {email} = req.body;
+  if (!email) return next(new ErrorHandler("Please provide an email", 400));
+  
+  const user = await User.findOne({email});
+  if (user) return next(new ErrorHandler("This email is already registered", 400));
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  await redis.setex(`signup_otp:${email}`, 600, otp);
+  
+  const isSent = await sendEmailOTP(email, otp);
+  if (!isSent) return next(new ErrorHandler("Could not send email", 500));
+  
+  return res.status(200).json({
+    success: true,
+    message: "Signup OTP sent successfully"
+  });
+});
+
 export {
+  forgotPassword,
+  verifyOTP,
+  resetPassword,
+  verifyGoogleSignup,
+  sendSignupOTP,
   login,
   newUser,
   getMyProfile,
