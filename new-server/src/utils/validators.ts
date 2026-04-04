@@ -23,6 +23,22 @@ const loginValidator = () => [
   body("username", "Enter username!").notEmpty(),
   body("password", "Enter password!").notEmpty(),
 ];
+const updateProfileValidator = () => [
+  body("name", "Enter name!").optional().notEmpty(),
+  body("username", "Enter username!").optional().notEmpty(),
+  body("bio", "Enter bio!").optional().notEmpty(),
+  body("dob", "Enter date of birth!").optional().notEmpty(),
+];
+const updateEmailValidator = () => [
+  body("email", "Enter email address!").isEmail(),
+];
+const updatePasswordValidator = () => [
+  body("currentPassword", "Enter current password!").notEmpty(),
+  body("newPassword", "Enter new password!").notEmpty(),
+];
+const userIdParamValidator = () => [
+  param("userId", "userId not found in request!").notEmpty(),
+];
 const newGroupChatValidator = () => [
   body("name", "Enter name!").notEmpty(),
   body("members")
@@ -63,6 +79,9 @@ export {
   validateHandler,
   registerValidator,
   loginValidator,
+  updateProfileValidator,
+  updateEmailValidator,
+  updatePasswordValidator,
   newGroupChatValidator,
   addMembersValidator,
   removeMemberValidator,
@@ -72,6 +91,7 @@ export {
   sendRequestValidator,
   acceptRequestValidator,
   adminLoginValidator,
+  userIdParamValidator,
 };
 
 // Path: server/utils/validators.js

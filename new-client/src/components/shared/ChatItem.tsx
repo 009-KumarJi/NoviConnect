@@ -2,8 +2,8 @@ import React, {memo} from 'react';
 import {Link} from "../styles/StyledComponents.jsx";
 import {Box, Typography} from "@mui/material";
 import AvatarCard from "./AvatarCard.jsx";
-import {darkPaleBlue} from "../../constants/color.constant.js";
 import {motion} from "framer-motion";
+import {userTheme} from "../../constants/userTheme.constant.js";
 
 const ChatItem = (
   {
@@ -36,14 +36,15 @@ const ChatItem = (
           gap: "1rem",
           alignItems: "center",
           padding: "1rem",
-          backgroundColor: sameSender ? `${darkPaleBlue}` : "unset",
-          color: sameSender ? "white" : "unset",
+          backgroundColor: sameSender ? "rgba(56, 189, 248, 0.14)" : "rgba(8, 15, 25, 0.34)",
+          color: userTheme.text,
           position: "relative",
-          borderRadius: "10rem"
+          borderRadius: "1rem",
+          border: `1px solid ${sameSender ? userTheme.borderStrong : userTheme.border}`
         }}
       >
         <AvatarCard avatar={avatar} newMessage={newMessageAlert?.count || 0}/>
-        <Typography>{name}</Typography>
+        <Typography sx={{fontWeight: 600}}>{name}</Typography>
         {isOnline && (
           <Box
             sx={{
@@ -51,10 +52,10 @@ const ChatItem = (
               width: ".7rem",
               height: ".7rem",
               borderRadius: "50%",
-              backgroundColor: "green",
+              backgroundColor: userTheme.accentStrong,
               position: "absolute",
               right: "1rem",
-              boxShadow: "0 0 10px limegreen",
+              boxShadow: "0 0 10px rgba(34, 197, 94, 0.9)",
             }}
           />
         )}

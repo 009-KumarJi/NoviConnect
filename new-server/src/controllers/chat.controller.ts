@@ -163,9 +163,11 @@ const leaveGroupChat = TryCatch(async (req, res, next) => {
 });
 const sendAttachments = TryCatch(async (req, res, next) => {
   const {ChatId} = req.body;
+  const attachmentMetadata = req.body.attachmentMetadata
+    ? JSON.parse(req.body.attachmentMetadata)
+    : [];
 
   const files = req.files || [];
-  sout(files)
 
   if (files.length < 1) return next(new ErrorHandler("Please provide attachments!", 422));
   if (files.length > 5) return next(new ErrorHandler("You can upload a maximum of 5 files!", 422));
@@ -179,7 +181,20 @@ const sendAttachments = TryCatch(async (req, res, next) => {
 
   if (!files.length) return next(new ErrorHandler("Please provide attachments", 422));
 
-  const attachments = await uploadFilesToCloudinary(files);
+  const uploadedAttachments = await uploadFilesToCloudinary(files);
+  const attachments = uploadedAttachments.map((attachment, index) => ({
+    ...attachment,
+    originalName: attachmentMetadata[index]?.originalName || files[index]?.originalname || "",
+    mimeType: attachmentMetadata[index]?.mimeType || files[index]?.mimetype || "",
+    size: Number(attachmentMetadata[index]?.size || files[index]?.size || 0),
+    isEncrypted: Boolean(attachmentMetadata[index]?.isEncrypted),
+    encryptedFile: attachmentMetadata[index]?.encryptedFile || {
+      version: 1,
+      algorithm: "AES-GCM",
+      iv: "",
+      encryptedKeys: [],
+    },
+  }));
 
   const messageForDB = {
     content: "",
@@ -196,8 +211,6 @@ const sendAttachments = TryCatch(async (req, res, next) => {
   };
   const message = await Message.create(messageForDB);
 
-
-  sout(getSockets(chat.members))
   emitEvent(req, NEW_MESSAGE, chat.members, {message: messageForRealTime, ChatId});
   emitEvent(req, NEW_MESSAGE_ALERT, chat.members, {ChatId});
 
@@ -210,11 +223,11 @@ const getChatDetails = TryCatch(async (req, res, next) => {
   if (req.query.populate === "true") {
     const chat = await Chat
       .findById(req.params.ChatId) // finds the chat with the id
-      .populate("members", "name avatar") // populates the members field with name and avatar
+      .populate("members", "name avatar encryptionPublicKey") // populates the members field with name and avatar
       .lean(); // converts the mongoose document to plain JS object to allow modification without affecting the database
 
     if (!chat) return next(new ErrorHandler("Chat not found", 404));
-    chat.members = chat.members.map(({_id, name, avatar}) => ({_id, name, avatar: avatar.url}));
+    chat.members = chat.members.map(({_id, name, avatar, encryptionPublicKey}) => ({_id, name, avatar: avatar.url, encryptionPublicKey}));
     return res.status(200).json({
       success: true,
       chat,

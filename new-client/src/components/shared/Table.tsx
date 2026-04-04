@@ -1,8 +1,8 @@
 import React from 'react';
-import {Container, Typography} from "@mui/material";
+import {Box, Container, Typography} from "@mui/material";
 import {DataGrid} from "@mui/x-data-grid";
 import {DarkPaper} from "../styles/StyledComponents.jsx";
-import {colorPalette} from "../../constants/color.constant.js";
+import {adminTheme} from "../../constants/adminTheme.constant.js";
 
 const Table = ({rows, columns, heading, rowHeight = 52}) => {
   return (
@@ -10,30 +10,30 @@ const Table = ({rows, columns, heading, rowHeight = 52}) => {
       sx={{
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-
+        alignItems: 'stretch',
+        minHeight: '100vh',
+        py: {xs: 1, md: 2},
       }}>
       <DarkPaper
         sx={{
           width: "100%",
-          padding: "1rem 4rem",
-          borderRadius: "1rem",
+          padding: {xs: "1rem", md: "1.5rem"},
+          borderRadius: "1.5rem",
           margin: "auto",
           overflow: "hidden",
           height: "100%",
-          boxShadow: "none"
+          border: `1px solid ${adminTheme.border}`,
+          boxShadow: adminTheme.shadow,
         }}
       >
-        <Typography
-          variant="h4"
-          textAlign="center"
-          sx={{
-            margin: "2rem",
-            textTransform: "uppercase",
-
-          }}
-        >{heading}</Typography>
+        <Box sx={{px: {xs: 1, md: 2}, pt: 1, pb: 3}}>
+          <Typography variant="overline" sx={{letterSpacing: "0.24rem", color: adminTheme.accent}}>
+            KrishnaDen
+          </Typography>
+          <Typography variant="h4" sx={{fontWeight: 700, color: adminTheme.text}}>
+            {heading}
+          </Typography>
+        </Box>
         <DataGrid
           rows={rows}
           columns={columns}
@@ -41,15 +41,32 @@ const Table = ({rows, columns, heading, rowHeight = 52}) => {
           style={{
             height: "80%",
             scrollbarWidth: "thin",
-            scrollbarColor: `${colorPalette(0.5).CP9} transparent`,
-            color: "white",
+            scrollbarColor: `${adminTheme.textMuted} transparent`,
+            color: adminTheme.text,
             fontWeight: "normal"
           }}
           sx={{
             border: "none",
+            backgroundColor: "transparent",
+            "& .MuiDataGrid-columnHeaders": {
+              borderBottom: `1px solid ${adminTheme.border}`,
+              background: "linear-gradient(180deg, rgba(16, 31, 50, 0.95) 0%, rgba(11, 22, 40, 0.95) 100%)",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: `1px solid rgba(148, 163, 184, 0.08)`,
+            },
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "rgba(34, 211, 238, 0.06)",
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: `1px solid ${adminTheme.border}`,
+            },
+            "& .MuiDataGrid-toolbarContainer, & .MuiTablePagination-root, & .MuiDataGrid-selectedRowCount": {
+              color: adminTheme.textMuted,
+            },
             ".table-header": {
-              backgroundColor: colorPalette(.4).CP1,
-              color: colorPalette().CP9,
+              backgroundColor: "transparent",
+              color: adminTheme.text,
               fontWeight: "bold",
             },
           }}

@@ -32,13 +32,13 @@ const adminApiSlice = createApi({
       }),
       providesTags: ["Admin"],
     }),
-    allMessages: builder.query({
-      query: () => ({
-        url: "/messages",
-        method: "GET",
+    deleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `/users/${userId}`,
+        method: "DELETE",
         credentials: "include",
       }),
-      providesTags: ["Admin"],
+      invalidatesTags: ["Admin"],
     }),
   }),
 });
@@ -49,5 +49,5 @@ export const {
   useDashboardStatsQuery,
   useAllUsersQuery,
   useAllChatsQuery,
-  useAllMessagesQuery,
+  useDeleteUserMutation,
 } = adminApiSlice;

@@ -1,11 +1,10 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Header from "./Header.jsx";
 import Title from "../shared/Title.jsx";
-import {Drawer, Grid, Skeleton} from "@mui/material";
+import {Box, Drawer, Grid, Skeleton} from "@mui/material";
 import ChatList from "../specific/ChatList.jsx";
 import {useNavigate, useParams} from "react-router-dom";
 import Profile from "../specific/Profile.jsx";
-import {profileBackground} from "../../constants/color.constant.js";
 import {useMyChatsQuery} from "../../redux/api/apiSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsDeleteMenu, setIsMobileMenu, setSelectedDeleteChat} from "../../redux/reducers/miscSlice.js";
@@ -22,6 +21,7 @@ import {incrementNotificationCount, setNewMessagesAlert} from "../../redux/reduc
 import {sout} from "../../utils/helper.js";
 import {getOrSaveFromStorage} from "../../lib/features.js";
 import DeleteChatMenu from "../dialogs/DeleteChatMenu.jsx";
+import {userTheme} from "../../constants/userTheme.constant.js";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -44,7 +44,9 @@ const AppLayout = () => (WrappedComponent) => {
     const {newMessagesAlert} = useSelector(state => state['chat']);
     sout("New Messages Alert: ", newMessagesAlert)
 
-    const {isLoading, data, isError, error, refetch} = useMyChatsQuery("");
+    const {isLoading, data, isError, error, refetch} = useMyChatsQuery("", {
+      skip: !user,
+    });
 
     useErrors([{isError, error}])
     const handleDeleteChat = (_event, _id, groupChat) => {
@@ -91,11 +93,11 @@ const AppLayout = () => (WrappedComponent) => {
 
     // After listeners are registered, explicitly request the current online list
     useEffect(() => {
-      if (socket) (socket as any).emit(GET_ONLINE_USERS);
-    }, [socket]);
+      if (socket && user) (socket as any).emit(GET_ONLINE_USERS);
+    }, [socket, user]);
 
     return (
-      <>
+      <Box sx={{minHeight: "100vh", background: userTheme.gradient}}>
         <Title/>
         <Header/>
         <DeleteChatMenu dispatch={dispatch} deleteMenuAnchor={deleteMenuAnchor}/>
@@ -104,6 +106,7 @@ const AppLayout = () => (WrappedComponent) => {
             <Drawer
               open={isMobileMenu}
               onClose={handleMobileMenuClose}
+              PaperProps={{sx: {background: "rgba(8, 15, 25, 0.96)", width: "min(82vw, 22rem)"}}}
             >
               <ChatList
                 w="70vw"
@@ -120,7 +123,9 @@ const AppLayout = () => (WrappedComponent) => {
           <Grid
             size={{ sm: 4, md: 3 }}
             sx={{
-              display: {xs: "none", sm: "block"}
+              display: {xs: "none", sm: "block"},
+              borderRight: `1px solid ${userTheme.border}`,
+              backgroundColor: "rgba(8, 15, 25, 0.8)",
             }}
             height={"100%"}
           >
@@ -138,6 +143,7 @@ const AppLayout = () => (WrappedComponent) => {
           </Grid>
           <Grid
             size={{ xs: 12, sm: 8, md: 5, lg: 6 }}
+            sx={{backgroundColor: "rgba(6, 13, 22, 0.72)"}}
             height={"100%"}
           >
             <WrappedComponent {...props} ChatId={ChatId} user={user}/>
@@ -149,14 +155,15 @@ const AppLayout = () => (WrappedComponent) => {
             sx={{
               display: {xs: "none", md: "block"},
               padding: "2rem",
-              bgcolor: profileBackground,
+              bgcolor: "rgba(9, 17, 28, 0.9)",
+              borderLeft: `1px solid ${userTheme.border}`,
             }}
             height={"100%"}
           >
             <Profile user={user}/>
           </Grid>
         </Grid>
-      </>
+      </Box>
     )
   }
 };

@@ -2,13 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {Dialog, DialogTitle, InputAdornment, List, Slide, Stack, TextField} from "@mui/material";
 import {useInputValidation} from "../../hooks/useCustomForm";
 import {Search as SearchIcon} from "@mui/icons-material";
-import {colorPalette} from "../../constants/color.constant.js";
 import UserItem from "../shared/UserItem.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsSearch} from "../../redux/reducers/miscSlice.js";
 import {useLazySearchUserQuery, useSendFriendRequestMutation} from "../../redux/api/apiSlice.js";
 import {useAsyncMutation} from "../../hooks/hook.jsx";
 import {sout} from "../../utils/helper.js";
+import {userTheme} from "../../constants/userTheme.constant.js";
 
 
 const Search = () => {
@@ -40,11 +40,11 @@ const Search = () => {
   const searchCloseHandler = () => dispatch(setIsSearch(false));
 
   return (
-    <Dialog open={isSearch} onClose={searchCloseHandler} TransitionComponent={Slide} transitionDuration={300}>
+    <Dialog open={isSearch} onClose={searchCloseHandler} TransitionComponent={Slide} transitionDuration={300} PaperProps={{sx: {borderRadius: "1.5rem", background: "linear-gradient(180deg, rgba(16, 27, 44, 0.98) 0%, rgba(10, 18, 30, 0.98) 100%)", border: `1px solid ${userTheme.border}`, color: userTheme.text}}}>
       <Stack p={"2rem"} direction="column" width="25rem" sx={{
-        backgroundImage: `linear-gradient(0deg, ${colorPalette().CP6}, ${colorPalette().CP8})`,
+        background: "transparent",
       }}>
-        <DialogTitle textAlign="center">
+        <DialogTitle textAlign="center" sx={{color: userTheme.text}}>
           Find People
         </DialogTitle>
         <TextField
@@ -56,9 +56,19 @@ const Search = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position={"start"}>
-                <SearchIcon/>
+                <SearchIcon sx={{color: userTheme.textMuted}}/>
               </InputAdornment>
             ),
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              color: userTheme.text,
+              backgroundColor: "rgba(8, 15, 25, 0.88)",
+              borderRadius: "1rem",
+              "& fieldset": {borderColor: userTheme.border},
+              "&:hover fieldset": {borderColor: userTheme.borderStrong},
+              "&.Mui-focused fieldset": {borderColor: userTheme.accent},
+            },
           }}
         />
         <List sx={{
@@ -70,8 +80,8 @@ const Search = () => {
             webkitBoxShadow: 'inset 0 0 0.5rem rgba(0,0,0,0.00)',
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: `${colorPalette().CP9}`,
-            outline: '0.1rem solid slategrey',
+            backgroundColor: `${userTheme.accentSoft}`,
+            outline: `0.1rem solid ${userTheme.border}`,
           },
         }}>
           {

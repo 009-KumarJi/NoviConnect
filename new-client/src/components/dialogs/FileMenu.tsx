@@ -11,6 +11,9 @@ import {
 import {paleBlueOpaque} from "../../constants/color.constant.js";
 import toast from "react-hot-toast";
 import {useSendAttachmentsMutation} from "../../redux/api/apiSlice.js";
+import {useChatDetailsQuery} from "../../redux/api/apiSlice.js";
+import {encryptAttachmentsForUpload} from "../../lib/e2ee";
+import {isE2EEEnabled} from "../../constants/config.constant.js";
 
 const FileMenu = ({anchorE1, ChatId}) => {
 
@@ -22,6 +25,8 @@ const FileMenu = ({anchorE1, ChatId}) => {
   const {isFileMenu} = useSelector(state => state['misc']);
   const dispatch = useDispatch();
   const [sendAttachments] = useSendAttachmentsMutation();
+  const chatDetails = useChatDetailsQuery({ChatId, populate: true}, {skip: !ChatId});
+  const members = chatDetails?.data?.chat?.members || [];
   const selectRef = (ref) => ref.current?.click();
   const handleClose = () => dispatch(setIsFileMenu(false));
   const handleFileOpen = async (e, key) => {
@@ -35,7 +40,13 @@ const FileMenu = ({anchorE1, ChatId}) => {
     try {
       const formData = new FormData();
       formData.append("ChatId", ChatId);
-      files.forEach(file => formData.append("files", file));
+      if (isE2EEEnabled) {
+        const encryptedFiles = await encryptAttachmentsForUpload({files, members});
+        encryptedFiles.forEach(({file}) => formData.append("files", file));
+        formData.append("attachmentMetadata", JSON.stringify(encryptedFiles.map(({metadata}) => metadata)));
+      } else {
+        files.forEach(file => formData.append("files", file));
+      }
       const res = await sendAttachments(formData);
       res.data
         ? toast.success(`${files.length === 1 ? key.slice(0, key.length - 1) : key} sent successfully!!!`, {

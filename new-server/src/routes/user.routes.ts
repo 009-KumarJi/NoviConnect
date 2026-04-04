@@ -13,7 +13,15 @@ import {
   verifyOTP,
   resetPassword,
   verifyGoogleSignup,
-  sendSignupOTP
+  sendSignupOTP,
+  updateMyProfile,
+  updateMyEmail,
+  updateMyPassword,
+  upsertEncryptionPublicKey,
+  upsertEncryptionBundle,
+  getMyEncryptionBundle,
+  resetMyEncryptionState,
+  deleteMyAccount
 } from "../controllers/user.controller.js";
 import {singleAvatar} from "../middlewares/multer.middleware.js";
 import {isAuthenticated} from "../middlewares/auth.middleware.js";
@@ -22,6 +30,9 @@ import {
   loginValidator,
   registerValidator,
   sendRequestValidator,
+  updateEmailValidator,
+  updatePasswordValidator,
+  updateProfileValidator,
   validateHandler
 } from "../utils/validators.js";
 import {confirmFileExists} from "../middlewares/fileExists.middleware.js";
@@ -44,6 +55,14 @@ app.patch("/reset-password", resetPassword);
 app.use(isAuthenticated); // This middleware mandates login before accessing routes below.
 
 app.get("/profile", getMyProfile);
+app.put("/profile", singleAvatar, updateProfileValidator(), validateHandler, updateMyProfile);
+app.patch("/email", updateEmailValidator(), validateHandler, updateMyEmail);
+app.patch("/password", updatePasswordValidator(), validateHandler, updateMyPassword);
+app.put("/encryption-key", upsertEncryptionPublicKey);
+app.get("/encryption-bundle", getMyEncryptionBundle);
+app.put("/encryption-bundle", upsertEncryptionBundle);
+app.delete("/encryption-state", resetMyEncryptionState);
+app.delete("/delete-account", deleteMyAccount);
 app.get("/logout", logout);
 app.get("/search", searchUser);
 app.put("/send-request", sendRequestValidator(), validateHandler, sendFriendRequest);

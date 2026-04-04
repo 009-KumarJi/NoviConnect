@@ -2,13 +2,13 @@ import express from "express";
 import {
   adminLogin,
   adminLogout,
+  deleteUserByAdmin,
   getAdminData,
   getAllChats,
-  getAllMessages,
   getAllUsers,
   getDashboardStatistics
 } from "../controllers/admin.controller.js";
-import {adminLoginValidator, validateHandler} from "../utils/validators.js";
+import {adminLoginValidator, userIdParamValidator, validateHandler} from "../utils/validators.js";
 import {areYouAdmin} from "../middlewares/auth.middleware.js";
 
 // Prefix Route for this file: 'http://localhost:3000/krishna-den/
@@ -28,9 +28,8 @@ app.use(areYouAdmin);
 
 app.get("/", getAdminData);
 app.get("/users", getAllUsers);
+app.delete("/users/:userId", userIdParamValidator(), validateHandler, deleteUserByAdmin);
 app.get("/chats", getAllChats);
-app.get("/messages", getAllMessages);
-
 app.get("/statistics", getDashboardStatistics);
 
 export default app;

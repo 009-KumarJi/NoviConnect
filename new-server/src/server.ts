@@ -26,10 +26,34 @@ import {sout} from "./utils/utility.js";
 import {socketAuthenticator} from "./middlewares/auth.middleware.js";
 import {v2 as cloudinary} from "cloudinary";
 import {redis} from "./utils/redis.js";
+import {getMessageSecurityMode, isE2EEEnabled} from "./utils/e2ee-config.js";
 
 dotenv.config({path: "./.env"});
+
+const normalizeOrigin = (origin?: string | null) => origin?.trim().replace(/\/$/, "");
+
+const allowedOrigins = Array.from(
+  new Set(
+    [
+      "http://localhost:5173",
+      ...(process.env.CLIENT_URLS || "").split(","),
+    ]
+      .map(normalizeOrigin)
+      .filter((origin): origin is string => Boolean(origin))
+  )
+);
+
 const corsOptions = {
-  origin: ["http://localhost:5173", process.env.CLIENT_URL],
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin) return callback(null, true);
+
+    const normalizedOrigin = normalizeOrigin(origin);
+    if (normalizedOrigin && allowedOrigins.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`Origin ${origin} not allowed by CORS`));
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
 }
@@ -51,8 +75,8 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {cors: corsOptions});
 const port = process.env.PORT || 3000;
-export const client_url = () => process.env.CLIENT_URL;
-console.log("Client URL: ", client_url());
+export const client_urls = () => allowedOrigins;
+console.log("Allowed Origins: ", client_urls());
 app.set("io", io);
 
 // Using middlewares here
@@ -99,13 +123,21 @@ io.on("connection", async (socket) => {
   sout(`User: ${user.name} connected!`);
 
   socket.on(NEW_MESSAGE, async ({ChatId, members, message}) => {
+    const encryptedPayloadDetected = Boolean(
+      message &&
+      typeof message === "object" &&
+      message.ciphertext &&
+      message.iv &&
+      Array.isArray(message.encryptedKeys)
+    );
+    const isEncryptedMessage = isE2EEEnabled() && encryptedPayloadDetected;
+    const messageSecurityMode = getMessageSecurityMode(encryptedPayloadDetected);
 
-    sout("New message received: ", message);
-    sout("ChatId: ", ChatId);
-    sout("Members: ", members);
+    sout(`Message received for chat ${ChatId} (${messageSecurityMode} payload)`);
 
     const messageForRealTime = {
-      content: message,
+      content: isEncryptedMessage ? "" : message,
+      encryptedContent: isEncryptedMessage ? message : undefined,
       _id: uuid(),
       sender: {
         _id: user._id,
@@ -115,14 +147,15 @@ io.on("connection", async (socket) => {
       createdAt: new Date().toString()
     }
     const messageForDB = {
-      content: message,
+      content: isEncryptedMessage ? "" : message,
+      encryptedContent: isEncryptedMessage ? message : undefined,
       sender: user._id,
       chat: ChatId
     }
     try{
       await Message.create(messageForDB);
     } catch (e) {
-      console.log(e);
+      console.error("Failed to persist message:", e);
     }
 
     const membersSockets = getSockets(members);

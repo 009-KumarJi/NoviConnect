@@ -1,68 +1,96 @@
-# NoviConnect - Backend (TypeScript)
+# NoviConnect Server
 
-This is the fully typed back-end for NoviConnect, rewritten in TypeScript for better maintainability. It handles authentication, data models via Mongoose, real-time messaging using Socket.IO with Redis as a scalable backing, and file uploads via Cloudinary.
+Backend for NoviConnect. It provides REST APIs, Socket.IO real-time messaging, auth, OTP email delivery through Resend, media upload support, and ciphertext-only storage for E2EE message flows.
 
-## Tech Stack
-
-- **Framework**: Express.js
-- **Language**: TypeScript
-- **Database**: MongoDB (via `mongoose`)
-- **Real-time & Caching**: Socket.IO, Redis (`ioredis`)
-- **File Uploads**: Multer, Cloudinary
-- **Security**: JWT (`jsonwebtoken`), Bcrypt, Cookie-parser
-
-## Getting Started
-
-### Prerequisites
+## Stack
 
 - Node.js
-- MongoDB instance running locally or via MongoDB Atlas
-- Redis server running optimally at `127.0.0.1:6379`
-- Cloudinary credentials
+- Express 5
+- TypeScript
+- MongoDB / Mongoose
+- Socket.IO
+- Redis
+- Cloudinary
+- Resend
 
-### Environment Variables
+## Responsibilities
 
-You need an `.env` file in the root of the `new-server` directory. Use the `dummy.env` as a reference:
+- User and admin authentication
+- OTP email delivery
+- Chat and group management
+- Real-time message transport
+- End-to-end encrypted message storage and key-bundle APIs
+- Media handling for encrypted attachments
+
+## Environment Variables
+
+Copy values from [`dummy.env`](c:/Users/krish/Desktop/noviconnect-latest/new-server/dummy.env).
 
 ```env
-MONGO_URI=your_mongodb_uri
-PORT=3000
-JWT_SECRET=your_jwt_secret
-ADMIN_SECRET_KEY=your_admin_secret
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-
-# Cloudinary Setup
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# Redis Setup
-REDIS_URI=redis://127.0.0.1:6379
+NODE_ENV='DEVELOPMENT or PRODUCTION'
+DB_NAME=
+MONGO_URI=
+PORT=
+JWT_SECRET=
+ADMIN_SECRET_KEY=
+E2EE_ENABLED=true
+CLIENT_URLS=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+RESEND_API_KEY=
+RESEND_FROM_EMAIL="NoviConnect <mail@krishna.novitrail.com>"
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
 ```
 
-### Installation
-
-1. Navigate to the server directory:
-   ```bash
-   cd new-server
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-### Running Locally
-
-The server uses `tsx` to run TypeScript files directly in development.
+## Scripts
 
 ```bash
 npm run dev
+npm run build
+npm run start
+npm run test:e2ee
+npm run audit:e2ee
 ```
 
-### Production Build
+## Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+Build for production:
 
 ```bash
 npm run build
-npm start
+npm run start
 ```
+
+## E2EE Notes
+
+- The server stores ciphertext payloads for secure messages.
+- User public keys and encrypted private-key bundles are stored server-side.
+- Raw private keys are not stored on the backend.
+- `E2EE_ENABLED` can be used to gate the secure messaging rollout.
+
+For implementation details, see:
+
+- [`implementaation-plan-e2ee.md`](c:/Users/krish/Desktop/noviconnect-latest/implementaation-plan-e2ee.md)
+- [`e2ee-manual-checklist.md`](c:/Users/krish/Desktop/noviconnect-latest/e2ee-manual-checklist.md)
+
+## Email Delivery
+
+OTP emails are sent through Resend using the official SDK. Configure:
+
+```env
+RESEND_API_KEY=
+RESEND_FROM_EMAIL="NoviConnect <mail@krishna.novitrail.com>"
+```
+
+## Deployment Notes
+
+- Set `NODE_ENV=PRODUCTION` in production.
+- `CLIENT_URLS` supports comma-separated frontend origins.
+- Production cookies require a secure cross-site setup because the frontend and backend are deployed on different domains.

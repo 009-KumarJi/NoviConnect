@@ -6,12 +6,12 @@ import {
   PermIdentityRounded as FaceIcon,
 } from "@mui/icons-material";
 import moment from "../../lib/dayjs.js";
-import {colorPalette} from "../../constants/color.constant.js";
 import {transformImg} from "../../lib/features.js";
+import {userTheme} from "../../constants/userTheme.constant.js";
 
 const Profile = ({user}) => {
   return (
-    <Stack spacing={"2rem"} direction="column" alignItems={"center"}>
+    <Stack spacing={"1.5rem"} direction="column" alignItems={"center"} sx={{color: userTheme.text}}>
       <Avatar
         src={transformImg(user?.avatar?.url, 350)}
         sx={{
@@ -19,7 +19,8 @@ const Profile = ({user}) => {
           width: 200,
           objectFit: "contain",
           marginBottom: "1rem",
-          border: "5px solid white"
+          border: `4px solid ${userTheme.borderStrong}`,
+          boxShadow: userTheme.shadow,
         }}
       />
       <ProfileCard heading={"Bio"} text={user?.bio}/>
@@ -35,13 +36,14 @@ const ProfileCard = ({text, Icon, heading}) => (
     spacing="1rem"
     direction="row"
     alignItems="center"
-    color="white"
+    color={userTheme.text}
     textAlign="center"
+    sx={{width: "100%", p: "1rem", borderRadius: "1rem", backgroundColor: "rgba(16, 27, 44, 0.72)", border: `1px solid ${userTheme.border}`}}
   >
     {Icon && Icon}
     <Stack>
       <Typography variant="body1">{text}</Typography>
-      <Typography variant="caption" color={colorPalette().CP7}>{heading}</Typography>
+      <Typography variant="caption" color={userTheme.textMuted}>{heading}</Typography>
     </Stack>
   </Stack>
 );

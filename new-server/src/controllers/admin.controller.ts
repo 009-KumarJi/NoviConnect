@@ -8,6 +8,8 @@ import jwt from "jsonwebtoken";
 import {cookieOptions} from "../utils/features.js";
 import {adminKey} from "../server.js";
 import {NC_TOKEN} from "../constants/config.constant.js";
+import {Request} from "../models/request.model.js";
+import {deleteFilesFromCloudinary} from "../utils/features.js";
 
 const adminLogin = TryCatch(async (req, res, next) => {
   const {secret_key} = req.body;
@@ -16,7 +18,7 @@ const adminLogin = TryCatch(async (req, res, next) => {
   const token = jwt.sign(secret_key, process.env.JWT_SECRET);
 
   return res.status(200)
-    .clearCookie(NC_TOKEN, "", {...cookieOptions, maxAge: 0})
+    .clearCookie(NC_TOKEN, cookieOptions)
     .cookie("krishna-hero", token, {...cookieOptions, maxAge: 1000 * 60 * 15})
     .json({
       success: true,
@@ -25,7 +27,7 @@ const adminLogin = TryCatch(async (req, res, next) => {
 });
 const adminLogout = TryCatch(async (req, res) => {
   return res.status(200)
-    .clearCookie("krishna-hero", "", {...cookieOptions, maxAge: 0})
+    .clearCookie("krishna-hero", cookieOptions)
     .json({
       success: true,
       message: "B-Byes! Hare Krishna!",
@@ -124,6 +126,50 @@ const getAllMessages = TryCatch(async (req, res) => {
     messages: transformedMessages,
   });
 });
+const deleteUserByAdmin = TryCatch(async (req, res, next) => {
+  const {userId} = req.params;
+
+  const user = await User.findById(userId);
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  const chats = await Chat.find({members: userId}).select("_id groupChat creator members");
+  const directChatIds = chats.filter((chat) => !chat.groupChat).map((chat) => chat._id);
+  const groupChats = chats.filter((chat) => chat.groupChat);
+
+  if (directChatIds.length > 0) {
+    await Message.deleteMany({chat: {$in: directChatIds}});
+    await Chat.deleteMany({_id: {$in: directChatIds}});
+  }
+
+  await Message.deleteMany({sender: userId});
+  await Request.deleteMany({$or: [{sender: userId}, {receiver: userId}]});
+
+  await Promise.all(groupChats.map(async (chat) => {
+    chat.members = chat.members.filter((member) => member.toString() !== userId.toString());
+    if (chat.creator?.toString() === userId.toString()) {
+      chat.creator = chat.members[0] || null;
+    }
+
+    if (chat.members.length < 2) {
+      await Message.deleteMany({chat: chat._id});
+      await chat.deleteOne();
+      return;
+    }
+
+    await chat.save();
+  }));
+
+  if (user.avatar?.public_id) {
+    await deleteFilesFromCloudinary([user.avatar.public_id]);
+  }
+
+  await user.deleteOne();
+
+  return res.status(200).json({
+    success: true,
+    message: "User deleted successfully",
+  });
+});
 const getDashboardStatistics = TryCatch(async (req, res) => {
 
   const [usersCount, groupsCount, totalChatsCount, messagesCount] = await Promise.all([
@@ -172,5 +218,6 @@ export {
   adminLogin,
   adminLogout,
   getAdminData,
+  deleteUserByAdmin,
 };
 

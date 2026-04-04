@@ -1,2 +1,11 @@
 .env
 nodemon.json
+dist/
+node_modules/
+coverage/
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.tsbuildinfo
+

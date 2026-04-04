@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {Button, Dialog, DialogTitle, Skeleton, Stack, TextField, Typography} from "@mui/material";
-import {colorPalette} from "../../constants/color.constant.js";
 import UserItem from "../shared/UserItem.jsx";
 import {useInputValidation} from "../../hooks/useCustomForm";
 import {useAvailableFriendsQuery, useNewGroupChatMutation} from "../../redux/api/apiSlice.js";
@@ -9,6 +8,7 @@ import {useAsyncMutation, useErrors} from "../../hooks/hook.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import toast from "react-hot-toast";
 import {setIsNewGroup} from "../../redux/reducers/miscSlice.js";
+import {userTheme} from "../../constants/userTheme.constant.js";
 
 const NewGroup = () => {
   const {isNewGroup} = useSelector((state) => state['misc']);
@@ -54,18 +54,29 @@ const NewGroup = () => {
   const closeHandler = () => dispatch(setIsNewGroup(false));
 
   return (
-    <Dialog open={isNewGroup} onClose={closeHandler}>
+    <Dialog open={isNewGroup} onClose={closeHandler} PaperProps={{sx: {borderRadius: "1.5rem", background: "linear-gradient(180deg, rgba(16, 27, 44, 0.98) 0%, rgba(10, 18, 30, 0.98) 100%)", border: `1px solid ${userTheme.border}`, color: userTheme.text}}}>
       <Stack p={{xs: "1rem", sm: "3rem"}} width={"25rem"} spacing="2rem"
-             sx={{backgroundImage: `linear-gradient(0deg, ${colorPalette().CP6}, ${colorPalette().CP8})`}}>
-        <DialogTitle variant="h4" textAlign="center">
+             sx={{background: "transparent"}}>
+        <DialogTitle variant="h4" textAlign="center" sx={{color: userTheme.text}}>
           New Group
         </DialogTitle>
         <TextField
           label="Group Name"
           value={groupName.value}
           onChange={groupName.changeHandler}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              color: userTheme.text,
+              backgroundColor: "rgba(8, 15, 25, 0.88)",
+              borderRadius: "1rem",
+              "& fieldset": {borderColor: userTheme.border},
+              "&:hover fieldset": {borderColor: userTheme.borderStrong},
+              "&.Mui-focused fieldset": {borderColor: userTheme.accent},
+            },
+            "& .MuiInputLabel-root": {color: userTheme.textMuted},
+          }}
         />
-        <Typography variant="body1">Members</Typography>
+        <Typography variant="body1" sx={{color: userTheme.textMuted}}>Members</Typography>
         <Stack>
           {
             isLoading
@@ -83,16 +94,17 @@ const NewGroup = () => {
         </Stack>
         <Stack direction="row" justifyContent="space-evenly">
           <Button
-            color="error" variant="text"
+            sx={{color: userTheme.danger}} variant="text"
             size="large" onClick={closeHandler}
             disabled={isLoadingNewGroup}
           >
             Cancel
           </Button>
           <Button
-            color="primary" variant="contained"
+            variant="contained"
             size="large" onClick={submitHandler}
             disabled={isLoadingNewGroup}
+            sx={{borderRadius: "999px", background: "linear-gradient(135deg, #5eead4 0%, #38bdf8 100%)", color: "#041019"}}
           >
             Create
           </Button>

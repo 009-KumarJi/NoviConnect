@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 import AppLayout from "../components/layout/AppLayout.jsx";
 import {IconButton, Skeleton, Stack} from "@mui/material";
-import {colorPalette} from "../constants/color.constant.js";
 import {AttachFile as AttachFileIcon, Send as SendIcon} from "@mui/icons-material";
 import {InputBox} from "../components/styles/StyledComponents.jsx";
 import FileMenu from "../components/dialogs/FileMenu.jsx";
@@ -13,10 +12,13 @@ import {useErrors, useSockets} from "../hooks/hook.jsx";
 import {useInfiniteScrollTop} from "../hooks/useInfiniteScroll";
 import {useDispatch} from "react-redux";
 import {setIsFileMenu} from "../redux/reducers/miscSlice.js";
-import {sout} from "../utils/helper.js";
 import {resetNewMessagesAlert} from "../redux/reducers/chatSlice.js";
 import {TypingLoader} from "../components/layout/Loaders.jsx";
 import {useNavigate} from "react-router-dom";
+import {userTheme} from "../constants/userTheme.constant.js";
+import {decryptMessageContent, encryptTextMessage} from "../lib/e2ee";
+import toast from "react-hot-toast";
+import {isE2EEEnabled} from "../constants/config.constant.js";
 
 
 const Chat = ({ChatId, user}) => {
@@ -38,7 +40,7 @@ const Chat = ({ChatId, user}) => {
   const [messages, setMessages] = useState([]);
   const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
 
-  const chatDetails = useChatDetailsQuery({ChatId, skip: !ChatId});
+  const chatDetails = useChatDetailsQuery({ChatId, populate: true}, {skip: !ChatId});
   const members = chatDetails?.data?.chat?.members;
 
   const prevMessagesChunk = useGetMessagesQuery({ChatId, page});
@@ -52,8 +54,7 @@ const Chat = ({ChatId, user}) => {
     containerRef,
     prevMessagesChunk.data?.totalPages,
     page,
-    setPage,
-    prevMessagesChunk.data?.messages
+    setPage
   );
 
   const messageOnChangeHandler = (e) => {
@@ -61,7 +62,6 @@ const Chat = ({ChatId, user}) => {
     if (!iAmTyping) {
       socket.emit(START_TYPING, {members, ChatId});
       setIAmTyping(true);
-      sout("I am typing...")
     }
 
     if (typingTimeout.current) clearTimeout(typingTimeout.current);
@@ -69,7 +69,6 @@ const Chat = ({ChatId, user}) => {
     typingTimeout.current = setTimeout(() => {
       socket.emit(STOP_TYPING, {members, ChatId});
       setIAmTyping(false);
-      sout("I stopped typing...")
     }, [2000]);
   };
 
@@ -81,9 +80,28 @@ const Chat = ({ChatId, user}) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!messageTyped.trim()) return;
-    // emitting message to server
-    socket.emit(NEW_MESSAGE, {ChatId, members, message: messageTyped});
-    setMessageTyped("");
+    if (!members?.length) {
+      toast.error("Secure chat is still loading. Please try again in a moment.");
+      return;
+    }
+
+    (async () => {
+      try {
+        if (isE2EEEnabled) {
+          const encryptedMessage = await encryptTextMessage({
+            text: messageTyped,
+            members: members || [],
+          });
+
+          socket.emit(NEW_MESSAGE, {ChatId, members, message: encryptedMessage});
+        } else {
+          socket.emit(NEW_MESSAGE, {ChatId, members, message: messageTyped});
+        }
+        setMessageTyped("");
+      } catch (error: any) {
+        toast.error(error?.message || "Unable to send secure message right now.");
+      }
+    })();
   }
 
   useEffect(() => {
@@ -111,25 +129,42 @@ const Chat = ({ChatId, user}) => {
     if (chatDetails.isError) return navigate("/");
   }, [chatDetails.isError]);
 
+  useEffect(() => {
+    if (!prevMessagesChunk.data?.messages?.length || !user?._id) return;
+
+    (async () => {
+      const decryptedMessages = isE2EEEnabled
+        ? await Promise.all(
+            prevMessagesChunk.data.messages.map((message) => decryptMessageContent({message, userId: user._id}))
+          )
+        : prevMessagesChunk.data.messages;
+
+      setPrevMessages((prev) => [...prev, ...decryptedMessages]);
+    })();
+  }, [prevMessagesChunk.data?.messages, setPrevMessages, user?._id]);
+
   const newMessagesListener = useCallback((data) => {
     if (data.ChatId !== ChatId) return;
-    setMessages(prevState => prevState.concat(data.message))
-  }, [ChatId]);
+
+    (async () => {
+      const decryptedMessage = isE2EEEnabled
+        ? await decryptMessageContent({message: data.message, userId: user._id})
+        : data.message;
+      setMessages(prevState => prevState.concat(decryptedMessage))
+    })();
+  }, [ChatId, user?._id]);
 
   const startTypingListener = useCallback((data) => {
     if (data.ChatId !== ChatId) return;
     setUserTyping(true);
-    sout("User is typing...", data);
   }, [ChatId]);
 
   const stopTypingListener = useCallback((data) => {
     if (data.ChatId !== ChatId) return;
     setUserTyping(false);
-    sout("User stopped typing...", data);
   }, [ChatId]);
 
   const alertListener = useCallback((data) => {
-    sout("Alert Listener: ", data)
     if (data.ChatId !== ChatId) return;
     const messageForAlert = {
       content: data.message,
@@ -164,7 +199,7 @@ const Chat = ({ChatId, user}) => {
         boxSizing="border-box"
         padding={"1rem"}
         spacing={"1rem"}
-        bgcolor={colorPalette(0.3).CP7}
+        bgcolor={"rgba(8, 15, 25, 0.46)"}
         height={"90%"}
         sx={{
           overflowX: "hidden",
@@ -204,7 +239,8 @@ const Chat = ({ChatId, user}) => {
             sx={{
               position: "absolute",
               left: "1.5rem",
-              rotate: "20deg"
+              rotate: "20deg",
+              color: userTheme.textMuted,
             }}
             onClick={handleFileOpen}
           >
@@ -220,12 +256,12 @@ const Chat = ({ChatId, user}) => {
             type="submit"
             sx={{
               rotate: "-25deg",
-              backgroundColor: colorPalette(0.4).CP5,
-              color: "white",
+              background: "linear-gradient(135deg, #5eead4 0%, #38bdf8 100%)",
+              color: "#041019",
               marginLeft: "1rem",
               padding: "0.5rem",
               "&:hover": {
-                backgroundColor: `${colorPalette(0.8).CP3}`
+                background: "linear-gradient(135deg, #99f6e4 0%, #67e8f9 100%)",
               }
             }}
           >

@@ -43,6 +43,46 @@ const userSchema = new Schema({
       required: true,
     },
   },
+  encryptionPublicKey: {
+    type: String,
+    default: "",
+  },
+  encryptedPrivateKeyBundle: {
+    type: String,
+    default: "",
+  },
+  encryptionBundleIv: {
+    type: String,
+    default: "",
+  },
+  encryptionBundleSalt: {
+    type: String,
+    default: "",
+  },
+  encryptionBundleIterations: {
+    type: Number,
+    default: 0,
+  },
+  encryptionKeyVersion: {
+    type: Number,
+    default: 1,
+  },
+  encryptedRecoveryKeyBundle: {
+    type: String,
+    default: "",
+  },
+  recoveryBundleIv: {
+    type: String,
+    default: "",
+  },
+  recoveryBundleSalt: {
+    type: String,
+    default: "",
+  },
+  hasRecoveryKey: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
 });

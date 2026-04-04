@@ -18,7 +18,6 @@ import {CameraAlt as CameraAltIcon} from "@mui/icons-material";
 import {VisuallyHiddenInput} from "../components/styles/StyledComponents.jsx";
 import {useFileHandler, useInputValidation, useStrongPassword} from "../hooks/useCustomForm";
 import {usernameValidator} from "../utils/Validators.js";
-import {colorPalette} from "../constants/color.constant.js";
 import axios from "axios";
 import toast from "react-hot-toast";
 import {server} from "../constants/config.constant.js";
@@ -26,6 +25,8 @@ import {useDispatch} from "react-redux";
 import {userExists} from "../redux/reducers/authSlice.js";
 import {capitalizeFirstLetter} from "../utils/helper.js";
 import {GoogleLogin} from "@react-oauth/google";
+import {userTheme} from "../constants/userTheme.constant.js";
+import {ensureUserEncryptionSetup} from "../lib/e2ee";
 
 const SignUpForm = () => {
   const firstName = useInputValidation("");
@@ -41,13 +42,9 @@ const SignUpForm = () => {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
-
-  // OTP modal state
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-
-  // Google signup state
   const [isGoogleSignup, setIsGoogleSignup] = useState(false);
   const [googleAvatarUrl, setGoogleAvatarUrl] = useState("");
   const [googleEmailLocked, setGoogleEmailLocked] = useState(false);
@@ -56,7 +53,6 @@ const SignUpForm = () => {
   const elevenYearsAgo = new Date(today.getFullYear() - 11, today.getMonth(), today.getDate());
   const maxDate = `${elevenYearsAgo.getFullYear()}-${String(elevenYearsAgo.getMonth() + 1).padStart(2, '0')}-${String(elevenYearsAgo.getDate()).padStart(2, '0')}`;
 
-  // Google signup: verify with backend, prefill form
   const handleGoogleSignup = async (credentialResponse: any) => {
     setIsLoading(true);
     try {
@@ -69,9 +65,8 @@ const SignUpForm = () => {
       const parts = name.split(" ");
       const first = parts[0] || "";
       const last = parts.slice(1).join(" ");
-
-      // Simulate change events to pre-fill via the hooks
       const fakeEvent = (val: string) => ({target: {value: val}} as any);
+
       firstName.changeHandler(fakeEvent(first));
       lastName.changeHandler(fakeEvent(last));
       email.changeHandler(fakeEvent(gEmail));
@@ -80,7 +75,7 @@ const SignUpForm = () => {
       setGoogleAvatarUrl(picture || "");
       setGoogleEmailLocked(true);
 
-      toast("Please complete your profile below!", {icon: "👇"});
+      toast("Complete your profile details below.", {icon: "↓"});
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Google verification failed!");
     } finally {
@@ -88,23 +83,29 @@ const SignUpForm = () => {
     }
   };
 
-  // Step 1: Send signup OTP
   const handleSendOtp = async () => {
     if (!email.value) return toast.error("Please enter your email first.");
     setIsLoading(true);
     try {
-      await axios.post(`${server}/api/v1/user/send-signup-otp`, {email: email.value});
+      await axios.post(
+        `${server}/api/v1/user/send-signup-otp`,
+        {email: email.value},
+        {timeout: 15000}
+      );
       toast.success("OTP sent to your email!");
       setOtpSent(true);
       setShowOtpModal(true);
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Failed to send OTP");
+      const message =
+        error?.code === "ECONNABORTED"
+          ? "OTP request timed out. Please check the mail server config and try again."
+          : error?.response?.data?.message || "Failed to send OTP";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Full submit handler — handles both OTP (manual) and Google Signup paths
   const handleSubmitSignUp = async (event: any) => {
     event.preventDefault();
 
@@ -115,17 +116,14 @@ const SignUpForm = () => {
     }
 
     if (!isGoogleSignup) {
-      // Must send OTP first, then open modal
       if (!otpSent) {
         await handleSendOtp();
         return;
       }
-      // If OTP modal is not yet submitted, show it again
       setShowOtpModal(true);
       return;
     }
 
-    // Google Signup path: submit directly
     await submitRegistration(undefined, true);
   };
 
@@ -133,9 +131,8 @@ const SignUpForm = () => {
     setIsLoading(true);
     try {
       const formData = new FormData();
-      if (avatar.file) {
-        formData.append("avatar", avatar.file);
-      }
+      if (avatar.file) formData.append("avatar", avatar.file);
+
       formData.append("name", `${capitalizeFirstLetter(firstName.value)} ${capitalizeFirstLetter(lastName.value)}`);
       formData.append("username", username.value);
       formData.append("email", email.value.toLowerCase());
@@ -145,9 +142,7 @@ const SignUpForm = () => {
 
       if (googlePath) {
         formData.append("isGoogleSignup", "true");
-        if (googleAvatarUrl && !avatar.file) {
-          formData.append("googleAvatarUrl", googleAvatarUrl);
-        }
+        if (googleAvatarUrl && !avatar.file) formData.append("googleAvatarUrl", googleAvatarUrl);
       } else {
         formData.append("otp", verifiedOtp || otp);
       }
@@ -157,12 +152,21 @@ const SignUpForm = () => {
         headers: {"Content-Type": "multipart/form-data"},
       });
       dispatch(userExists(data.user));
+      const encryptionResult = await ensureUserEncryptionSetup({
+        user: data.user,
+        server,
+        password: password.value,
+      });
+      if (encryptionResult?.recoveryKey) {
+        toast("A recovery key was created for secure message recovery. Save it from Settings after signup.", {
+          icon: "🗝️",
+          duration: 7000,
+        });
+      }
       toast.success(data.message);
       navigate("/", {replace: true});
     } catch (error: any) {
-      const msg = error?.response?.data?.message || "Something went wrong!";
-      console.error("Signup error:", error?.response?.data);
-      toast.error(msg);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       setIsLoading(false);
     }
@@ -174,52 +178,56 @@ const SignUpForm = () => {
     await submitRegistration(otp, false);
   };
 
-  const goToLogin = () => navigate("/login");
-
   return (
-    <div style={{backgroundImage: `radial-gradient(circle, rgba(0,212,255,1) 35%, rgba(62,125,143,0.6167717086834734) 100%)`, height: "100%"}}>
-      <Container component={"main"} maxWidth="xs" sx={{display: "flex", flexDirection: "column", alignItems: "center", paddingBottom: "2rem"}}>
-        <Typography variant="h1" marginBottom={"3rem"} marginTop={"2rem"} color={colorPalette(1).CP2}>NoviConnect</Typography>
+    <Box sx={{minHeight: "100vh", background: userTheme.gradient, position: "relative", overflow: "hidden"}}>
+      <Container component={"main"} maxWidth="sm" sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", minHeight: "100vh", py: 4, position: "relative"}}>
         <Paper
-          style={{backgroundImage: "linear-gradient(rgba(204, 204, 255, 0.5), rgba(0,0,0,0))"}}
           elevation={3}
-          sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 4, marginBottom: '2rem', width: '100%'}}
+          sx={{display: 'flex', flexDirection: 'column', alignItems: 'stretch', padding: {xs: 3, sm: 5}, width: '100%', borderRadius: '1.75rem', background: "linear-gradient(180deg, rgba(16, 27, 44, 0.96) 0%, rgba(10, 18, 30, 0.96) 100%)", border: `1px solid ${userTheme.border}`, boxShadow: userTheme.shadow, color: userTheme.text}}
         >
+          <Stack spacing={1.2} mb={3}>
+            <Typography variant="overline" sx={{letterSpacing: "0.28rem", color: userTheme.accent}}>
+              Create Account
+            </Typography>
+            <Typography variant="h2" sx={{fontSize: {xs: "2.2rem", sm: "2.8rem"}, fontWeight: 700, color: userTheme.text}}>
+              Join NoviConnect
+            </Typography>
+            <Typography sx={{color: userTheme.textMuted}}>
+              Dark, clean, and ready for conversations from day one.
+            </Typography>
+          </Stack>
 
-          {/* Google Signup */}
           {!isGoogleSignup && (
-            <Box sx={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, mb: 2}}>
-              <Typography variant="body2" color="text.secondary">Sign up quickly with Google</Typography>
+            <Box sx={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, mb: 3, p: 2, borderRadius: "1.25rem", border: `1px solid ${userTheme.border}`, backgroundColor: "rgba(8, 15, 25, 0.62)"}}>
+              <Typography variant="body2" sx={{color: userTheme.textMuted}}>Sign up quickly with Google</Typography>
               <GoogleLogin
                 onSuccess={handleGoogleSignup}
                 onError={() => toast.error("Google Signup Failed")}
                 text="signup_with"
               />
-              <Typography variant="body2" color="text.secondary" sx={{mt: 1}}>— or fill out the form —</Typography>
+              <Typography variant="body2" sx={{mt: 1, color: userTheme.textMuted}}>or continue with email</Typography>
             </Box>
           )}
 
           {isGoogleSignup && (
-            <Typography variant="body2" color="success.main" textAlign="center" sx={{mb: 2, fontWeight: 600}}>
-              ✅ Google Verified! Complete your profile below.
+            <Typography variant="body2" textAlign="center" sx={{mb: 2, fontWeight: 600, color: userTheme.accent}}>
+              Google verified. Complete your profile below.
             </Typography>
           )}
 
           <form onSubmit={handleSubmitSignUp} style={{width: '100%'}}>
-            {/* Avatar */}
-            <Stack position={"relative"} width={"10rem"} margin={"auto"}>
+            <Stack position={"relative"} width={"10rem"} margin={"0 auto 1rem"}>
               <Avatar
-                sx={{width: "10rem", height: "10rem", objectFit: 'contain'}}
+                sx={{width: "10rem", height: "10rem", objectFit: 'contain', border: `3px solid ${userTheme.borderStrong}`, boxShadow: userTheme.shadow}}
                 src={avatar.preview || googleAvatarUrl}
               />
-              {avatar.error && (
-                <Typography m={"1rem"} color="error" variant="caption">{avatar.error}</Typography>
-              )}
               <IconButton
                 sx={{
                   position: 'absolute', right: 0, bottom: 0,
-                  backgroundColor: "rgba(255, 255, 255, 0.5)",
-                  ":hover": {backgroundColor: "rgba(0, 0, 0, 0.3)"},
+                  backgroundColor: "rgba(8, 15, 25, 0.92)",
+                  border: `1px solid ${userTheme.border}`,
+                  color: userTheme.text,
+                  ":hover": {backgroundColor: userTheme.accentSoft},
                   padding: '0.5rem', borderRadius: '50%',
                 }}
                 component="label"
@@ -231,55 +239,36 @@ const SignUpForm = () => {
               </IconButton>
             </Stack>
 
-            <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-              <TextField size="small" sx={{marginRight: "1rem"}} fullWidth required label={"First Name"}
-                         type={"text"} margin={"normal"} variant={"outlined"}
-                         value={firstName.value} onChange={firstName.changeHandler}/>
-              <TextField size="small" fullWidth required label={"Surname"} type={"text"} margin={"normal"}
-                         variant={"outlined"}
-                         value={lastName.value} onChange={lastName.changeHandler}/>
+            <Box sx={{display: 'flex', flexDirection: {xs: 'column', sm: 'row'}, justifyContent: 'space-between', alignItems: 'center', gap: 2}}>
+              <TextField size="small" fullWidth required label={"First Name"} type={"text"} margin={"normal"} variant={"outlined"} value={firstName.value} onChange={firstName.changeHandler} sx={signupFieldSx}/>
+              <TextField size="small" fullWidth required label={"Surname"} type={"text"} margin={"normal"} variant={"outlined"} value={lastName.value} onChange={lastName.changeHandler} sx={signupFieldSx}/>
             </Box>
 
-            <TextField size="small" fullWidth required label={"Username"} type={"text"} margin={"normal"}
-                       variant={"outlined"} value={username.value} onChange={username.changeHandler}/>
+            <TextField size="small" fullWidth required label={"Username"} type={"text"} margin={"normal"} variant={"outlined"} value={username.value} onChange={username.changeHandler} sx={signupFieldSx}/>
             {username.error && <Typography color="error" variant="caption">{username.error}</Typography>}
 
-            <TextField size="small" fullWidth required label={"Email"} type={"email"} margin={"normal"}
-                       variant={"outlined"} value={email.value} onChange={email.changeHandler}
-                       disabled={googleEmailLocked}
-                       helperText={googleEmailLocked ? "Email verified by Google" : ""}/>
+            <TextField size="small" fullWidth required label={"Email"} type={"email"} margin={"normal"} variant={"outlined"} value={email.value} onChange={email.changeHandler} disabled={googleEmailLocked} helperText={googleEmailLocked ? "Email verified by Google" : ""} sx={signupFieldSx}/>
 
-            <TextField size="small" fullWidth required label={"Date of Birth"} type={"date"}
-                       margin={"normal"} variant={"outlined"} value={dob.value} onChange={dob.changeHandler}
-                       InputLabelProps={{shrink: true}}
-                       inputProps={{max: maxDate}}
-            />
+            <TextField size="small" fullWidth required label={"Date of Birth"} type={"date"} margin={"normal"} variant={"outlined"} value={dob.value} onChange={dob.changeHandler} InputLabelProps={{shrink: true}} inputProps={{max: maxDate}} sx={signupFieldSx}/>
 
-            <TextField size="small" fullWidth required label={"Password"} type={"password"}
-                       margin={"normal"} variant={"outlined"}
-                       value={password.value} onChange={password.changeHandler}/>
+            <TextField size="small" fullWidth required label={"Password"} type={"password"} margin={"normal"} variant={"outlined"} value={password.value} onChange={password.changeHandler} sx={signupFieldSx}/>
             {password.error && <Typography color="error" variant="caption">{password.error}</Typography>}
 
-            <TextField
-              size="small" fullWidth label={"Bio"} type={"text"}
-              margin={"normal"} variant={"outlined"}
-              value={bio.value} onChange={bio.changeHandler}
-              multiline required={true} rows={3}
-            />
+            <TextField size="small" fullWidth label={"Bio"} type={"text"} margin={"normal"} variant={"outlined"} value={bio.value} onChange={bio.changeHandler} multiline required={true} rows={3} sx={signupFieldSx}/>
 
-            {/* For Google signup, single submit button */}
             {isGoogleSignup && (
-              <Button sx={{marginTop: "1rem"}} variant={"contained"} color={"primary"}
-                      type={"submit"} fullWidth={true} disabled={isLoading}>
+              <Button sx={signupPrimaryButtonSx} variant={"contained"} type={"submit"} fullWidth={true} disabled={isLoading}>
                 Create Account
               </Button>
             )}
 
-            {/* For standard signup: separate OTP button + modal handles the rest */}
             {!isGoogleSignup && !otpSent && (
               <Button
-                sx={{marginTop: "1rem"}} variant={"contained"} color={"primary"}
-                type={"button"} fullWidth={true} disabled={isLoading}
+                sx={signupPrimaryButtonSx}
+                variant={"contained"}
+                type={"button"}
+                fullWidth={true}
+                disabled={isLoading}
                 onClick={async (e) => {
                   e.preventDefault();
                   const fields = [firstName, lastName, username, email, password, dob, bio];
@@ -296,8 +285,11 @@ const SignUpForm = () => {
 
             {!isGoogleSignup && otpSent && (
               <Button
-                sx={{marginTop: "1rem"}} variant={"outlined"} color={"primary"}
-                type={"button"} fullWidth={true} disabled={isLoading}
+                sx={{...signupPrimaryButtonSx, background: "transparent", color: userTheme.text, border: `1px solid ${userTheme.borderStrong}`}}
+                variant={"outlined"}
+                type={"button"}
+                fullWidth={true}
+                disabled={isLoading}
                 onClick={() => setShowOtpModal(true)}
               >
                 Enter OTP to Complete Signup
@@ -305,35 +297,63 @@ const SignUpForm = () => {
             )}
           </form>
 
-          <Typography textAlign="center" marginTop={"1rem"}>Already have an account?</Typography>
-          <Button variant={"text"} onClick={goToLogin} fullWidth={true} disabled={isLoading}>
+          <Typography textAlign="center" marginTop={"1rem"} sx={{color: userTheme.textMuted}}>Already have an account?</Typography>
+          <Button variant={"text"} onClick={() => navigate("/login")} fullWidth={true} disabled={isLoading} sx={{color: userTheme.accent}}>
             Sign In
           </Button>
         </Paper>
       </Container>
 
-      {/* OTP Modal */}
-      <Dialog open={showOtpModal} onClose={() => setShowOtpModal(false)}>
+      <Dialog open={showOtpModal} onClose={() => setShowOtpModal(false)} PaperProps={{sx: {borderRadius: "1.5rem", background: "linear-gradient(180deg, rgba(16, 27, 44, 0.98) 0%, rgba(10, 18, 30, 0.98) 100%)", color: userTheme.text, border: `1px solid ${userTheme.border}`}}}>
         <DialogTitle>Enter OTP</DialogTitle>
         <DialogContent sx={{display: "flex", flexDirection: "column", gap: 2, minWidth: 300, paddingTop: "12px !important"}}>
-          <Typography variant="body2">
+          <Typography variant="body2" sx={{color: userTheme.textMuted}}>
             We sent a 6-digit code to <strong>{email.value}</strong>. Enter it below to verify your email and create your account.
           </Typography>
           <TextField
             label="6-digit OTP" type="text" fullWidth
             value={otp} onChange={(e) => setOtp(e.target.value)}
             inputProps={{maxLength: 6}}
+            sx={signupFieldSx}
           />
-          <Button variant="contained" onClick={handleOtpSubmit} disabled={isLoading} fullWidth>
+          <Button variant="contained" onClick={handleOtpSubmit} disabled={isLoading} fullWidth sx={signupPrimaryButtonSx}>
             Verify & Create Account
           </Button>
-          <Button variant="text" onClick={handleSendOtp} disabled={isLoading}>
+          <Button variant="text" onClick={handleSendOtp} disabled={isLoading} sx={{color: userTheme.accent}}>
             Resend OTP
           </Button>
         </DialogContent>
       </Dialog>
-    </div>
+    </Box>
   );
+};
+
+const signupFieldSx = {
+  "& .MuiOutlinedInput-root": {
+    color: userTheme.text,
+    backgroundColor: "rgba(8, 15, 25, 0.88)",
+    borderRadius: "1rem",
+    "& fieldset": {borderColor: userTheme.border},
+    "&:hover fieldset": {borderColor: userTheme.borderStrong},
+    "&.Mui-focused fieldset": {borderColor: userTheme.accent},
+  },
+  "& .MuiInputLabel-root": {color: userTheme.textMuted},
+  "& .MuiInputLabel-root.Mui-focused": {color: userTheme.accent},
+  "& .MuiFormHelperText-root": {color: userTheme.textMuted},
+};
+
+const signupPrimaryButtonSx = {
+  mt: "1rem",
+  borderRadius: "999px",
+  py: 1.3,
+  fontWeight: 700,
+  letterSpacing: "0.05rem",
+  background: "linear-gradient(135deg, #5eead4 0%, #38bdf8 100%)",
+  color: "#041019",
+  boxShadow: "0 14px 36px rgba(56, 189, 248, 0.24)",
+  "&:hover": {
+    background: "linear-gradient(135deg, #99f6e4 0%, #67e8f9 100%)",
+  },
 };
 
 export default SignUpForm;

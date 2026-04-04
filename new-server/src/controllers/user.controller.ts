@@ -5,7 +5,7 @@ import {OAuth2Client} from "google-auth-library";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 import {User} from "../models/user.model.js";
-import {cookieOptions, emitEvent, sendToken, uploadFilesToCloudinary} from "../utils/features.js";
+import {cookieOptions, deleteFilesFromCloudinary, emitEvent, sendToken, uploadFilesToCloudinary} from "../utils/features.js";
 import {compare} from "bcrypt";
 import {TryCatch} from "../middlewares/error.middleware.js";
 import {ErrorHandler, sout} from "../utils/utility.js";
@@ -14,6 +14,40 @@ import {Request} from "../models/request.model.js";
 import {NEW_REQUEST, REFETCH_CHATS} from "../constants/events.constant.js";
 import {getOtherMember} from "../lib/chat.helper.js";
 import {NC_TOKEN} from "../constants/config.constant.js";
+import {Message} from "../models/message.model.js";
+
+const cleanupUserData = async (userId, avatarPublicId = "") => {
+  const chats = await Chat.find({members: userId}).select("_id groupChat creator members");
+  const directChatIds = chats.filter((chat) => !chat.groupChat).map((chat) => chat._id);
+  const groupChats = chats.filter((chat) => chat.groupChat);
+
+  if (directChatIds.length > 0) {
+    await Message.deleteMany({chat: {$in: directChatIds}});
+    await Chat.deleteMany({_id: {$in: directChatIds}});
+  }
+
+  await Message.deleteMany({sender: userId});
+  await Request.deleteMany({$or: [{sender: userId}, {receiver: userId}]});
+
+  await Promise.all(groupChats.map(async (chat) => {
+    chat.members = chat.members.filter((member) => member.toString() !== userId.toString());
+    if (chat.creator?.toString() === userId.toString()) {
+      chat.creator = chat.members[0] || null;
+    }
+
+    if (chat.members.length < 2) {
+      await Message.deleteMany({chat: chat._id});
+      await chat.deleteOne();
+      return;
+    }
+
+    await chat.save();
+  }));
+
+  if (avatarPublicId) {
+    await deleteFilesFromCloudinary([avatarPublicId]);
+  }
+};
 
 const newUser = TryCatch(async (req, res, next) => {
   const {name, username, password, bio, email, dob, otp, isGoogleSignup, googleAvatarUrl} = req.body;
@@ -84,10 +118,210 @@ const getMyProfile = TryCatch(async (req, res, next) => {
 });
 const logout = TryCatch(async (req, res) => {
   return res.status(200)
-    .cookie(NC_TOKEN, "", {...cookieOptions, maxAge: 0})
+    .clearCookie(NC_TOKEN, cookieOptions)
     .json({
       success: true,
       message: "Logged out successfully",
+    });
+});
+const updateMyProfile = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.userId);
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  const {name, username, bio, dob} = req.body;
+
+  if (username && username !== user.username) {
+    const existingUsername = await User.findOne({username});
+    if (existingUsername) return next(new ErrorHandler("Username already taken", 409));
+    user.username = username;
+  }
+
+  if (name) user.name = name;
+  if (bio) user.bio = bio;
+  if (dob) user.dob = dob;
+
+  if (req.file) {
+    if (user.avatar?.public_id) {
+      await deleteFilesFromCloudinary([user.avatar.public_id]);
+    }
+    const results = await uploadFilesToCloudinary([req.file]);
+    if (!results) return next(new ErrorHandler("Avatar upload failed", 500));
+    user.avatar = {
+      public_id: results[0].public_id,
+      url: results[0].url,
+    };
+  }
+
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    user,
+  });
+});
+const updateMyEmail = TryCatch(async (req, res, next) => {
+  const {email} = req.body;
+  const normalizedEmail = email?.toLowerCase();
+
+  const user = await User.findById(req.userId);
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  if (user.email === normalizedEmail) {
+    return res.status(200).json({
+      success: true,
+      message: "Email is already up to date",
+      user,
+    });
+  }
+
+  const existingUser = await User.findOne({email: normalizedEmail});
+  if (existingUser) return next(new ErrorHandler("Email already in use", 409));
+
+  user.email = normalizedEmail;
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Email updated successfully",
+    user,
+  });
+});
+const updateMyPassword = TryCatch(async (req, res, next) => {
+  const {currentPassword, newPassword} = req.body;
+
+  const user = await User.findById(req.userId).select("+password");
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  const isPasswordCorrect = await compare(currentPassword, user.password);
+  if (!isPasswordCorrect) return next(new ErrorHandler("Current password is incorrect", 400));
+
+  user.password = newPassword;
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Password updated successfully",
+  });
+});
+const upsertEncryptionPublicKey = TryCatch(async (req, res, next) => {
+  const {encryptionPublicKey} = req.body;
+
+  if (!encryptionPublicKey) {
+    return next(new ErrorHandler("Encryption public key is required", 400));
+  }
+
+  const user = await User.findById(req.userId);
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  user.encryptionPublicKey = encryptionPublicKey;
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Encryption key saved successfully",
+    user,
+  });
+});
+const upsertEncryptionBundle = TryCatch(async (req, res, next) => {
+  const {
+    encryptionPublicKey,
+    encryptedPrivateKeyBundle,
+    encryptionBundleIv,
+    encryptionBundleSalt,
+    encryptionBundleIterations,
+    encryptionKeyVersion = 1,
+    encryptedRecoveryKeyBundle,
+    recoveryBundleIv,
+    recoveryBundleSalt,
+  } = req.body;
+
+  if (!encryptionPublicKey || !encryptedPrivateKeyBundle || !encryptionBundleIv || !encryptionBundleSalt || !encryptionBundleIterations) {
+    return next(new ErrorHandler("Complete encryption bundle data is required", 400));
+  }
+
+  const user = await User.findById(req.userId);
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  user.encryptionPublicKey = encryptionPublicKey;
+  user.encryptedPrivateKeyBundle = encryptedPrivateKeyBundle;
+  user.encryptionBundleIv = encryptionBundleIv;
+  user.encryptionBundleSalt = encryptionBundleSalt;
+  user.encryptionBundleIterations = Number(encryptionBundleIterations);
+  user.encryptionKeyVersion = Number(encryptionKeyVersion) || 1;
+  if (encryptedRecoveryKeyBundle && recoveryBundleIv && recoveryBundleSalt) {
+    user.encryptedRecoveryKeyBundle = encryptedRecoveryKeyBundle;
+    user.recoveryBundleIv = recoveryBundleIv;
+    user.recoveryBundleSalt = recoveryBundleSalt;
+    user.hasRecoveryKey = true;
+  }
+
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Encryption bundle saved successfully",
+    user,
+  });
+});
+const getMyEncryptionBundle = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.userId).select(
+    "encryptionPublicKey encryptedPrivateKeyBundle encryptionBundleIv encryptionBundleSalt encryptionBundleIterations encryptionKeyVersion encryptedRecoveryKeyBundle recoveryBundleIv recoveryBundleSalt hasRecoveryKey"
+  );
+
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  return res.status(200).json({
+    success: true,
+    encryptionBundle: {
+      encryptionPublicKey: user.encryptionPublicKey,
+      encryptedPrivateKeyBundle: user.encryptedPrivateKeyBundle,
+      encryptionBundleIv: user.encryptionBundleIv,
+      encryptionBundleSalt: user.encryptionBundleSalt,
+      encryptionBundleIterations: user.encryptionBundleIterations,
+      encryptionKeyVersion: user.encryptionKeyVersion,
+      encryptedRecoveryKeyBundle: user.encryptedRecoveryKeyBundle,
+      recoveryBundleIv: user.recoveryBundleIv,
+      recoveryBundleSalt: user.recoveryBundleSalt,
+      hasRecoveryKey: user.hasRecoveryKey,
+    },
+  });
+});
+const resetMyEncryptionState = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.userId);
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  user.encryptionPublicKey = "";
+  user.encryptedPrivateKeyBundle = "";
+  user.encryptionBundleIv = "";
+  user.encryptionBundleSalt = "";
+  user.encryptionBundleIterations = 0;
+  user.encryptionKeyVersion = 1;
+  user.encryptedRecoveryKeyBundle = "";
+  user.recoveryBundleIv = "";
+  user.recoveryBundleSalt = "";
+  user.hasRecoveryKey = false;
+
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Secure messaging has been reset for this account. Sign out and sign back in to create a new secure identity.",
+    user,
+  });
+});
+const deleteMyAccount = TryCatch(async (req, res, next) => {
+  const user = await User.findById(req.userId);
+  if (!user) return next(new ErrorHandler("User not found", 404));
+
+  await cleanupUserData(user._id, user.avatar?.public_id);
+  await user.deleteOne();
+
+  return res.status(200)
+    .clearCookie(NC_TOKEN, cookieOptions)
+    .json({
+      success: true,
+      message: "Account deleted successfully",
     });
 });
 const searchUser = TryCatch(async (req, res) => {
@@ -287,14 +521,23 @@ const resetPassword = TryCatch(async (req, res, next) => {
   
   const user = await User.findOne({email}).select("+password");
   if (!user) return next(new ErrorHandler("User not found", 404));
-  
+
+  const hadEncryptionBundle = Boolean(user.encryptedPrivateKeyBundle || user.encryptedRecoveryKeyBundle);
+    
   user.password = newPassword;
+  user.encryptedPrivateKeyBundle = "";
+  user.encryptionBundleIv = "";
+  user.encryptionBundleSalt = "";
+  user.encryptionBundleIterations = 0;
   await user.save();
   await redis.del(`reset_token:${email}`);
   
   return res.status(200).json({
     success: true,
-    message: "Password reset successfully!"
+    message: hadEncryptionBundle
+      ? "Password reset successfully. Secure message recovery has been reset for this account."
+      : "Password reset successfully!",
+    e2eeRecoveryReset: hadEncryptionBundle,
   });
 });
 
@@ -352,6 +595,14 @@ export {
   newUser,
   getMyProfile,
   logout,
+  updateMyProfile,
+  updateMyEmail,
+  updateMyPassword,
+  upsertEncryptionPublicKey,
+  upsertEncryptionBundle,
+  getMyEncryptionBundle,
+  resetMyEncryptionState,
+  deleteMyAccount,
   searchUser,
   sendFriendRequest,
   acceptFriendRequest,

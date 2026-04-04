@@ -8,11 +8,13 @@ import {NC_TOKEN} from "../constants/config.constant.js";
 import {getSockets} from "../lib/socketio.helper.js";
 
 const httpOnly = true;
+const isProduction = (process.env.NODE_ENV || "PRODUCTION") === "PRODUCTION";
 const cookieOptions = {
   maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
   httpOnly, // The cookie is not accessible via JavaScript
-  sameSite: "strict", // The cookie is sent in a cross-site request
-  secure: true, // The cookie is sent only via HTTPS
+  // Cross-site auth between Vercel and Render requires SameSite=None in production.
+  sameSite: isProduction ? "none" : "lax",
+  secure: isProduction,
 };
 
 const connectDB = (uri) => {

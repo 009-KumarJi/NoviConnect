@@ -11,7 +11,6 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import {colorPalette} from "../constants/color.constant.js";
 import {
   Add as AddIcon,
   Delete as DeleteIcon,
@@ -36,6 +35,7 @@ import {LayoutLoader} from "../components/layout/Loaders.jsx";
 import {sout} from "../utils/helper.js";
 import {useDispatch, useSelector} from "react-redux";
 import {setIsAddMember} from "../redux/reducers/miscSlice.js";
+import {userTheme} from "../constants/userTheme.constant.js";
 
 const ConfirmDeleteDialog = lazy(() => import("../components/dialogs/ConfirmDeleteDialog.jsx"));
 const AddMemberDialog = lazy(() => import("../components/dialogs/AddMemberDialog.jsx"));
@@ -137,7 +137,7 @@ const Groups = () => {
         right: "1rem",
       },
     }}>
-      <IconButton onClick={handleMobile}>
+      <IconButton onClick={handleMobile} sx={{color: userTheme.text, border: `1px solid ${userTheme.border}`, backgroundColor: "rgba(8, 15, 25, 0.88)"}}>
         <MenuIcon/>
       </IconButton>
     </Box>
@@ -148,11 +148,11 @@ const Groups = () => {
         position: "absolute",
         top: "1rem",
         left: "1rem",
-        backgroundColor: colorPalette(0.5).CP3,
-        color: colorPalette(1).CP1,
+        backgroundColor: "rgba(8, 15, 25, 0.88)",
+        color: userTheme.text,
+        border: `1px solid ${userTheme.border}`,
         "&:hover": {
-          backgroundColor: colorPalette(0.8).CP3,
-          color: colorPalette(0.8).CP8,
+          backgroundColor: userTheme.accentSoft,
         }
       }}
       onClick={navigateHome}
@@ -207,10 +207,11 @@ const Groups = () => {
       }}
     >
       <Button
-        size="large" color="error"
+        size="large"
         variant="outlined" startIcon={<DeleteIcon/>}
         onClick={openConfirmDeleteHandler}
         disabled={isLoadingDeleteGC || isLoadingRenaming}
+        sx={{color: userTheme.danger, borderColor: "rgba(251, 113, 133, 0.3)"}}
       >
         Delete Group
       </Button>
@@ -218,16 +219,17 @@ const Groups = () => {
         size="large" variant="contained"
         startIcon={<AddIcon/>} onClick={addMemberHandler}
         disabled={isLoadingDeleteGC || isLoadingRenaming}
+        sx={{borderRadius: "999px", background: "linear-gradient(135deg, #5eead4 0%, #38bdf8 100%)", color: "#041019"}}
       >
         Add Member
       </Button>
     </Stack>
 
   return myGroups?.isLoading ? <LayoutLoader/> : (
-    <Grid container={true} height={"100vh"}>
+    <Grid container={true} height={"100vh"} sx={{background: userTheme.gradient}}>
       <Grid
         size={{ sm: 4 }}
-        sx={{display: {xs: "none", sm: "block"}}}
+        sx={{display: {xs: "none", sm: "block"}, borderRight: `1px solid ${userTheme.border}`}}
       >
         <GroupsList myGroups={myGroups?.data?.groups} ChatId={ChatId}/>
       </Grid>
@@ -237,6 +239,7 @@ const Groups = () => {
         flexDirection: "column",
         position: "relative",
         padding: "1rem 3rem",
+        color: userTheme.text,
       }}>
 
         {IconButtons}
@@ -248,6 +251,7 @@ const Groups = () => {
               margin="1rem"
               alignSelf={"center"}
               variant="body2"
+              sx={{color: userTheme.textMuted}}
             >
               Group Members
             </Typography>
@@ -261,10 +265,11 @@ const Groups = () => {
                 md: "1rem 4rem"
               }}
               spacing={"0.35rem"}
-              bgcolor={colorPalette(0.2).CP5}
+              bgcolor={"rgba(8, 15, 25, 0.76)"}
               height={"50vh"}
               overflow={"auto"}
-              borderRadius={"0.5rem"}
+              borderRadius={"1rem"}
+              border={`1px solid ${userTheme.border}`}
               sx={{
                 '&::-webkit-scrollbar': {
                   display: 'none',
@@ -283,9 +288,7 @@ const Groups = () => {
                         user={i} isSelected
                         key={i._id}
                         styling={{
-                          boxShadow: `0 0 0 0.06rem ${colorPalette(0.4).CP1}`,
-                          padding: "1rem 2rem",
-                          borderRadius: "0.5rem"
+                          padding: "1rem 1.25rem",
                         }}
                         handler={removeMemberHandler}
                         admin={groupDetails?.data?.chat?.creator}
@@ -315,7 +318,8 @@ const Groups = () => {
       }
 
       <Drawer open={isMobileOpen} onClose={handleMobileClose} anchor={"right"}
-              sx={{display: {xs: "block", sm: "none"}, backgroundColor: `${colorPalette(0.2).CP3}`}}>
+              PaperProps={{sx: {background: "rgba(8, 15, 25, 0.96)", width: "min(82vw, 22rem)"}}}
+              sx={{display: {xs: "block", sm: "none"}}}>
         <GroupsList width="50vw" myGroups={myGroups?.data?.groups} ChatId={ChatId}/>
       </Drawer>
     </Grid>
@@ -323,10 +327,10 @@ const Groups = () => {
 }
 
 const GroupsList = ({width = "100%", myGroups = [], ChatId}) => (
-  <Stack width={width} bgcolor={colorPalette(0.4).CP3} height={"100vh"} overflow={"auto"} sx={{
+  <Stack width={width} bgcolor={"rgba(8, 15, 25, 0.88)"} height={"100vh"} overflow={"auto"} sx={{
     "&::-webkit-scrollbar": {width: "0.6rem"},
     "&::-webkit-scrollbar-thumb": {
-      backgroundColor: `${colorPalette(0.2).CP3}`,
+      backgroundColor: `${userTheme.accentSoft}`,
       borderRadius: "1rem",
     },
     "&::-webkit-scrollbar-track": {display: "none"},
@@ -342,7 +346,7 @@ const GroupsList = ({width = "100%", myGroups = [], ChatId}) => (
               key={group._id}
             />
           )
-        : <Typography textAlign="center" padding="1rem">
+        : <Typography textAlign="center" padding="1rem" sx={{color: userTheme.textMuted}}>
           No groups available
         </Typography>
     }
@@ -353,12 +357,16 @@ const GroupListItem = memo(({group, ChatId}) => {
   const {name, avatar, _id} = group;
   return <Link to={`?group=${_id}`} onClick={e => {
     if (ChatId === _id) e.preventDefault()
-  }}>
+  }} sx={{borderRadius: "1rem", margin: "0.3rem 0.8rem"}}>
     <Stack direction="row" spacing="1rem" alignItems="center" sx={{
-      color: (_id === ChatId) ? `${colorPalette(1).CP4}` : "unset",
+      color: (_id === ChatId) ? `${userTheme.accentBlue}` : userTheme.text,
+      backgroundColor: _id === ChatId ? "rgba(56, 189, 248, 0.12)" : "transparent",
+      border: `1px solid ${_id === ChatId ? userTheme.borderStrong : "transparent"}`,
+      borderRadius: "1rem",
+      padding: "0.8rem 1rem",
     }}>
       <AvatarCard avatar={avatar}/>
-      <Typography>{name}</Typography>
+      <Typography sx={{fontWeight: 600}}>{name}</Typography>
     </Stack>
   </Link>
 });
