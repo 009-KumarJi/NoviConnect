@@ -1,39 +1,40 @@
 # NoviConnect
 
-A MERN Chat App using ReactJS, Express.js, Node.js, MongoDB, and Socket.IO.
+A MERN Chat App using ReactJS, Express.js, TypeScript, NodeJS, MongoDB, and Socket.IO.
 
 ## Tech Stack
 
-- **Frontend**: ReactJS
-- **Backend**: NodeJS, Express
+- **Frontend**: ReactJS (Vite), TypeScript, Redux Toolkit, Material-UI, Framer Motion
+- **Backend**: NodeJS, Express, TypeScript, Socket.IO
 - **Database**: MongoDB
-- **Real-time Communication**: Socket.IO
+- **Caching/Real-time**: Redis, Socket.IO
 - **Authentication**: JWT
-- **Styling**: Material-UI
+- **Cloud Storage**: Cloudinary
 
-## [`Video Demo`](https://www.linkedin.com/posts/krishna-kumar-975b25186_demo-httpslnkdingg88yqyn-after-about-activity-7195526884514807808--qZH?utm_source=share&utm_medium=member_android)
+## Links
 
-## [`Deployed Demo`](https://noviconnect-client.vercel.app/)
+- **[`Video Demo`](https://www.linkedin.com/posts/krishna-kumar-975b25186_demo-httpslnkdingg88yqyn-after-about-activity-7195526884514807808--qZH?utm_source=share&utm_medium=member_android)**
+- **[`Deployed Demo Legacy`](https://noviconnect-client.vercel.app/)**
+- **[`Deployed Demo New`](https://noviconnect-client-v2.vercel.app/)**
 
-## [`Backend Architecture`](./server/readme.md)
+## Setup and Architecture
 
-## [`Frontend Snapshots`](./client/readme.md)
+The codebase has recently been updated to use a modern TypeScript stack, split across a Vite-based React client and a TypeScript-backed Express server.
+
+- **[Frontend Architecture & Setup](./new-client/README.md)**
+- **[Backend Architecture & Setup](./new-server/README.md)**
+
+*(Note: The legacy JavaScript implementations are preserved in the `client/` and `server/` directories, but the active codebase is now `new-client/` and `new-server/`)*
 
 ## Features
 
-The main features to add in the Chat App are:
+The main features included in the Chat App are:
 
-- Users can register/log in with a username.
-- Users can search for a user.
-- Users can send a friend request to other users.
-- The user will be notified about the request.
-- Users can accept the friend request.
-- Users can see the Chat list.
-- Users can send messages or attachments in Chat.
-- Users can create a Group Chat with a minimum of 3 members and a maximum of 100 members.
-- Group admin can rename the Group, add members, or remove members.
-- The group admin can delete the group.
-- Group members can leave the group.
-- If the Group admin leaves the group then a new Admin will be assigned.
-- Users can delete a chat / unfriend a user.
-- Admin Dashboard to see users, messages, and chats (Only Accessible with a Secret key).
+- **User Authentication**: Secure register/login with usernames and JWT.
+- **Friend Connections**: Search users, send/accept friend requests, and manage connections.
+- **Real-time Chat**: One-on-one and group messaging enabled by Socket.IO and Redis.
+- **Group Management**: Create groups (3-100 members), manage members, and automatically handle admin reassignment.
+- **Media Sharing**: Send attachments via Cloudinary integration.
+- **Admin Dashboard**: Comprehensive view for users, messages, and chats (Accessible with a Secret key only).
+- **Responsive UI**: Built with Material-UI and animated with Framer Motion.
+
