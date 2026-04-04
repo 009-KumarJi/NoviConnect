@@ -1,0 +1,53 @@
+import mongoose, {model, Schema} from "mongoose";
+import {hash} from "bcrypt";
+
+const userSchema = new Schema({
+  name: {
+    type: String,
+    required: [true, "Please provide a name"],
+  },
+  email: {
+    type: String,
+    required: [true, "Please provide an email"],
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: [true, "Please provide a password"],
+    select: false,
+  },
+  username: {
+    type: String,
+    required: [true, "Please provide a username"],
+    unique: true,
+  },
+  dob: {
+    type: Date,
+    required: [true, "Please provide a date of birth"],
+  },
+  bio: {
+    type: String,
+    default: "Hey there! I am using NoviConnect.",
+  },
+  avatar: {
+    public_id: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+  },
+}, {
+  timestamps: true,
+});
+
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+  this.password = await hash(this.password, 10);
+});
+
+export const User = mongoose.model("User", userSchema);
+
+// Path: server/models/user.model.js
