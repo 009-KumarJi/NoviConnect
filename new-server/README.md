@@ -1,8 +1,8 @@
 # NoviConnect Backend
 
-This README is the technical deep dive for the active backend in `noviconnect-server-v2`. It is written for a technical reviewer who wants concrete implementation detail: boot sequence, route surface, socket behavior, schema design, security boundaries, and operational tradeoffs.
+This README is the technical reference for the active backend in `noviconnect-server-v2`. It focuses on concrete implementation detail: boot sequence, route surface, socket behavior, schema design, security boundaries, and operational tradeoffs.
 
-## Interviewer TL;DR
+## Overview
 
 - This service is an Express 5 + TypeScript backend that combines REST APIs and a Socket.IO realtime gateway.
 - It owns authentication, cookie issuance, OTP email workflows, Google signup verification, chat and group lifecycle APIs, unread-count computation, attachment storage orchestration, and admin operations.
@@ -622,7 +622,7 @@ If you want the fastest path through the backend:
 9. [`src/utils/features.ts`](./src/utils/features.ts)
 10. [`src/utils/mail.helper.ts`](./src/utils/mail.helper.ts)
 
-## Final Positioning
+## Summary
 
 The strongest technical value of `noviconnect-server-v2` is not that it exposes chat CRUD. It is that the service combines:
 
@@ -634,4 +634,4 @@ The strongest technical value of `noviconnect-server-v2` is not that it exposes 
 - OTP and Google-based onboarding/recovery flows
 - E2EE-aware persistence without holding raw user secrets
 
-That combination is what makes this backend materially stronger than the original demo-oriented server and useful as an interviewer-facing architecture discussion piece.
+That combination is what makes this backend materially stronger than the original demo-oriented server and a much more complete production-style system.

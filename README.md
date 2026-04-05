@@ -2,7 +2,7 @@
 
 NoviConnect is a full-stack real-time chat platform that started as a legacy JavaScript MERN application and was then modernized into a production-oriented TypeScript system with stronger authentication, redesigned user and admin experiences, reliable transactional email delivery, and end-to-end encrypted messaging.
 
-This is the master README for the combined repository. It is written for a technical plus managerial interviewer and is meant to answer four questions clearly:
+This is the master README for the combined repository. It is meant to answer four questions clearly:
 
 1. What problem does the project solve?
 2. What changed between the legacy and modern implementations?
@@ -38,9 +38,9 @@ If reviewing the project today:
 - treat `new-client` and `new-server` as the active deliverables
 - treat `client` and `server` as the baseline used for migration, comparison, and modernization scope
 
-## Interviewer Guide
+## Reading Guide
 
-If you only have 10 to 15 minutes, the highest-signal sections are:
+If you want a quick orientation, start with:
 
 1. `New Features`
 2. `Legacy To Modern Comparison`
@@ -48,7 +48,7 @@ If you only have 10 to 15 minutes, the highest-signal sections are:
 4. `Security And Privacy Model`
 5. `Impact Of The Rebuild`
 
-If you want the technical depth, continue with:
+If you want more implementation detail, continue with:
 
 1. `Low-Level Design`
 2. `Data-Flow Diagrams`
@@ -154,7 +154,7 @@ Why it matters:
 Why it matters:
 
 - makes the app feel intentionally productized
-- improves perceived quality for users and reviewers
+- improves perceived quality for users and readers
 - shows ownership across both engineering and design
 
 ### Platform, Security, And Operational Improvements
@@ -838,7 +838,7 @@ The project is significantly more capable than the legacy baseline, but the foll
 - E2EE introduces more complexity in recovery and multi-device scenarios than a normal chat app
 - operational tradeoffs still exist around password reset versus secure-history recovery
 - group E2EE using per-message wrapped keys is correct but less optimized than a more advanced sender-key architecture
-- the modern implementation is production-oriented, but still primarily presented as a portfolio/interview project rather than a large-scale commercial product
+- the modern implementation is production-oriented, but still positioned as an independent engineering project rather than a large-scale commercial product
 
 ## Impact Of The Rebuild
 
@@ -870,7 +870,7 @@ If you want to dive into the actual implementation, start here:
 - message schema: [`new-server/src/models/message.model.ts`](./new-server/src/models/message.model.ts)
 - user encryption schema: [`new-server/src/models/user.model.ts`](./new-server/src/models/user.model.ts)
 
-## Final Positioning
+## Summary
 
 The best way to understand NoviConnect is not as a single chat app snapshot, but as a before-and-after engineering story:
 

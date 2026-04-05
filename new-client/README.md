@@ -1,8 +1,8 @@
 # NoviConnect Frontend
 
-This README is the technical deep dive for the active frontend in `noviconnect-client-v2`. The master README explains the project to mixed technical and non-technical readers; this document is intentionally narrower and assumes the reader wants implementation detail, design rationale, and a fast way to navigate the code.
+This README is the technical reference for the active frontend in `noviconnect-client-v2`. The master README explains the project at a broader level; this document stays focused on implementation detail, design rationale, and a fast way to navigate the code.
 
-## Interviewer TL;DR
+## Overview
 
 - This is a React 19 + Vite + TypeScript single-page application for NoviConnect.
 - It handles both the user-facing product and the KrishnaDen admin console.
@@ -549,7 +549,7 @@ If you want to inspect the frontend efficiently:
 8. [`src/redux/api/apiSlice.ts`](./src/redux/api/apiSlice.ts)
 9. [`src/pages/KrishnaDen/Dashboard.tsx`](./src/pages/KrishnaDen/Dashboard.tsx)
 
-## Final Positioning
+## Summary
 
 This frontend is not just "a React chat UI". Its main technical value is that it coordinates:
 
