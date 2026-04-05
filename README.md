@@ -323,52 +323,63 @@ The E2EE subsystem adds an additional architectural slice:
 ### 1. Auth And Session Bootstrap
 
 ```mermaid
-flowchart LR
-    A[User opens app] --> B[Frontend bootstraps]
-    B --> C[GET /api/v1/user/profile]
-    C --> D{Valid auth cookie?}
-    D -- Yes --> E[Return authenticated user]
-    E --> F[Hydrate auth state]
-    F --> G[Enable Socket.IO session]
-    D -- No --> H[Mark user as unauthenticated]
+flowchart TB
+    A[User opens app]
+    B[Frontend bootstraps]
+    C[Request profile<br/>/api/v1/user/profile]
+    D{Valid auth<br/>cookie?}
+    E[Return authenticated<br/>user]
+    F[Hydrate auth state]
+    G[Enable Socket.IO<br/>session]
+    H[Mark user as<br/>unauthenticated]
+
+    A --> B --> C --> D
+    D -- Yes --> E --> F --> G
+    D -- No --> H
 ```
 
 ### 2. OTP Signup And Verification Flow
 
 ```mermaid
-flowchart LR
-    A[User enters signup details] --> B[Request OTP]
-    B --> C[Backend generates OTP]
-    C --> D[Send OTP through Resend]
-    D --> E[User submits OTP + signup form]
-    E --> F[Create account + issue session]
-    F --> G[Frontend initializes encryption identity]
+flowchart TB
+    A[User enters signup<br/>details]
+    B[Request OTP]
+    C[Backend generates OTP]
+    D[Send OTP through<br/>Resend]
+    E[Submit OTP +<br/>signup form]
+    F[Create account +<br/>issue session]
+    G[Initialize encryption<br/>identity]
+
+    A --> B --> C --> D --> E --> F --> G
 ```
 
 ### 3. Secure Message Data Flow
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Sender[Sender Device]
-        A[Compose plaintext message]
-        B[Load recipient public keys]
-        C[Encrypt content with AES-GCM]
-        D[Wrap content key per recipient]
+        direction TB
+        A[Compose plaintext<br/>message]
+        B[Load recipient<br/>public keys]
+        C[Encrypt content<br/>with AES-GCM]
+        D[Wrap content key<br/>per recipient]
         A --> B --> C --> D
     end
 
     subgraph Platform[Backend Platform]
-        E[Receive ciphertext payload]
-        F[Persist ciphertext-only message]
+        direction TB
+        E[Receive ciphertext<br/>payload]
+        F[Persist ciphertext-only<br/>message]
         G[Fan out secure event]
         E --> F --> G
     end
 
     subgraph Recipient[Recipient Device]
-        H[Receive secure payload]
+        direction TB
+        H[Receive secure<br/>payload]
         I[Unwrap content key]
         J[Decrypt locally]
-        K[Render plaintext in UI]
+        K[Render plaintext<br/>in UI]
         H --> I --> J --> K
     end
 
@@ -379,14 +390,17 @@ flowchart LR
 ### 4. Secure Attachment Data Flow
 
 ```mermaid
-flowchart LR
-    A[User selects file] --> B[Encrypt file locally]
-    B --> C[Upload encrypted blob through backend]
-    C --> D[Store encrypted asset in Cloudinary]
-    D --> E[Persist encrypted attachment metadata in message]
-    E --> F[Recipient fetches encrypted asset]
-    F --> G[Recipient decrypts locally]
-    G --> H[Preview or download readable file]
+flowchart TB
+    A[User selects file]
+    B[Encrypt file locally]
+    C[Upload encrypted blob<br/>through backend]
+    D[Store encrypted asset<br/>in Cloudinary]
+    E[Persist encrypted attachment<br/>metadata in message]
+    F[Recipient fetches<br/>encrypted asset]
+    G[Recipient decrypts<br/>locally]
+    H[Preview or download<br/>readable file]
+
+    A --> B --> C --> D --> E --> F --> G --> H
 ```
 
 ## Sequence Diagrams
@@ -501,25 +515,28 @@ The legacy system allowed the backend to store and read plaintext message conten
 ### Trust Boundary
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph TrustedA[Trusted Boundary: Sender Device]
-        A[Plaintext Message]
-        B[Encrypt In Browser]
+        direction TB
+        A[Plaintext message]
+        B[Encrypt in browser]
         A --> B
     end
 
     subgraph Untrusted[Platform Boundary: Backend]
-        C[Ciphertext + Wrapped Keys]
+        direction TB
+        C[Ciphertext +<br/>wrapped keys]
     end
 
     subgraph TrustedB[Trusted Boundary: Recipient Device]
-        D[Decrypt In Browser]
-        E[Readable Message]
+        direction TB
+        D[Decrypt in browser]
+        E[Readable message]
         D --> E
     end
 
-    B -->|Ciphertext Only| C
-    C -->|Secure Delivery| D
+    B -->|Ciphertext only| C
+    C -->|Secure delivery| D
 ```
 
 Interpretation:
