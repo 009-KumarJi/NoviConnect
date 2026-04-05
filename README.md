@@ -117,6 +117,9 @@ Why it matters:
 - end-to-end encrypted direct messages
 - end-to-end encrypted group messages
 - end-to-end encrypted attachments
+- persisted unread message tracking across reconnects
+- offline catch-up notification bubbles when a user comes back online
+- read receipts for sent messages
 - secure message-state indicators in the UI
 - password-backed encrypted key-bundle recovery
 - recovery-key based secure message restoration
@@ -126,6 +129,7 @@ Why it matters:
 - changes the trust model of the application
 - demonstrates architecture beyond standard CRUD chat apps
 - aligns product behavior with stronger privacy expectations
+- improves message reliability for real-world online/offline usage
 
 ### KrishnaDen Admin Improvements
 
@@ -233,6 +237,142 @@ The system is split into a browser-based frontend and a real-time backend.
 - Resend sends OTP emails.
 - Google Identity supports Google-based signup and authentication workflows.
 
+## Database Structure
+
+NoviConnect uses MongoDB, so the persistence layer is document-oriented rather than strictly relational. The core collections and references still map cleanly enough to describe with an ER-style view.
+
+### DB Structure Diagram
+
+#### Core Collection
+```mermaid
+erDiagram
+    USER {
+        ObjectId _id
+        String name
+        String email
+        String password
+        String googleId
+        String username
+        Date dob
+        String bio
+        String avatarPublicId
+        String avatarUrl
+        String encryptionPublicKey
+        String encryptedPrivateKeyBundle
+        String encryptionBundleIv
+        String encryptionBundleSalt
+        Number encryptionBundleIterations
+        Number encryptionKeyVersion
+        String encryptedRecoveryKeyBundle
+        String recoveryBundleIv
+        String recoveryBundleSalt
+        Boolean hasRecoveryKey
+        Date createdAt
+        Date updatedAt
+    }
+
+    CHAT {
+        ObjectId _id
+        String name
+        Boolean groupChat
+        ObjectId creator
+        Date createdAt
+        Date updatedAt
+    }
+
+    CHAT_MEMBER {
+        ObjectId chatId
+        ObjectId userId
+    }
+
+    REQUEST {
+        ObjectId _id
+        String status
+        ObjectId sender
+        ObjectId receiver
+        Date createdAt
+        Date updatedAt
+    }
+
+    MESSAGE {
+        ObjectId _id
+        ObjectId sender
+        ObjectId chat
+        String content
+        Date createdAt
+        Date updatedAt
+    }
+
+    USER ||--o{ CHAT_MEMBER : "members array"
+    CHAT ||--o{ CHAT_MEMBER : "stores"
+    USER o|--o{ CHAT : "creator of"
+    CHAT ||--o{ MESSAGE : "contains"
+    USER ||--o{ MESSAGE : "sends"
+    USER ||--o{ REQUEST : "sends"
+    USER ||--o{ REQUEST : "receives"
+```
+
+#### Message Subdocuments
+
+```mermaid
+erDiagram
+    MESSAGE {
+        ObjectId _id
+        String content
+    }
+
+    ENCRYPTED_CONTENT {
+        Number version
+        String algorithm
+        String ciphertext
+        String iv
+    }
+
+    ENC_CONTENT_KEY {
+        ObjectId userId
+        String key
+    }
+
+    ATTACHMENT {
+        String publicId
+        String url
+        String originalName
+        String mimeType
+        Number size
+        Boolean isEncrypted
+    }
+
+    ATT_ENCRYPTED_FILE {
+        Number version
+        String algorithm
+        String iv
+    }
+
+    ATT_ENC_KEY {
+        ObjectId userId
+        String key
+    }
+
+    READ_RECEIPT {
+        ObjectId userId
+        Date seenAt
+    }
+
+    MESSAGE ||--o| ENCRYPTED_CONTENT : "encryptedContent"
+    ENCRYPTED_CONTENT ||--o{ ENC_CONTENT_KEY : "encryptedKeys"
+    MESSAGE ||--o{ ATTACHMENT : "attachments"
+    ATTACHMENT ||--o| ATT_ENCRYPTED_FILE : "encryptedFile"
+    ATT_ENCRYPTED_FILE ||--o{ ATT_ENC_KEY : "encryptedKeys"
+    MESSAGE ||--o{ READ_RECEIPT : "readBy"
+```
+
+### Schema Notes
+
+- `User` stores identity, profile, auth metadata, and the encrypted key-bundle material needed for E2EE recovery.
+- `Chat` stores membership and group metadata. For direct chats, the `members` array effectively defines the conversation pair.
+- `Message` stores either legacy plaintext `content` or secure `encryptedContent`, plus attachment metadata and `readBy` entries for unread counts and read receipts.
+- `Request` tracks friend-request workflow state between two users.
+
 ## Low-Level Design
 
 ### Frontend LLD
@@ -246,6 +386,10 @@ Core frontend responsibilities are split as follows:
   - [`new-client/src/redux`](./new-client/src/redux)
 - Socket lifecycle and real-time events:
   - [`new-client/src/socket.tsx`](./new-client/src/socket.tsx)
+- Chat unread counters, notification badges, and read-receipt rendering:
+  - [`new-client/src/components/layout/AppLayout.tsx`](./new-client/src/components/layout/AppLayout.tsx)
+  - [`new-client/src/pages/Chat.tsx`](./new-client/src/pages/Chat.tsx)
+  - [`new-client/src/components/shared/MessageComponent.tsx`](./new-client/src/components/shared/MessageComponent.tsx)
 - E2EE key setup, encryption, decryption, attachment encryption, and recovery:
   - [`new-client/src/lib/e2ee.ts`](./new-client/src/lib/e2ee.ts)
 - Public user experience:
@@ -281,6 +425,8 @@ Core backend responsibilities are split as follows:
 - Chat, group, message history, and attachment APIs:
   - [`new-server/src/routes/chat.routes.ts`](./new-server/src/routes/chat.routes.ts)
   - [`new-server/src/controllers/chat.controller.ts`](./new-server/src/controllers/chat.controller.ts)
+- Realtime message fanout, unread state initialization, and socket delivery:
+  - [`new-server/src/server.ts`](./new-server/src/server.ts)
 - KrishnaDen admin operations:
   - [`new-server/src/routes/admin.routes.ts`](./new-server/src/routes/admin.routes.ts)
   - [`new-server/src/controllers/admin.controller.ts`](./new-server/src/controllers/admin.controller.ts)
@@ -311,6 +457,7 @@ The E2EE subsystem adds an additional architectural slice:
   - ciphertext for secure messages
   - per-recipient wrapped content keys
   - encrypted attachment metadata for secure files
+  - per-user read state for unread counts and receipts
 - the browser performs:
   - key generation
   - key wrapping
@@ -380,11 +527,34 @@ flowchart TB
         I[Unwrap content key]
         J[Decrypt locally]
         K[Render plaintext<br/>in UI]
-        H --> I --> J --> K
+        L[Mark as read<br/>when viewed]
+        H --> I --> J --> K --> L
     end
 
     D --> E
     G --> H
+```
+
+### 5. Offline Unread And Read-Receipt Flow
+
+```mermaid
+flowchart TB
+    A[Sender sends message]
+    B[Backend stores ciphertext<br/>plus sender read state]
+    C{Recipient online?}
+    D[Deliver socket event<br/>immediately]
+    E[Recipient remains offline]
+    F[Unread count persists<br/>in database]
+    G[Recipient opens app later]
+    H[Chat list loads with<br/>server unread counts]
+    I[Recipient opens chat]
+    J[Backend marks messages read]
+    K[Sender sees read receipt]
+
+    A --> B --> C
+    C -- Yes --> D --> I
+    C -- No --> E --> F --> G --> H --> I
+    I --> J --> K
 ```
 
 ### 4. Secure Attachment Data Flow
@@ -472,6 +642,36 @@ sequenceDiagram
     RFE->>RFE: Unwrap key and decrypt locally
     RFE-->>R: Render readable message
     Note over BE,DB: The platform stores secure message payloads without plaintext content
+```
+
+### 5. Unread Recovery And Read Receipt
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor A as Sender
+    participant AFE as Sender Client
+    participant BE as Backend
+    participant DB as MongoDB
+    participant BFE as Recipient Client
+    actor B as Recipient
+
+    A->>AFE: Send message
+    AFE->>BE: Emit NEW_MESSAGE
+    BE->>DB: Store message with sender in readBy
+    alt Recipient offline
+        BE->>DB: Leave recipient unread
+        B->>BFE: Return online later
+        BFE->>BE: GET /api/v1/chat/my-chats
+        BE-->>BFE: Chat list with unread counts
+    else Recipient online
+        BE-->>BFE: Push realtime message
+    end
+    B->>BFE: Open conversation
+    BFE->>BE: PATCH /api/v1/chat/message/read/:ChatId
+    BE->>DB: Mark unread messages as read
+    BE-->>AFE: Emit read-receipt event
+    AFE->>A: Show Sent / Seen state
 ```
 
 ### 4. Forgot Password And E2EE Recovery Tradeoff
@@ -605,6 +805,8 @@ Verification focus areas include:
 - secure payload handling
 - auth and session behavior
 - ciphertext-only persistence for secure message paths
+- unread badge recovery after reconnecting from an offline state
+- message read-state updates and sender-side receipt rendering
 - production-readiness of the TypeScript build flow
 
 ## Key Design Decisions And Tradeoffs

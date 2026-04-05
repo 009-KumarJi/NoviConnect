@@ -10,9 +10,9 @@ const useErrors = (errors = []) => {
           ? fallback()
           : toast.error(error?.data?.message || "Something-went wrong!");
       }
-    })
+    });
   }, [errors]);
-}
+};
 
 const useAsyncMutation = (mutate) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,7 @@ const useAsyncMutation = (mutate) => {
     const toastId = toast.loading(toastMessage || "Updating...");
 
     mutate(...args)
-      .then(res => {
+      .then((res) => {
         if (res.data) {
           toast.success(res?.data?.message || "Data Updated!", {id: toastId});
           setData(res.data);
@@ -31,33 +31,33 @@ const useAsyncMutation = (mutate) => {
           toast.error(res?.error?.data?.message || "Something went wrong!", {id: toastId});
         }
       })
-      .catch(err =>
+      .catch((err) =>
         toast.error(err?.response?.data?.message || "Something went wrong!", {id: toastId})
       )
       .finally(() =>
         setIsLoading(false)
       );
-  }
+  };
+
   return [executeMutation, isLoading, data];
-}
+};
 
 const useSockets = (socket, handlers) => {
   useEffect(() => {
     if (!socket || !handlers) return;
-    // Set up event listeners when component mounts
+
     Object.entries(handlers).forEach(([event, handler]) => {
       sout(`Listening for event: ${event}`);
       socket.on(event, handler);
     });
 
-    // Remove event listeners when component unmounts
     return () => {
       Object.entries(handlers).forEach(([event, handler]) => {
         sout(`Removing event listener: ${event}`);
         socket.off(event, handler);
       });
     };
-  }, [socket]); // handlers intentionally excluded — object identity changes every render but callbacks are stable via useCallback
+  }, [handlers, socket]);
 };
 
 export {useErrors, useAsyncMutation, useSockets};

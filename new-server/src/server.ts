@@ -2,7 +2,6 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import {v4 as uuid} from "uuid";
 import {Server} from "socket.io";
 import {createServer} from "http";
 
@@ -135,28 +134,37 @@ io.on("connection", async (socket) => {
 
     sout(`Message received for chat ${ChatId} (${messageSecurityMode} payload)`);
 
+    const readBy = [{
+      userId: user._id,
+      seenAt: new Date(),
+    }];
+    const messageForDB = {
+      content: isEncryptedMessage ? "" : message,
+      encryptedContent: isEncryptedMessage ? message : undefined,
+      sender: user._id,
+      chat: ChatId,
+      readBy,
+    }
+    let savedMessage;
+    try{
+      savedMessage = await Message.create(messageForDB);
+    } catch (e) {
+      console.error("Failed to persist message:", e);
+      return;
+    }
+
     const messageForRealTime = {
       content: isEncryptedMessage ? "" : message,
       encryptedContent: isEncryptedMessage ? message : undefined,
-      _id: uuid(),
+      _id: savedMessage._id,
       sender: {
         _id: user._id,
         name: user.name
       },
       chat: ChatId,
-      createdAt: new Date().toString()
-    }
-    const messageForDB = {
-      content: isEncryptedMessage ? "" : message,
-      encryptedContent: isEncryptedMessage ? message : undefined,
-      sender: user._id,
-      chat: ChatId
-    }
-    try{
-      await Message.create(messageForDB);
-    } catch (e) {
-      console.error("Failed to persist message:", e);
-    }
+      createdAt: savedMessage.createdAt,
+      readBy,
+    };
 
     const membersSockets = getSockets(members);
     io.to(membersSockets).emit(NEW_MESSAGE, {

@@ -8,6 +8,7 @@ import {
   getMyChats,
   getMyGroups,
   leaveGroupChat,
+  markChatAsRead,
   newGroupChat,
   removeMember,
   renameGroupChat,
@@ -41,6 +42,7 @@ app.delete("/leave/:ChatId", chatIdValidator(), validateHandler, leaveGroupChat)
 
 app.post("/message", attachmentMulter, sendAttachmentsValidator(), validateHandler, sendAttachments);
 app.get("/message/:ChatId", chatIdValidator(), validateHandler, getMessages);
+app.patch("/message/read/:ChatId", chatIdValidator(), validateHandler, markChatAsRead);
 
 app.route("/:ChatId")
   .get(chatIdValidator(), validateHandler, getChatDetails)

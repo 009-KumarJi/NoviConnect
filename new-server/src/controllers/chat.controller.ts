@@ -1,9 +1,10 @@
 // @ts-nocheck
+import mongoose from "mongoose";
 import {TryCatch} from "../middlewares/error.middleware.js";
 import {ErrorHandler, sout} from "../utils/utility.js";
 import {Chat} from "../models/chat.model.js";
 import {deleteFilesFromCloudinary, emitEvent, uploadFilesToCloudinary} from "../utils/features.js";
-import {ALERT, NEW_MESSAGE, NEW_MESSAGE_ALERT, REFETCH_CHATS} from "../constants/events.constant.js";
+import {ALERT, MESSAGE_READ_RECEIPT, NEW_MESSAGE, NEW_MESSAGE_ALERT, REFETCH_CHATS} from "../constants/events.constant.js";
 import {getOtherMember} from "../lib/chat.helper.js";
 import {User} from "../models/user.model.js";
 import {Message} from "../models/message.model.js";
@@ -33,9 +34,37 @@ const newGroupChat = TryCatch(async (req, res, next) => {
   });
 });
 const getMyChats = TryCatch(async (req, res) => {
+  const userObjectId = new mongoose.Types.ObjectId(req.userId);
   const chats = await Chat
     .find({members: req.userId})
     .populate("members", "name username avatar");
+
+  const chatIds = chats.map(({_id}) => _id);
+  const unreadCounts = chatIds.length
+    ? await Message.aggregate([
+        {
+          $match: {
+            chat: {$in: chatIds},
+            sender: {$ne: userObjectId},
+            readBy: {
+              $not: {
+                $elemMatch: {userId: userObjectId},
+              },
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$chat",
+            count: {$sum: 1},
+          },
+        },
+      ])
+    : [];
+  const unreadCountMap = unreadCounts.reduce((acc, item) => {
+    acc[item._id.toString()] = item.count;
+    return acc;
+  }, {});
 
   const transformedChats = chats.map(({_id, name, members, groupChat}) => {
     const otherMember = getOtherMember(members, req.userId);
@@ -45,6 +74,7 @@ const getMyChats = TryCatch(async (req, res) => {
       groupChat,
       members: members.reduce((prev, curr) => (curr._id.toString() !== req.userId ? [...prev, curr._id] : prev), []),
       avatar: groupChat ? members.slice(0, 3).map(({avatar}) => avatar.url) : [otherMember.avatar.url],
+      unreadCount: unreadCountMap[_id.toString()] || 0,
     };
   });
 
@@ -201,15 +231,25 @@ const sendAttachments = TryCatch(async (req, res, next) => {
     attachments,
     sender: currUser._id,
     chat: ChatId,
+    readBy: [{
+      userId: currUser._id,
+      seenAt: new Date(),
+    }],
   };
+  const message = await Message.create(messageForDB);
+
   const messageForRealTime = {
-    ...messageForDB,
+    _id: message._id,
+    content: message.content,
+    attachments: message.attachments,
     sender: {
       _id: currUser._id,
       name: currUser.name,
     },
+    chat: ChatId,
+    createdAt: message.createdAt,
+    readBy: message.readBy,
   };
-  const message = await Message.create(messageForDB);
 
   emitEvent(req, NEW_MESSAGE, chat.members, {message: messageForRealTime, ChatId});
   emitEvent(req, NEW_MESSAGE_ALERT, chat.members, {ChatId});
@@ -327,6 +367,55 @@ const getMessages = TryCatch(async (req, res, next) => {
 
 });
 
+const markChatAsRead = TryCatch(async (req, res, next) => {
+  const {ChatId} = req.params;
+
+  const chat = await Chat.findById(ChatId);
+
+  if (!chat) return next(new ErrorHandler("Chat not found", 404));
+  if (!chat.members.includes(req.userId)) return next(new ErrorHandler("You are not a member of this chat", 422));
+
+  const readAt = new Date();
+  const unreadMessages = await Message.find({
+    chat: ChatId,
+    sender: {$ne: req.userId},
+    readBy: {
+      $not: {
+        $elemMatch: {userId: req.userId},
+      },
+    },
+  }).select("_id");
+
+  const messageIds = unreadMessages.map(({_id}) => _id.toString());
+
+  if (messageIds.length) {
+    await Message.updateMany(
+      {_id: {$in: messageIds}},
+      {
+        $push: {
+          readBy: {
+            userId: req.userId,
+            seenAt: readAt,
+          },
+        },
+      }
+    );
+
+    const recipients = chat.members.filter((member) => member.toString() !== req.userId.toString());
+    emitEvent(req, MESSAGE_READ_RECEIPT, recipients, {
+      ChatId,
+      userId: req.userId,
+      messageIds,
+      readAt,
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    messageIds,
+  });
+});
+
 export {
   newGroupChat,
   getMyChats,
@@ -339,6 +428,7 @@ export {
   renameGroupChat,
   deleteChat,
   getMessages,
+  markChatAsRead,
 };
 
 // Path: server/controllers/chat.controller.js

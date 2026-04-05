@@ -70,6 +70,14 @@ const apiSlice = createApi({
       }),
       keepUnusedDataFor: 0,
     }),
+    markChatAsRead: builder.mutation({
+      query: (ChatId) => ({
+        url: `chat/message/read/${ChatId}`,
+        method: "PATCH",
+        credentials: "include"
+      }),
+      invalidatesTags: ["Chat"],
+    }),
     sendAttachments: builder.mutation({
       query: (data) => ({
         url: `chat/message`,
@@ -159,6 +167,7 @@ export const {
   useAcceptFriendRequestMutation,
   useChatDetailsQuery,
   useGetMessagesQuery,
+  useMarkChatAsReadMutation,
   useSendAttachmentsMutation,
   useMyGroupsQuery,
   useAvailableFriendsQuery,

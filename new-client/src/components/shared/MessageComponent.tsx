@@ -6,9 +6,19 @@ import {motion} from "framer-motion";
 import {userTheme} from "../../constants/userTheme.constant.js";
 
 const MessageComponent = ({message, loggedUser}) => {
-  const {sender, content, attachments = [], createdAt, e2eeState} = message;
+  const {sender, content, attachments = [], createdAt, e2eeState, readBy = []} = message;
   const isSameSender = sender?._id === loggedUser?._id;
   const timeAgo = moment(createdAt).fromNow();
+  const readersExcludingSender = readBy.filter(
+    (entry) => entry?.userId?.toString?.() !== sender?._id?.toString?.()
+  );
+  const readReceiptLabel = isSameSender
+    ? readersExcludingSender.length > 1
+      ? `Seen by ${readersExcludingSender.length}`
+      : readersExcludingSender.length === 1
+        ? "Seen"
+        : "Sent"
+    : "";
   const statusLabel = e2eeState === "encrypted"
     ? "Encrypted"
     : e2eeState === "legacy"
@@ -33,11 +43,11 @@ const MessageComponent = ({message, loggedUser}) => {
           borderColor: "rgba(251, 113, 133, 0.35)",
           backgroundColor: "rgba(251, 113, 133, 0.08)",
         };
+
   return (
     <motion.div
       initial={{opacity: 0, x: "-100%"}}
       whileInView={{opacity: 1, x: 0}}
-
       style={{
         alignSelf: isSameSender ? "flex-end" : "flex-start",
         background: isSameSender
@@ -54,7 +64,10 @@ const MessageComponent = ({message, loggedUser}) => {
     >
       <Stack direction="row" spacing={0.8} alignItems="center" mb={statusLabel ? 0.5 : 0.3}>
         {!isSameSender && (
-          <Typography fontWeight={700} variant="caption" sx={{color: userTheme.accentBlue, display: "block"}}>{sender.name}</Typography>)}
+          <Typography fontWeight={700} variant="caption" sx={{color: userTheme.accentBlue, display: "block"}}>
+            {sender.name}
+          </Typography>
+        )}
         {statusLabel && (
           <Chip
             label={statusLabel}
@@ -68,18 +81,20 @@ const MessageComponent = ({message, loggedUser}) => {
           />
         )}
       </Stack>
+
       {content && (<Typography sx={{whiteSpace: "pre-wrap"}}>{content}</Typography>)}
-      {
-        attachments.length > 0 && (
-          attachments.map((attachment, index) => {
-            return (
-              <Box key={index} mt={0.8}>
-                <RenderAttachment attachment={attachment} userId={loggedUser?._id}/>
-              </Box>
-            )
-          }))
-      }
-      <Typography variant={"caption"} sx={{color: userTheme.textMuted, display: "block", mt: 0.5}}>{timeAgo}</Typography>
+
+      {attachments.length > 0 && (
+        attachments.map((attachment, index) => (
+          <Box key={index} mt={0.8}>
+            <RenderAttachment attachment={attachment} userId={loggedUser?._id}/>
+          </Box>
+        ))
+      )}
+
+      <Typography variant={"caption"} sx={{color: userTheme.textMuted, display: "block", mt: 0.5}}>
+        {readReceiptLabel ? `${timeAgo} | ${readReceiptLabel}` : timeAgo}
+      </Typography>
     </motion.div>
   );
 };

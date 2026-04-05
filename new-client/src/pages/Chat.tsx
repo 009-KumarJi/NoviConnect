@@ -6,8 +6,8 @@ import {InputBox} from "../components/styles/StyledComponents.jsx";
 import FileMenu from "../components/dialogs/FileMenu.jsx";
 import MessageComponent from "../components/shared/MessageComponent.jsx";
 import {getSocket} from "../socket.jsx";
-import {ALERT, CHAT_JOINED, CHAT_LEFT, NEW_MESSAGE, START_TYPING, STOP_TYPING} from "../constants/events.constant.js";
-import {useChatDetailsQuery, useGetMessagesQuery} from "../redux/api/apiSlice.js";
+import {ALERT, CHAT_JOINED, CHAT_LEFT, MESSAGE_READ_RECEIPT, NEW_MESSAGE, START_TYPING, STOP_TYPING} from "../constants/events.constant.js";
+import {useChatDetailsQuery, useGetMessagesQuery, useMarkChatAsReadMutation} from "../redux/api/apiSlice.js";
 import {useErrors, useSockets} from "../hooks/hook.jsx";
 import {useInfiniteScrollTop} from "../hooks/useInfiniteScroll";
 import {useDispatch} from "react-redux";
@@ -39,6 +39,7 @@ const Chat = ({ChatId, user}) => {
   const [messageTyped, setMessageTyped] = useState("");
   const [messages, setMessages] = useState([]);
   const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
+  const [markChatAsRead] = useMarkChatAsReadMutation();
 
   const chatDetails = useChatDetailsQuery({ChatId, populate: true}, {skip: !ChatId});
   const members = chatDetails?.data?.chat?.members;
@@ -104,11 +105,47 @@ const Chat = ({ChatId, user}) => {
     })();
   }
 
+  const applyReadReceipt = useCallback((messageList, receipt) => {
+    const targetIds = new Set(receipt.messageIds || []);
+
+    return messageList.map((message) => {
+      if (!targetIds.has(message._id?.toString?.())) return message;
+
+      const alreadyRead = (message.readBy || []).some(
+        (entry) => entry?.userId?.toString?.() === receipt.userId?.toString?.()
+      );
+
+      if (alreadyRead) return message;
+
+      return {
+        ...message,
+        readBy: [
+          ...(message.readBy || []),
+          {
+            userId: receipt.userId,
+            seenAt: receipt.readAt,
+          },
+        ],
+      };
+    });
+  }, []);
+
+  const syncReadState = useCallback(async () => {
+    if (!ChatId) return;
+
+    try {
+      await markChatAsRead(ChatId).unwrap();
+    } catch (_error) {
+      // Keep the chat usable even if read sync fails momentarily.
+    }
+  }, [ChatId, markChatAsRead]);
+
   useEffect(() => {
     if (members?.length) {
       socket.emit(CHAT_JOINED, {userId: user._id, members});
     }
     dispatch(resetNewMessagesAlert(ChatId));
+    syncReadState();
 
     return () => {
       setMessages([]);
@@ -119,7 +156,7 @@ const Chat = ({ChatId, user}) => {
         socket.emit(CHAT_LEFT, {userId: user._id, members});
       }
     }
-  }, [ChatId, members]);
+  }, [ChatId, dispatch, members, setPrevMessages, socket, syncReadState, user?._id]);
 
   useEffect(() => {
     bottomRef?.current?.scrollIntoView({behavior: "smooth"});
@@ -150,9 +187,13 @@ const Chat = ({ChatId, user}) => {
       const decryptedMessage = isE2EEEnabled
         ? await decryptMessageContent({message: data.message, userId: user._id})
         : data.message;
-      setMessages(prevState => prevState.concat(decryptedMessage))
+      setMessages(prevState => prevState.concat(decryptedMessage));
+
+      if (data.message?.sender?._id?.toString?.() !== user?._id?.toString?.()) {
+        syncReadState();
+      }
     })();
-  }, [ChatId, user?._id]);
+  }, [ChatId, syncReadState, user?._id]);
 
   const startTypingListener = useCallback((data) => {
     if (data.ChatId !== ChatId) return;
@@ -178,9 +219,17 @@ const Chat = ({ChatId, user}) => {
     setMessages(prevState => [...prevState, messageForAlert]);
   }, [ChatId])
 
+  const messageReadReceiptListener = useCallback((data) => {
+    if (data.ChatId !== ChatId) return;
+
+    setPrevMessages((prevState) => applyReadReceipt(prevState, data));
+    setMessages((prevState) => applyReadReceipt(prevState, data));
+  }, [ChatId, applyReadReceipt, setPrevMessages]);
+
   const eventHandler = {
     [ALERT]: alertListener,
     [NEW_MESSAGE]: newMessagesListener,
+    [MESSAGE_READ_RECEIPT]: messageReadReceiptListener,
     [START_TYPING]: startTypingListener,
     [STOP_TYPING]: stopTypingListener
   };

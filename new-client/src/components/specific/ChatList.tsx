@@ -27,10 +27,13 @@ const ChatList = (
       {
         chats
           ?.map((data, index) => {
-            const {avatar, _id, name, groupChat, members} = data;
+            const {avatar, _id, name, groupChat, members, unreadCount = 0} = data;
             const newMessageAlert = newMessagesAlert.find(
               ({ChatId}) => ChatId === _id
             );
+            const effectiveUnreadCount = ChatId === _id
+              ? 0
+              : Math.max(unreadCount, newMessageAlert?.count || 0);
             const isOnline = members.some(member => onlineUsers.includes(member));
             sout("onlineUsers ---- : ", onlineUsers);
             sout("isOnline ---- : ", isOnline);
@@ -39,7 +42,7 @@ const ChatList = (
             return (
               <ChatItem
                 index={index}
-                newMessageAlert={newMessageAlert}
+                newMessageAlert={{count: effectiveUnreadCount}}
                 isOnline={isOnline}
                 avatar={avatar}
                 name={name}

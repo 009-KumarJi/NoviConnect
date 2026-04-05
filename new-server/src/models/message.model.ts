@@ -90,6 +90,17 @@ const messageSchema = new Schema({
       }],
     },
   }],
+  readBy: [{
+    userId: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    seenAt: {
+      type: Date,
+      default: Date.now,
+    },
+  }],
 }, {
   timestamps: true,
 });

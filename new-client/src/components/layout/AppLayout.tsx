@@ -17,7 +17,7 @@ import {
   ONLINE_USERS,
   REFETCH_CHATS
 } from "../../constants/events.constant.js";
-import {incrementNotificationCount, setNewMessagesAlert} from "../../redux/reducers/chatSlice.js";
+import {incrementNotificationCount, replaceNewMessagesAlert, setNewMessagesAlert} from "../../redux/reducers/chatSlice.js";
 import {sout} from "../../utils/helper.js";
 import {getOrSaveFromStorage} from "../../lib/features.js";
 import DeleteChatMenu from "../dialogs/DeleteChatMenu.jsx";
@@ -62,6 +62,19 @@ const AppLayout = () => (WrappedComponent) => {
         value: newMessagesAlert,
       })
     }, [newMessagesAlert]);
+
+    useEffect(() => {
+      if (!data?.chats) return;
+
+      const unreadAlerts = data.chats
+        .filter((chat) => chat._id !== ChatId && chat.unreadCount > 0)
+        .map((chat) => ({
+          ChatId: chat._id,
+          count: chat.unreadCount,
+        }));
+
+      dispatch(replaceNewMessagesAlert(unreadAlerts));
+    }, [ChatId, data?.chats, dispatch]);
 
     const handleMobileMenuClose = () => dispatch(setIsMobileMenu(false));
 

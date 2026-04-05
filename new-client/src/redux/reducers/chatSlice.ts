@@ -33,6 +33,9 @@ const chatSlice = createSlice({
     resetNewMessagesAlert: (state, action) => {
       sout("Resetting Alert: ", action.payload);
       state.newMessagesAlert = state.newMessagesAlert.filter(alert => alert.ChatId !== action.payload);
+    },
+    replaceNewMessagesAlert: (state, action) => {
+      state.newMessagesAlert = action.payload?.length ? action.payload : [];
     }
   },
 });
@@ -42,6 +45,7 @@ export const {
   resetNotificationCount,
   setNewMessagesAlert,
   resetNewMessagesAlert,
+  replaceNewMessagesAlert,
 } = chatSlice.actions;
 
 export default chatSlice;
