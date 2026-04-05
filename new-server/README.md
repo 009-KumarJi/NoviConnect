@@ -1,6 +1,6 @@
 # NoviConnect Backend
 
-This README is the technical reference for the active backend in `noviconnect-server-v2`. It focuses on concrete implementation detail: boot sequence, route surface, socket behavior, schema design, security boundaries, and operational tradeoffs.
+This README is the technical reference for the active backend in [`noviconnect-server-v2`](https://github.com/009-KumarJi/noviconnect-server-v2). It focuses on concrete implementation detail: boot sequence, route surface, socket behavior, schema design, security boundaries, and operational tradeoffs.
 
 ## Overview
 
@@ -624,7 +624,7 @@ If you want the fastest path through the backend:
 
 ## Summary
 
-The strongest technical value of `noviconnect-server-v2` is not that it exposes chat CRUD. It is that the service combines:
+The strongest technical value of [`noviconnect-server-v2`](https://github.com/009-KumarJi/noviconnect-server-v2) is not that it exposes chat CRUD. It is that the service combines:
 
 - cookie-based auth across HTTP and sockets
 - cross-origin deployment-aware configuration

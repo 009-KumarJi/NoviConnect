@@ -1,6 +1,6 @@
 # NoviConnect Frontend
 
-This README is the technical reference for the active frontend in `noviconnect-client-v2`. The master README explains the project at a broader level; this document stays focused on implementation detail, design rationale, and a fast way to navigate the code.
+This README is the technical reference for the active frontend in [`noviconnect-client-v2`](https://github.com/009-KumarJi/noviconnect-client-v2). The master README explains the project at a broader level; this document stays focused on implementation detail, design rationale, and a fast way to navigate the code.
 
 ## Overview
 
@@ -561,4 +561,4 @@ This frontend is not just "a React chat UI". Its main technical value is that it
 - secure identity recovery
 - admin/product separation
 
-That combination is what makes `noviconnect-client-v2` the active, production-oriented frontend rather than a simple redesign of the legacy UI.
+That combination is what makes [`noviconnect-client-v2`](https://github.com/009-KumarJi/noviconnect-client-v2) the active, production-oriented frontend rather than a simple redesign of the legacy UI.
